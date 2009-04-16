@@ -1,0 +1,14 @@
+pathos: a ssh-based grid-services lite framework
+
+Current release:
+    None
+
+Installation:
+    $ mm
+
+License:
+    >>> print pathos.__license__
+
+More information:
+    http://www.cacr.caltech.edu/~mmckerns/
+
