@@ -86,6 +86,9 @@ following paper in your publication::
 # launchers
 import LauncherSSH, LauncherSCP
 
+# tools, utilities, etc
+import util
+
 def copyright():
     """print copyright and reference"""
     print __license__[-429:]

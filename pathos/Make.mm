@@ -29,6 +29,11 @@ EXPORT_PYTHON_MODULES = \
     __init__.py      \
     LauncherSSH.py   \
     LauncherSCP.py   \
+    Tunnel.py        \
+    util.py          \
+    Server.py        \
+    XMLRPCServer.py  \
+    XMLRPCRequestHandler.py \
 
 export:: export-python-modules
 
