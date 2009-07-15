@@ -35,11 +35,11 @@ class Tunnel(Component):
             port = pick()
             if port < 0:
                 raise TunnelException, 'No available local port'
-            print 'Trying port %d...' % port
+            #print 'Trying port %d...' % port
             
             try:
                 self._connect(port, remotehost, remoteport)
-                print 'SSH tunnel %d:%s:%d' % (port, remotehost, remoteport)
+                #print 'SSH tunnel %d:%s:%d' % (port, remotehost, remoteport)
             except TunnelException, e:
                 if e.args[0] == 'bind':
                     self.disconnect()
@@ -90,10 +90,14 @@ class Tunnel(Component):
 
 if __name__ == '__main__':
     import sys
+    rhost = 'login.cacr.caltech.edu'
+    rport = 23
 
     t = Tunnel('Tunnel')
-    port = t.connect('login.cacr.caltech.edu', 23)
-    print 'Local port:', port
+    lport = t.connect(rhost, rport)
+    print 'SSH Tunnel to:', rhost
+    print 'Remote port:', rport
+    print 'Local port:', lport
     print 'Press <Enter> to disconnect'
     sys.stdin.readline()
     t.disconnect()
