@@ -10,12 +10,13 @@
 
 import os
 import popen2
-from mpi.Launcher import Launcher #XXX: better to inherit from LauncherSSH?
 
 class FileNotFound(Exception):
     '''Exception for improper source or destination format'''
     pass
 
+
+from Launcher import Launcher
 class LauncherSCP(Launcher):
     '''a remote copier using scp'''
 
@@ -29,7 +30,8 @@ Optional Inputs:
     Any of the `stage` method's keywords can be passed during
     initialization to override the launcher defualts. 
         '''
-        Launcher.__init__(self, name)
+       #Launcher.__init__(self, name)
+        super(LauncherSCP, self).__init__(name)
         self.stage(**kwds)
         return
 

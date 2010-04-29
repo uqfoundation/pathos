@@ -9,10 +9,11 @@
 """
 
 import os
+import signal
 import popen2
-from mpi.Launcher import Launcher
 from pyre.ipc.Selector import Selector
 
+from Launcher import Launcher
 class LauncherSSH(Launcher):
     '''a remote process launcher using ssh'''
 
@@ -26,7 +27,8 @@ Optional Inputs:
     Any of the `stage` method's keywords can be passed during
     initialization to override the launcher defualts. 
         '''
-        Launcher.__init__(self, name)
+       #Launcher.__init__(self, name)
+        super(LauncherSSH, self).__init__(name)
         self.stage(**kwds)
         return
 
@@ -81,6 +83,7 @@ Optional Inputs:
         if self.inventory.fgbg in ['foreground','fg']:
             f = os.popen(command, 'r')
             self._fromchild = f #save fileobject
+            self._pid = 0 #XXX: MMM --> or -1 ?
         else: #Spawn an ssh process 
             p = popen2.Popen4(command)
             self._pid = p.pid #get fileobject pid
@@ -111,6 +114,14 @@ Optional Inputs:
     def pid(self):
         '''get launcher pid'''
         return self._pid
+
+    def kill(self):
+        if self._pid > 0:
+            print 'Kill ssh pid=%d' % self._pid
+            os.kill(self._pid, signal.SIGTERM)
+            os.waitpid(self._pid, 0)
+            self._pid = 0
+        return
     pass
 
 
@@ -120,7 +131,11 @@ if __name__ == '__main__':
     # test command and remote host
     command1 = 'echo "hello from..."'
     command2 = 'hostname'
+   #command3 = 'sleep 5' #XXX: buggy?
+   #command3 = ''  #XXX: buggy ?
     rhost = 'login.cacr.caltech.edu'
+   #rhost = 'upgrayedd.danse.us'
+   #rhost = 'shc-c.cacr.caltech.edu'
 
     launcher = LauncherSSH('LauncherSSH')
    #journal.debug('LauncherSSH').activate()
@@ -130,6 +145,9 @@ if __name__ == '__main__':
     launcher.stage(command=command2, rhost=rhost, fgbg='background')
     launcher.launch()
     print launcher.response()
+   #launcher.stage(command=command3, rhost=rhost, fgbg='foreground')
+   #launcher.launch()
+   #print launcher.response()
 
 
 # End of file

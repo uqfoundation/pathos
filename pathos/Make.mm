@@ -27,6 +27,7 @@ update: clean
 
 EXPORT_PYTHON_MODULES = \
     __init__.py      \
+    Launcher.py      \
     LauncherSSH.py   \
     LauncherSCP.py   \
     Tunnel.py        \

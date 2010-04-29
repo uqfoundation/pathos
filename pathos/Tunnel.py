@@ -27,7 +27,7 @@ class Tunnel(Component):
         launcher = pyre.inventory.facility('launcher',
                                            default=LauncherSSH('launcher'))
     
-    def connect(self, remotehost, remoteport):
+    def connect(self, remotehost, remoteport, through=None):
         import util
 
         pick = util.portnumber(self.MINPORT, self.MAXPORT)
@@ -38,7 +38,7 @@ class Tunnel(Component):
             #print 'Trying port %d...' % port
             
             try:
-                self._connect(port, remotehost, remoteport)
+                self._connect(port, remotehost, remoteport, through=through)
                 #print 'SSH tunnel %d:%s:%d' % (port, remotehost, remoteport)
             except TunnelException, e:
                 if e.args[0] == 'bind':
@@ -46,6 +46,7 @@ class Tunnel(Component):
                     continue
                 else:
                     self._pid = 0
+                    self._tunnel = None #XXX: MMM
                     self.connected = False
                     raise TunnelException, 'Connection failed'
                 
@@ -53,12 +54,14 @@ class Tunnel(Component):
             return port
 
     def disconnect(self):
+        #FIXME: grep (?) for self._tunnel, then kill the pid
         if self._pid > 0:
             print 'Kill ssh pid=%d' % self._pid
             os.kill(self._pid, signal.SIGTERM)
             os.waitpid(self._pid, 0)
             self.connected = False
             self._pid = 0
+            self._tunnel = None
         return
 
     def __init__(self, name):
@@ -69,16 +72,20 @@ class Tunnel(Component):
         self.connected = False
 
         self._pid = 0
+        self._tunnel = None  #XXX: MMM --> better default?
         return
 
-    def _connect(self, localport, remotehost, remoteport):
-        options = '-N -L%d:%s:%d' % (localport, remotehost, remoteport)
+    def _connect(self, localport, remotehost, remoteport, through=None):
+        options = '-q -N -L%d:%s:%d' % (localport, remotehost, remoteport)
         command = ''
-
-        self._launcher.stage(rhost=remotehost, command=command,
-                             options=options, fgbg='background')
+        if through: rhost = through
+        else: rhost = remotehost
+        self._launcher.stage(rhost=rhost, command=command,
+                             options=options, fgbg='background') #XXX: MMM
+                            #options=options, fgbg='foreground')
         self._launcher.launch()
-        self._pid = self._launcher.pid()
+        self._tunnel = options  #XXX: MMM
+        self._pid = self._launcher.pid() #FIXME: should be tunnel_pid [pid()+1]
         line = self._launcher.response()
         if line:
             if line.startswith('bind'):
@@ -90,6 +97,7 @@ class Tunnel(Component):
 
 if __name__ == '__main__':
     import sys
+   #rhost = 'shc-c.cacr.caltech.edu'
     rhost = 'login.cacr.caltech.edu'
     rport = 23
 
