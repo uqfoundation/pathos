@@ -27,10 +27,12 @@ update: clean
 
 EXPORT_PYTHON_MODULES = \
     __init__.py      \
+    _ppserver_config.py    \
     Launcher.py      \
     LauncherSSH.py   \
     LauncherSCP.py   \
     Tunnel.py        \
+    pp_map.py        \
     util.py          \
     Server.py        \
     XMLRPCServer.py  \
