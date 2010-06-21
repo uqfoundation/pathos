@@ -43,13 +43,13 @@ setup(name="pathos",
 # add dependencies
 pyre_version = '==0.8-pathos' # NOTE: repackaging; includes 'journal'
 pp_version = '==1.5.7-pathos' # NOTE: modified redistribution
-dill_version = '>=0.1a1'
+dill_version = '>=0.1a1'      # NOTE: implicit dependency
 if has_setuptools:
     setup_code += """
         zip_safe = False,
-        install_requires = ['pp%s','pyre%s'],
+        install_requires = ['pp%s','dill%s','pyre%s'],
         dependency_links = ['http://dev.danse.us/packages/'],
-""" % (pp_version, pyre_version)
+""" % (pp_version, dill_version, pyre_version)
 
 # add the scripts, and close 'setup' call
 setup_code += """
@@ -65,11 +65,13 @@ try:
     import pp
     if pp.__version__ != pp_version[2:]:
         raise ImportError
+    import dill
 except ImportError:
     print "\n***********************************************************"
     print "WARNING: One of the following dependencies is unresolved:"
     print "    pp %s" % pp_version
     print "    pyre %s" % pyre_version
+    print "    dill %s" % dill_version
     print "***********************************************************\n"
 
     print """
