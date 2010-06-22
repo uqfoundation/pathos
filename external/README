@@ -1,0 +1,14 @@
+# NOTES ON 'external' packages:
+==================================================
+
+pyre & journal were built with:
+$ cd pyre/branches/patches-from-jiao
+$ mm zip4
+
+the setup.py file was edited to *not* install .odb files
+
+==================================================
+
+'pp' was edited to provide optional support for dill
+(see notes in pp-1.5.7-pathos/README_PATHOS)
+

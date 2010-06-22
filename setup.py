@@ -53,7 +53,9 @@ if has_setuptools:
 
 # add the scripts, and close 'setup' call
 setup_code += """
-    scripts=[])
+    scripts=['scripts/pathos_server.py',
+             'scripts/pathos_tunnel.py',
+             'scripts/tunneled_pathos_server.py'])
 """
 
 # exec the 'setup' code

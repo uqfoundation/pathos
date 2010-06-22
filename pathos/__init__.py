@@ -82,9 +82,20 @@ following paper in your publication::
      http://dev.danse.us/trac/pathos
 
 """
+# high-level interface
+import pathos_core as core
 
 # launchers
-import LauncherSSH, LauncherSCP
+from LauncherSSH import LauncherSSH as SSH_Launcher
+from LauncherSCP import LauncherSCP as SCP_Launcher
+
+# tunnels
+from Tunnel import Tunnel as SSH_Tunnel
+
+# mappers
+import pp_map
+
+# strategies
 
 # tools, utilities, etc
 import util

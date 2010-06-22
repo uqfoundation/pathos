@@ -24,7 +24,11 @@ update: clean
 
 #EXPORT_PYTHON_MODULES = \
 EXPORT_BINS = \
-#   dummy_example.py \
+    sum_primesX.py \
+    pp_map.py \
+    secure_copy.py \
+    secure_hello.py \
+    simple_tunnel.py \
 
 
 # export:: export-package-python-modules

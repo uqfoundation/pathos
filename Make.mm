@@ -4,6 +4,7 @@ PROJECT = pathos
 
 BUILD_DIRS = \
     pathos \
+    scripts \
 
 OTHER_DIRS = \
     examples \
