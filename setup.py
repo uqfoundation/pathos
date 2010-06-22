@@ -44,12 +44,13 @@ setup(name="pathos",
 pyre_version = '==0.8-pathos' # NOTE: repackaging; includes 'journal'
 pp_version = '==1.5.7-pathos' # NOTE: modified redistribution
 dill_version = '>=0.1a1'      # NOTE: implicit dependency
+pox_version = '>=0.1a1'
 if has_setuptools:
     setup_code += """
         zip_safe = False,
-        install_requires = ['pp%s','dill%s','pyre%s'],
+        install_requires = ['pp%s','dill%s','pox%s','pyre%s'],
         dependency_links = ['http://dev.danse.us/packages/'],
-""" % (pp_version, dill_version, pyre_version)
+""" % (pp_version, dill_version, pox_version, pyre_version)
 
 # add the scripts, and close 'setup' call
 setup_code += """
@@ -57,6 +58,7 @@ setup_code += """
              'scripts/pathos_tunnel.py',
              'scripts/tunneled_pathos_server.py'])
 """
+#            'pathos/util.py'])
 
 # exec the 'setup' code
 exec setup_code
@@ -68,12 +70,23 @@ try:
     if pp.__version__ != pp_version[2:]:
         raise ImportError
     import dill
+    import pox
+
+    # copy "util.py" as 'portpicker.py'... very important!!!
+    dest = pox.which('pathos_tunnel.py')
+    import os
+    dest = os.path.dirname(dest)
+    dest = os.sep.join([dest,'portpicker.py'])
+    src = os.sep.join(['pathos','util.py'])
+    from shutil import copy2
+    copy2(src, dest)
 except ImportError:
     print "\n***********************************************************"
     print "WARNING: One of the following dependencies is unresolved:"
     print "    pp %s" % pp_version
     print "    pyre %s" % pyre_version
     print "    dill %s" % dill_version
+    print "    pox %s" % pox_version
     print "***********************************************************\n"
 
     print """

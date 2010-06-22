@@ -32,6 +32,8 @@ EXPORT_PYTHON_MODULES = \
     LauncherSSH.py   \
     LauncherSCP.py   \
     Tunnel.py        \
+    core.py          \
+    hosts.py         \
     pp_map.py        \
     util.py          \
     Server.py        \

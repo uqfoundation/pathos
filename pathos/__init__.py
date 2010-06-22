@@ -83,7 +83,8 @@ following paper in your publication::
 
 """
 # high-level interface
-import pathos_core as core
+import core
+import hosts
 
 # launchers
 from LauncherSSH import LauncherSSH as SSH_Launcher

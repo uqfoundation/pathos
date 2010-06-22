@@ -3,7 +3,8 @@
 remote bash-script install of given package
 """
 
-from pathos_core import copy,run
+from pathos.core import copy,run
+from pathos.hosts import get_profile, register_profiles
 
 
 if __name__ == '__main__':
@@ -50,7 +51,9 @@ if __name__ == '__main__':
   del myinp
 
   # my remote environment (should be auto-detected)
-  from _known_hosts import get_profile
+  profiles = {'upgrayedd.danse.us':'.profile',
+              'login.cacr.caltech.edu':'.cshrc'}
+  register_profiles(profiles)
   profile = get_profile(rhost)
 
 ##### CONFIGURATION & INPUT ########################

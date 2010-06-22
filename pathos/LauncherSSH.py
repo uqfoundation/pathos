@@ -126,28 +126,7 @@ Optional Inputs:
 
 
 if __name__ == '__main__':
-   #import journal
-
-    # test command and remote host
-    command1 = 'echo "hello from..."'
-    command2 = 'hostname'
-   #command3 = 'sleep 5' #XXX: buggy?
-   #command3 = ''  #XXX: buggy ?
-    rhost = 'login.cacr.caltech.edu'
-   #rhost = 'upgrayedd.danse.us'
-   #rhost = 'shc-c.cacr.caltech.edu'
-
-    launcher = LauncherSSH('LauncherSSH')
-   #journal.debug('LauncherSSH').activate()
-    launcher.stage(command=command1, rhost=rhost, fgbg='background')
-    launcher.launch()
-    print launcher.response()
-    launcher.stage(command=command2, rhost=rhost, fgbg='background')
-    launcher.launch()
-    print launcher.response()
-   #launcher.stage(command=command3, rhost=rhost, fgbg='foreground')
-   #launcher.launch()
-   #print launcher.response()
+    pass
 
 
 # End of file

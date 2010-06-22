@@ -42,6 +42,7 @@ if __name__=='__main__':
 
     sleep(1) #FIXME: needs time to work...
     print 'cleanup temporary files...'
+    import os
     os.remove(source0)
 
     launcher = SSH_Launcher('cleanup')

@@ -38,8 +38,8 @@ def getpid(target,rhost): #XXX: or 'ps -j' for pid, ppid, pgid ?
 
 
 def pickport(rhost):
- #file = 'pickport.py'
-  file = 'util.py'
+  from pox import which, getSEP
+  file = which('portpicker.py') #file = 'util.py'
   dest = '~' #FIXME: *nix only
 
   from time import sleep
@@ -48,6 +48,7 @@ def pickport(rhost):
   # copy over the port selector to remote host
   print 'executing {scp %s %s:%s}' % (file,rhost,dest)
   copy(file,rhost,dest)
+  file = file.split(getSEP())[-1]   # save only the filename
   sleep(delay)
 
   # get an available remote port number

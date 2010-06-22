@@ -15,6 +15,7 @@ if __name__ == '__main__':
         return x
 
     # Immediate evaluation example
+    import time
     start = time.time()
     results = ppmap(None, busybeaver, range(10))
     print 'Time to queue the jobs:', time.time() - start

@@ -106,32 +106,8 @@ def spawn2(onParent, onChild):
 
 if __name__ == '__main__':
 
-    portselect = True
-   # portselect = False
+    pick = portnumber(min=1024,max=65535)
+    print pick()
 
-    if portselect:
-        pick = portnumber(min=1024,max=65535)
-        print pick()
 
-    else:
-
-        import os
-    
-        def onParent(pid, fromchild, tochild):
-            s = fromchild.readline()
-            print s,
-            tochild.write('hello son\n')
-            tochild.flush()
-            os.wait()
-
-        def onChild(pid, fromparent, toparent):
-            toparent.write('hello dad\n')
-            toparent.flush()
-            s = fromparent.readline()
-            print s,
-            os._exit(0)
-
-        spawn2(onParent, onChild)
-
-    
 # End of file

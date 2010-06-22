@@ -4,7 +4,7 @@
 PROJECT = pathos
 PACKAGE = examples
 
-PROJ_TIDY +=
+PROJ_TIDY += *txt
 PROJ_CLEAN =
 
 #--------------------------------------------------------------------------
@@ -29,6 +29,7 @@ EXPORT_BINS = \
     secure_copy.py \
     secure_hello.py \
     simple_tunnel.py \
+    spawn.py \
 
 
 # export:: export-package-python-modules

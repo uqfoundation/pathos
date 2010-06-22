@@ -7,8 +7,9 @@ BUILD_DIRS = \
     scripts \
 
 OTHER_DIRS = \
-    examples \
     tests \
+    examples \
+    applications \
 
 RECURSE_DIRS = $(BUILD_DIRS) $(OTHER_DIRS)
 
