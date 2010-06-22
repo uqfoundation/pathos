@@ -4,7 +4,7 @@ import math
 import sys
 import pp
 
-LOCAL_WORKERS = True #XXX: False if don't run locally
+LOCAL_WORKERS = 'autodetect' #XXX: 'autodetect' or 0,1,2,...
 
 def isprime(n):
     """Returns True if n is prime and False otherwise"""
@@ -38,18 +38,12 @@ for i in range(1,len(sys.argv)):
     ppservers.append("localhost:%s" % tunnelport)
 ppservers = tuple(ppservers)
 
-#if len(sys.argv) > 1:
-#    tunnelport = int(sys.argv[1])
-#    ppservers = ("localhost:%s" % tunnelport,)
-#else:
-#    ppservers = ()
-
 # Creates jobserver with automatically detected number of workers
 job_server = pp.Server(ppservers=ppservers)
 
 # Allow running without local workers
-if not LOCAL_WORKERS:
-    job_server.set_ncpus(0)
+if LOCAL_WORKERS != 'autodetect':
+    job_server.set_ncpus(LOCAL_WORKERS)
 
 #print "Known servers: [('local',)] %s %s" % (job_server.ppservers,job_server.auto_ppservers)
 print "Known servers: [('local',)] %s" % (job_server.ppservers)
