@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 """
 start remote server for selected package
+
+Usage: python pathos_server.py [server] [remoteport] [hostname] 
+    [server] - name of the RPC server (assumed to be already installed)
+    [remoteport] - remote port over which the server will communicate
+    [hostname] - name of the host on which to run the server
 """
 
 from pathos.core import *
@@ -27,7 +32,7 @@ if __name__ == '__main__':
  #server = 'classic_server'  #XXX: "classic_server -p %s" % rport
  #server = 'registry_server'  #XXX: "registry_server -p %s" % rport
 
-  print """Usage: python start_server.py [server] [remoteport] [hostname] 
+  print """Usage: python pathos_server.py [server] [remoteport] [hostname] 
     [server] - name of the RPC server (assumed to be already installed)
     [remoteport] - remote port over which the server will communicate
     [hostname] - name of the host on which to run the server

@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 """
-remote bash-script install of given package
+remote bash-script installation of selected package
+
+Usage: python install_pathos_server.py [package] [version] [hostname] 
+    [package] - name of the package to install
+    [version] - version of the package to install
+    [hostname] - name of the host on which to install the package
 """
 
 from pathos.core import copy,run
@@ -27,7 +32,7 @@ if __name__ == '__main__':
   package = 'pp'    #XXX: package name MUST correspond to X in installer-X.sh
   version = '1.5.7' #XXX: also hardwired in installer-X.sh
 
-  print """Usage: python install_package.py [package] [version] [hostname] 
+  print """Usage: python install_pathos_server.py [package] [version] [hostname] 
     [package] - name of the package to install
     [version] - version of the package to install
     [hostname] - name of the host on which to install the package

@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 """
-get first available remote port using pathos.util.portnumber
+establish a tunnel to first available remote port using pathos.util.portnumber
+
+Usage: python pathos_tunnel.py [hostname] 
+    [hostname] - name of the host with which to establish a ssh tunnel
 """
 
 from pathos.core import *
@@ -14,7 +17,7 @@ if __name__ == '__main__':
  #rhost = 'foobar.danse.us'
  #rhost = 'computer.cacr.caltech.edu'
 
-  print """Usage: python generate_tunnel.py [hostname] 
+  print """Usage: python pathos_tunnel.py [hostname] 
     [hostname] - name of the host with which to establish a ssh tunnel,
     if omitted, tries "%s".""" % rhost
 

@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 """
 start tunneled remote server for selected package
+
+Usage: python tunneled_pathos_server.py [hostname] [server] 
+    [hostname] - name of the host on which to run the server
+    [server] - name of the RPC server (assumed to be already installed)
 """
 
 from pathos.core import *
@@ -24,7 +28,7 @@ if __name__ == '__main__':
  #server = 'classic_server'  #XXX: "classic_server -p %s" % rport
  #server = 'registry_server'  #XXX: "registry_server -p %s" % rport
 
-  print """Usage: python start_server.py [hostname] [server] 
+  print """Usage: python tunneled_pathos_server.py [hostname] [server] 
     [hostname] - name of the host on which to run the server
     [server] - name of the RPC server (assumed to be already installed)
     defaults are: "%s" "%s".""" % (rhost, server)

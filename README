@@ -1,14 +1,21 @@
 pathos: a framework for heterogeneous computing
 
 Current release:
-    None
+    pathos-0.1a1
 
 Installation:
-    $ mm
+    $ python setup.py build
+    $ python setup.py install
 
 License:
     >>> print pathos.__license__
 
 More information:
     http://www.cacr.caltech.edu/~mmckerns/
+
+
+
+NOTE: The current implementation of pathos required slight modifications
+to two external dependencies. These dependencies are provided in the
+`pathos.external` directory for users installing without setuptools.
 
