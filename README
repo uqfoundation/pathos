@@ -16,6 +16,7 @@ More information:
 
 
 NOTE: The current implementation of pathos required slight modifications
-to two external dependencies. These dependencies are provided in the
-`pathos.external` directory for users installing without setuptools.
+to two external dependencies. These dependencies and installation
+instructions are provided in the `pathos.external` directory for users
+installing without setuptools.
 

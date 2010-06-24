@@ -1,4 +1,22 @@
 # NOTES ON 'external' packages:
+
+The current implementation of pathos required slight modifications
+to two external dependencies. These dependencies are provided in the
+`pathos.external` directory for users installing without setuptools.
+
+To install the external packages:
+    $ unzip pyre-0.8-pathos.zip
+    $ unzip pp-1.5.7-pathos.zip
+    $ cd pp-1.5.7-pathos
+    $ python setup.py build
+    $ python setup.py install
+    $ cd ../pyre-0.8-pathos
+    $ python setup.py build
+    $ python setup.py install
+
+
+==================================================
+DEVELOPER's NOTES:
 ==================================================
 
 pyre & journal were built with:
@@ -7,7 +25,7 @@ $ mm zip4
 
 the setup.py file was edited to *not* install .odb files
 
-==================================================
+--------------------------------------------------
 
 'pp' was edited to provide optional support for dill
 (see notes in pp-1.5.7-pathos/README_PATHOS)

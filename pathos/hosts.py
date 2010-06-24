@@ -1,8 +1,8 @@
 # dictionary of known host/profile pairs
 """
 _profiles = { \
- 'upgrayedd.danse.us':'.profile',
- 'login.cacr.caltech.edu':'.cshrc',
+ 'foobar.danse.us':'.profile',
+ 'computer.cacr.caltech.edu':'.cshrc',
 }
 """
 

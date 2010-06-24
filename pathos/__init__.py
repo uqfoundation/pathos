@@ -3,12 +3,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #                         June Kim & Mike McKerns, Caltech
-#                        (C) 1997-2009  All Rights Reserved
+#                        (C) 1997-2010  All Rights Reserved
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 """
-pathos: a ssh-based grid-services lite framework
+pathos: a framework for heterogeneous computing
 
 <introductory doc goes here>
 
@@ -19,10 +19,50 @@ Major Features
 <feature summary goes here>
 
 
+Current Release
+===============
+
+This release version is pathos-0.1a1. You can download it here.
+The latest version of pathos is available from::
+    http://dev.danse.us/trac/pathos
+
+Pathos is distributed under a modified BSD license.
+
+
 Installation
 ============
 
-<installation doc goes here>
+Pathos is packaged to install from source, so you must
+download the tarball, unzip, and run the installer::
+    [download]
+    $ tar -xvzf pathos-0.1a1.tgz
+    $ cd pathos-0.1a1
+    $ python setup py build
+    $ python setup py install
+
+You will be warned of any missing dependencies and/or settings after
+you run the "build" step above. Pathos depends on dill...
+...so you should install them first.
+
+Alternately, pathos can be installed with easy_install::
+    [download]
+    $ easy_install -f . pathos
+
+
+Requirements
+============
+
+Pathos requires::
+    - python, version >= 2.5, version < 3.0
+    - dill, version >= 0.1a1
+    - pox, version >= 0.1a1
+    - pyina, version >= 0.1a1
+    - pyre, version == 0.8-pathos (*)
+    - pp, version == 1.5.7-pathos (*)
+
+Optional requirements::
+    - setuptools, version >= 0.6
+    - rpyc, version >= 3.0.6
 
 
 Usage Notes
@@ -31,10 +71,13 @@ Usage Notes
 <usage doc goes here>
 
 
-See http://dev.danse.us/trac/pathos for more information.
+More Information
+================
+
+Please see http://dev.danse.us/trac/pathos/pyina for further information.
 """
 __version__ = '0.1a1'
-__author__ = 'Mike McKerns, June Kim'
+__author__ = 'Mike McKerns'
 
 __license__ = """
 This software is part of the open-source DANSE project at the California
@@ -70,15 +113,15 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
 OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-Copyright (c) 2009 California Institute of Technology. All rights reserved.
+Copyright (c) 2010 California Institute of Technology. All rights reserved.
 
 
 If you use this software to do productive scientific research that leads to
 publication, we ask that you acknowledge use of the software by citing the
 following paper in your publication::
 
-    "pathos: a ssh-based grid-services lite framework",
-     Michael McKerns, June Kim, and Michael Aivazis, unpublished;
+    "pathos: a framework for heterogeneous computing",
+     Michael McKerns and Michael Aivazis, unpublished;
      http://dev.danse.us/trac/pathos
 
 """
@@ -103,7 +146,7 @@ import util
 
 def copyright():
     """print copyright and reference"""
-    print __license__[-429:]
+    print __license__[-417:]
     return
 
 # end of file
