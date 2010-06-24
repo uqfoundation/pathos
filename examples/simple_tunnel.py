@@ -10,8 +10,9 @@ from pathos import SSH_Tunnel
 
 if __name__ == '__main__':
     import sys
-   #rhost = 'shc-c.cacr.caltech.edu'
-    rhost = 'login.cacr.caltech.edu'
+    rhost = 'localhost'
+   #rhost = 'foobar.danse.us'
+   #rhost = 'computer.cacr.caltech.edu'
     rport = 23
 
     t = SSH_Tunnel('Tunnel')

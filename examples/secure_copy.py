@@ -15,8 +15,10 @@ if __name__=='__main__':
     dest0 = source1
     dest1 = source2
     dest2 = '.'
-    cpu1 = 'login.cacr.caltech.edu'
-    cpu2 = 'upgrayedd.danse.us'
+    cpu1 = 'localhost'
+    cpu2 = 'localhost'
+   #cpu1 = 'computer.cacr.caltech.edu'
+   #cpu2 = 'foobar.danse.us'
     del1 = 'rm '+source1
     del2 = 'rm '+source2
 

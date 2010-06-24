@@ -16,9 +16,9 @@ if __name__ == '__main__':
     command2 = 'hostname'
    #command3 = 'sleep 5' #XXX: buggy?
    #command3 = ''  #XXX: buggy ?
-    rhost = 'login.cacr.caltech.edu'
-   #rhost = 'upgrayedd.danse.us'
-   #rhost = 'shc-c.cacr.caltech.edu'
+    rhost = 'localhost'
+   #rhost = 'computer.cacr.caltech.edu'
+   #rhost = 'foobar.danse.us'
 
     launcher = SSH_Launcher('LauncherSSH')
    #journal.debug('LauncherSSH').activate()
