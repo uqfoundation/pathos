@@ -12,10 +12,13 @@ if __name__ == '__main__':
 
 ##### CONFIGURATION & INPUT ########################
   # set the default remote host
- #rhost = 'localhost'
-  rhost = 'upgrayedd.danse.us'
- #rhost = 'shc-b.cacr.caltech.edu'
- #rhost = 'login.cacr.caltech.edu'
+  rhost = 'localhost'
+ #rhost = 'foobar.danse.us'
+ #rhost = 'computer.cacr.caltech.edu'
+
+  # set any 'special' profiles (those which don't use default_profie)
+  profiles = {'foobar.danse.us':'.profile',
+              'computer.cacr.caltech.edu':'.cshrc'}
 
   # set the default port
   rport = '98909'
@@ -61,8 +64,6 @@ if __name__ == '__main__':
   del myinp
 
   # my remote environment (should be auto-detected)
-  profiles = {'upgrayedd.danse.us':'.profile',
-              'login.cacr.caltech.edu':'.cshrc'}
   register_profiles(profiles)
   profile = get_profile(rhost)
 

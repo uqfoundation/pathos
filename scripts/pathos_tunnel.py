@@ -10,9 +10,9 @@ if __name__ == '__main__':
 
 ##### CONFIGURATION & INPUT ########################
   # set the default remote host
- #rhost = 'localhost'
-  rhost = 'upgrayedd.danse.us'
- #rhost = 'login.cacr.caltech.edu'
+  rhost = 'localhost'
+ #rhost = 'foobar.danse.us'
+ #rhost = 'computer.cacr.caltech.edu'
 
   print """Usage: python generate_tunnel.py [hostname] 
     [hostname] - name of the host with which to establish a ssh tunnel,

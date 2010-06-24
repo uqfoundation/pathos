@@ -45,7 +45,7 @@ pyre_version = '==0.8-pathos' # NOTE: repackaging; includes 'journal'
 pp_version = '==1.5.7-pathos' # NOTE: modified redistribution
 dill_version = '>=0.1a1'      # NOTE: implicit dependency
 pox_version = '>=0.1a1'
-pyina_version = '>0.1a1'
+pyina_version = '>=0.1a1'
 rpyc_version = '>=3.0.6'
 if has_setuptools:
     setup_code += """
