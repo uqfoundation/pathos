@@ -1,5 +1,9 @@
 #!/usr/bin/env python
-#
+"""
+example of using the secure launch interface
+
+To run: python secure_hello.py
+"""
 
 from pathos import SSH_Launcher
 

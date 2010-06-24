@@ -1,11 +1,7 @@
 #!/usr/bin/env python
-#
-## utility functions for distributed computing
-# adapted from J. Kim & M. McKerns utility functions
-# by mmckerns@caltech.edu
 
 """
-<summary doc goes here>
+demonstrate pathos's spawn2 function
 """
 
 from pathos.util import spawn2

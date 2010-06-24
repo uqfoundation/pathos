@@ -1,5 +1,9 @@
 #!/usr/bin/env python
-#
+"""
+example of using the secure copy interface
+
+To run: python secure_copy.py
+"""
 
 from pathos import SCP_Launcher, SSH_Launcher
 

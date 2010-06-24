@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+"""
+Calculate the sum of all primes below given integer n.
+
+Usage: python sum_primesX.py [tunnelport]
+    [tunnelport] - the port number(s) of the local ssh tunnel connection,
+    if omitted no tunneling will be used.
+
+To establish a ssh-tunnel, please see `pathos_tunnel.py`.
+"""
 
 import math
 import sys

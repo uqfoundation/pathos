@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+"""
+example of using the 'raw' distributed parallel mapper
+
+To run: python pp_map.py
+"""
 
 from pathos.pp_map import ppmap
 

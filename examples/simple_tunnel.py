@@ -1,5 +1,9 @@
 #!/usr/bin/env python
-#
+"""
+example of building a simple ssh-tunnel
+
+To run: python simple_tunnel.py
+"""
 
 from pathos import SSH_Tunnel
 
