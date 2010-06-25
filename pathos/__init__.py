@@ -55,7 +55,21 @@ issues is maintained at http://dev.danse.us/trac/pathos/query.
 Major Features
 ==============
 
-<feature summary goes here>
+Pathos provides a configurable distributed parallel-map reduce interface
+to launching RPC service calls, with::
+    - a map-reduce interface that extends the python 'map' standard
+    - the ability to submit service requests to a selection of servers
+    - the ability to tunnel server communications with ssh
+    - automated load-balancing between multiprocessing and RPC servers
+
+The pathos core is built on low-level communication to remote hosts using
+ssh. The interface to ssh, scp, and ssh-tunneled connections can::
+    - configure and launch remote processes with ssh
+    - configure and copy file objects with scp
+    - establish an tear-down a ssh-tunnel
+
+To get up and running quickly, pathos also provides infrastructure to::
+    - easily establish a ssh-tunneled connection to a RPC server
 
 
 Current Release
@@ -117,14 +131,12 @@ examples provided within pathos. See `pathos.examples` for a
 set of scripts that demonstrate the configuration and launching of
 communications with ssh and scp.
 
-***Important classes and functions are found here::
-    - pyina.pyina.ez_map        [the map-reduce API definition]
-    - pyina.pyina.mappers       [all available strategies] 
-    - pyina.pyina.launchers     [all available launchers] 
-
-***Mapping strategies are found here::
-    - pyina.pyina.parallel_map  [the card-dealer strategy]
-    - pyina.pyina.parallel_map2 [the equal-portion strategy]
+Important classes and functions are found here::
+    - pathos.pathos.pp_map          [the map-reduce API definition]
+    - pathos.pathos.core            [the high-level command interface] 
+    - pathos.pathos.hosts           [the hostname registry interface] 
+    - pathos.pathos.Launcher        [the launcher base class]
+    - pathos.pathos.Tunnel          [the tunnel base class]
 
 Pathos also provides three convience scripts that are used to establish
 secure distributed connections. These scripts are installed to a directory
@@ -132,6 +144,9 @@ on the user's $PATH, and thus can be run from anywhere::
     - pathos_tunnel.py              [establish a ssh-tunnel connection]
     - pathos_server.py              [launch a remote RPC server]
     - tunneled_pathos_server.py     [launch a tunneled remote RPC server]
+
+Typing `--help` as an argument to any of the above three scripts will print
+out an instructive help message.
 
 
 More Information
