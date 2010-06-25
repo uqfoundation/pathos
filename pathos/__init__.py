@@ -10,7 +10,46 @@
 """
 pathos: a framework for heterogeneous computing
 
-<introductory doc goes here>
+Pathos provides a few basic tools to make distributed computing
+more accessable to the end user. The goal of pathos is to allow the
+user to extend their own code to distributed computing with minimal
+refactoring.
+
+Pathos provides methods for configuring, launching, monitoring, and
+controlling a service on a remote host. One of the most basic features
+of pathos is the ability to configure and launch a RPC-based service
+on a remote host. Pathos seeds the remote host with a small `portpicker`
+script, which allows the remote host to inform the localhost of a port
+that is available for communication.
+
+Beyond the ability to establish a RPC service, and then post requests,
+is the ability to launch code in parallel. Unlike parallel computing
+performed at the node level (typically with MPI), pathos enables the
+user to launch jobs in parallel across heterogeneous distributed resources.
+Pathos provides a distributed map-reduce algorithm, where a mix of
+local processors and distributed RPC services can be selected.  Pathos
+also provides a very basic automated load balancing service, as well as
+the ability for the user to directly select the resources.
+
+The high-level "pp_map" interface, yields a map-reduce implementation that
+hides the RPC internals from the user. With pp_map, the user can launch
+their code in parallel, and as a distributed service, using standard python
+and without writing a line of server or parallel batch code.
+
+RPC servers and communication in general is known to be insecure.  However,
+instead of attempting to make the RPC communication itself secure, pathos
+provides the ability to automatically wrap any distributes service or
+communication in a ssh-tunnel. Ssh is a universally trusted method.
+Using ssh-tunnels, pathos has launched several distributed calculations
+on national lab clusters, and to date has performed test calculations
+that utilize node-to-node communication between two national lab clusters
+and a user's laptop.  Pathos allows the user to configure and launch
+at a very atomistic level, through raw access to ssh and scp. 
+
+Pathos is in the early development stages, and any user feedback is
+highly appreciated. Contact Mike McKerns [mmckerns at caltech dot edu]
+with comments, suggestions, and any bugs you may find. A list of known
+issues is maintained at http://dev.danse.us/trac/pathos/query.
 
 
 Major Features
