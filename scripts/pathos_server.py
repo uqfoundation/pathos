@@ -2,10 +2,10 @@
 """
 start remote server for selected package
 
-Usage: python pathos_server.py [server] [remoteport] [hostname] 
+Usage: python pathos_server.py [hostname] [server] [remoteport] 
+    [hostname] - name of the host on which to run the server
     [server] - name of the RPC server (assumed to be already installed)
     [remoteport] - remote port over which the server will communicate
-    [hostname] - name of the host on which to run the server
 """
 
 from pathos.core import *
@@ -32,16 +32,28 @@ if __name__ == '__main__':
  #server = 'classic_server'  #XXX: "classic_server -p %s" % rport
  #server = 'registry_server'  #XXX: "registry_server -p %s" % rport
 
-  print """Usage: python pathos_server.py [server] [remoteport] [hostname] 
+  print """Usage: python pathos_server.py [hostname] [server] [remoteport] 
+    [hostname] - name of the host on which to run the server
     [server] - name of the RPC server (assumed to be already installed)
     [remoteport] - remote port over which the server will communicate
-    [hostname] - name of the host on which to run the server
-    defaults are: "%s" "%s" "%s".""" % (server, rport, rhost)
+    defaults are: "%s" "%s" "%s".""" % (rhost, server, rport)
+
+  # get remote hostname from user
+  import sys
+  if '--help' in sys.argv:
+    sys.exit(0)
+  try:
+    myinp = sys.argv[1]
+  except: myinp = None
+  if myinp:
+    rhost = myinp #XXX: should test rhost validity here... (how ?)
+  else: pass # use default
+  del myinp
 
   # get server to run from user
   import sys
   try:
-    myinp = sys.argv[1]
+    myinp = sys.argv[2]
   except: myinp = None
   if myinp:
     server = myinp #XXX: should test validity here... (filename)
@@ -51,20 +63,21 @@ if __name__ == '__main__':
   # get remote port to run server on from user
   import sys
   try:
-    myinp = sys.argv[2]
+    myinp = sys.argv[3]
   except: myinp = None
   if myinp:
     rport = myinp #XXX: should test validity here... (filename)
   else: pass # use default
   del myinp
 
-  # get remote hostname from user
+  # get remote profile (this should go away soon)
   import sys
   try:
-    myinp = sys.argv[3]
+    myinp = sys.argv[4]
   except: myinp = None
   if myinp:
-    rhost = myinp #XXX: should test rhost validity here... (how ?)
+    rprof = myinp #XXX: should test validity here... (filename)
+    profiles = {rhost:rprof}
   else: pass # use default
   del myinp
 

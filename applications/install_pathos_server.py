@@ -40,6 +40,8 @@ if __name__ == '__main__':
 
   # get package to install from user
   import sys
+  if '--help' in sys.argv:
+    sys.exit(0)
   try:
     myinp = sys.argv[1],sys.argv[2]
   except: myinp = None
@@ -55,6 +57,17 @@ if __name__ == '__main__':
   except: myinp = None
   if myinp:
     rhost = myinp #XXX: should test rhost validity here... (how ?)
+  else: pass # use default
+  del myinp
+
+  # get remote profile (this should go away soon)
+  import sys
+  try:
+    myinp = sys.argv[4]
+  except: myinp = None
+  if myinp:
+    rprof = myinp #XXX: should test validity here... (filename)
+    profiles = {rhost:rprof}
   else: pass # use default
   del myinp
 

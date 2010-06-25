@@ -23,6 +23,8 @@ if __name__ == '__main__':
 
   # get remote hostname from user
   import sys
+  if '--help' in sys.argv:
+    sys.exit(0)
   try:
     myhost = sys.argv[1]
   except: myhost = None

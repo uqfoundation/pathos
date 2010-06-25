@@ -80,8 +80,13 @@ download the tarball, unzip, and run the installer::
     $ python setup py install
 
 You will be warned of any missing dependencies and/or settings after
-you run the "build" step above. Pathos depends on dill...
-...so you should install them first.
+you run the "build" step above. Pathos depends on dill, pox, and pyina,
+each of which are essentially subpackages of pathos that are also
+released independently. Pathos also depends on slightly modified
+versions of `pyre` and `parallel python`. All the aforementioned
+packages are available on this site, and you must install all of
+the dependencies for pathos to have full functionality for heterogeneous
+computing. Currently, pyina is optional.
 
 Alternately, pathos can be installed with easy_install::
     [download]
@@ -95,19 +100,38 @@ Pathos requires::
     - python, version >= 2.5, version < 3.0
     - dill, version >= 0.1a1
     - pox, version >= 0.1a1
-    - pyina, version >= 0.1a1
     - pyre, version == 0.8-pathos (*)
     - pp, version == 1.5.7-pathos (*)
 
 Optional requirements::
     - setuptools, version >= 0.6
+    - pyina, version >= 0.1a1
     - rpyc, version >= 3.0.6
 
 
 Usage Notes
 ===========
 
-<usage doc goes here>
+Probably the best way to get started is to look at a few of the
+examples provided within pathos. See `pathos.examples` for a
+set of scripts that demonstrate the configuration and launching of
+communications with ssh and scp.
+
+***Important classes and functions are found here::
+    - pyina.pyina.ez_map        [the map-reduce API definition]
+    - pyina.pyina.mappers       [all available strategies] 
+    - pyina.pyina.launchers     [all available launchers] 
+
+***Mapping strategies are found here::
+    - pyina.pyina.parallel_map  [the card-dealer strategy]
+    - pyina.pyina.parallel_map2 [the equal-portion strategy]
+
+Pathos also provides three convience scripts that are used to establish
+secure distributed connections. These scripts are installed to a directory
+on the user's $PATH, and thus can be run from anywhere::
+    - pathos_tunnel.py              [establish a ssh-tunnel connection]
+    - pathos_server.py              [launch a remote RPC server]
+    - tunneled_pathos_server.py     [launch a tunneled remote RPC server]
 
 
 More Information

@@ -50,7 +50,7 @@ rpyc_version = '>=3.0.6'
 if has_setuptools:
     setup_code += """
         zip_safe = False,
-        install_requires = ['pp%s','dill%s','pox%s','pyre%s','pyina%s'],
+        install_requires = ['pp%s','dill%s','pox%s','pyre%s'], #'pyina%s'],
         dependency_links = ['http://dev.danse.us/packages/'],
 """ % (pp_version, dill_version, pox_version, pyre_version, pyina_version)
 
@@ -81,7 +81,7 @@ try:
     src = os.sep.join(['pathos','util.py'])
     from shutil import copy2
     copy2(src, dest)
-    import pyina
+   #import pyina
 except ImportError:
     print "\n***********************************************************"
     print "WARNING: One of the following dependencies is unresolved:"
