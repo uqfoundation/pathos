@@ -10,10 +10,35 @@
 """
 pathos: a framework for heterogeneous computing
 
-Pathos provides a few basic tools to make distributed computing
-more accessable to the end user. The goal of pathos is to allow the
-user to extend their own code to distributed computing with minimal
-refactoring.
+Pathos is a framework for heterogenous computing. It primarily provides
+the communication mechanisms for configuring and launching parallel
+computations across heterogenous resources. Pathos provides stagers and
+launchers for parallel and distributed computing, where each launcher
+contains the syntactic logic to configure and launch jobs in an execution
+environment.  Some examples of included launchers are: a queue-less
+MPI-based launcher, a ssh-based launcher, and a multiprocessing launcher.
+Pathos also provides a map-reduce algorithm for each of the available
+launchers, thus greatly lowering the barrier for users to extend their
+code to parallel and distributed resources.  Pathos provides the ability
+to interact with batch schedulers and queuing systems, thus allowing large
+computations to be easily launched on high-performance computing resources.
+One of the most powerful features of pathos is  "tunnel", which enables a
+user to automatically wrap any distributed service calls within a ssh-tunnel.
+
+Pathos is divided into four subpackages::
+    - dill: a utility for serialization of python objects
+    - pox: utilities for filesystem exploration and automated builds
+    - pyina: a MPI-based parallel mapper and launcher
+    - pathos: distributed parallel map-reduce and ssh communication
+
+
+Pathos Subpackage 
+=================
+
+The pathos subpackage provides a few basic tools to make distributed
+computing more accessable to the end user. The goal of pathos is to
+allow the user to extend their own code to distributed computing with
+minimal refactoring.
 
 Pathos provides methods for configuring, launching, monitoring, and
 controlling a service on a remote host. One of the most basic features
