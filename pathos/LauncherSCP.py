@@ -5,8 +5,28 @@
 # by mmckerns@caltech.edu
 
 """
-<summary doc goes here>
+This module contains the derived class for launching secure copy (scp)
+commands.  See the following for an example.
+
+
+Usage
+=====
+
+A typical call to the 'scp launcher' will roughly follow this example:
+
+    >>> # instantiate the launcher, providing it with a unique identifier
+    >>> copier = SCP_Launcher('copier')
+    >>>
+    >>> # configure and launch the copy to the selected destination
+    >>> copier.stage(source='~/foo.txt', destination='remote.host.edu:~')
+    >>> copier.launch()
+    >>>
+    >>> # configure and launch the copied file to a new destination
+    >>> copier.stage(source='remote.host.edu:~/foo.txt', destination='.')
+    >>> copier.launch()
+ 
 """
+__all__ = ['FileNotFound','LauncherSCP']
 
 import os
 import popen2
@@ -23,12 +43,19 @@ class LauncherSCP(Launcher):
     def __init__(self, name, **kwds):
         '''create a scp launcher
 
-Inputs:
-    name    - a (string) name for the launcher
+Takes one initial input:
+    name        -- a unique identifier (string) for the launcher
 
-Optional Inputs:
-    Any of the `stage` method's keywords can be passed during
-    initialization to override the launcher defualts. 
+Additional Inputs:
+    source      -- hostname:path of original  [user@host:path is also valid]
+    destination -- hostname:path for copy  [user@host:path is also valid]
+    launcher    -- remote service mechanism (i.e. scp, cp)  [default = 'scp']
+    options     -- remote service options (i.e. -v, -P)  [default = '']
+    fgbg        -- run in foreground/background  [default = 'foreground']
+
+Default values are set for methods inherited from the base class:
+    nodes       -- number of parallel/distributed nodes  [default = 0]
+    nodelist    -- list of parallel/distributed nodes  [default = None]
         '''
        #Launcher.__init__(self, name)
         super(LauncherSCP, self).__init__(name)
@@ -51,12 +78,14 @@ Optional Inputs:
    #    return
 
     def stage(self, **kwds):
-        '''stage a remote copy using given keywords:
-    source = hostname:path of original [user@host:path is also valid]
-    destination = hostname:path for copy [user@host:path is also valid]
-    launcher = remote service mechanism (i.e. scp, cp)
-    options = remote service options (i.e. -v, -P)
-    fgbg = run in foreground/background
+        '''stage a remote copy
+
+(Re)configure the copier for the following inputs:
+    source      -- hostname:path of original  [user@host:path is also valid]
+    destination -- hostname:path for copy  [user@host:path is also valid]
+    launcher    -- remote service mechanism (i.e. scp, cp)  [default = 'scp']
+    options     -- remote service options (i.e. -v, -P)  [default = '']
+    fgbg        -- run in foreground/background  [default = 'foreground']
         '''
         for key, value in kwds.items():
             if key == 'source': #note: if quoted, can be multiple sources
@@ -82,7 +111,7 @@ Optional Inputs:
         return
 
     def _execute(self, command):
-        '''execute the launch by piping the command, & saving the file object'''
+       #'''execute the launch by piping the command, & saving the file object'''
         if self.inventory.fgbg in ['foreground','fg']:
             f = os.popen(command, 'r')
             self._fromchild = f #save fileobject

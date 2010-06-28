@@ -5,17 +5,27 @@
 # by mmckerns@caltech.edu
 
 """
-<summary doc goes here>
+utilities for distributed computing
 """
 
 class portnumber(object):
-    """ portnumber(min,max) --> port#;  Select a port number from a range.
-        First call to __call__() will return a random number from the given
-        range, and each subsequent call will return the next number in
-        the range.
-        """
+    '''port selector
+
+Usage:
+    >>> pick = portnumber(min=1024,max=65535)
+    >>> print pick()
+    '''
 
     def __init__(self, min=0, max=64*1024):
+        '''select a port number from a given range.
+
+The first call will return a random number from the available range,
+and each subsequent call will return the next number in the range.
+
+Inputs:
+    min -- minimum port number  [default = 0]
+    max -- maximum port number  [default = 65536]
+        '''
         self.min = min
         self.max = max
         self.first = -1
@@ -40,7 +50,7 @@ class portnumber(object):
 
 
 def print_exc_info():
-    """ Return string from print_exc() """
+    """thread-safe return of string from print_exception call"""
 
     import StringIO, traceback
     
@@ -52,10 +62,10 @@ def print_exc_info():
 
 
 def spawn(onParent, onChild):
-    """ A fork wrapper
+    """a fork wrapper
 
-    Calls onParent(pid, fromchild) in parent process,
-          onChild(pid, toparent) in child process.
+Calls onParent(pid, fromchild) in parent process,
+      onChild(pid, toparent) in child process.
     """
     
     import os
@@ -76,10 +86,10 @@ def spawn(onParent, onChild):
 
 
 def spawn2(onParent, onChild):
-    """ A fork wrapper
+    """an alternate fork wrapper
 
-    Calls onParent(pid, fromchild, tochild) in parent process,
-          onChild(pid, fromparent, toparent) in child process.
+Calls onParent(pid, fromchild, tochild) in parent process,
+      onChild(pid, fromparent, toparent) in child process.
     """
     
     import os

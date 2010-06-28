@@ -5,8 +5,12 @@
 # by mmckerns@caltech.edu
 
 """
-<summary doc goes here>
+This module contains the base class for XML-RPC request handlers,
+and derives from python's base HTTP request handler. Intended to
+handle requests for a `pathos.XMLRPCServer`.
+
 """
+__all__ = ['XMLRPCRequestHandler']
 
 import os
 import xmlrpclib
@@ -15,6 +19,7 @@ import journal
 import util
 
 class XMLRPCRequestHandler(BaseHTTPRequestHandler):
+    ''' create a XML-RPC request handler '''
 
     _debug = journal.debug('pathos')
     _error = journal.debug('pathos')
@@ -76,9 +81,13 @@ class XMLRPCRequestHandler(BaseHTTPRequestHandler):
 
 
     def __init__(self, server, socket):
-        """ Override BaseHTTPRequestHandler.__init__(): we need to
-        be able to have (potentially) multiple handler objects
-        at a given time.
+        """
+Override BaseHTTPRequestHandler.__init__(): we need to be able
+to have (potentially) multiple handler objects at a given time.
+
+Inputs:
+    server  -- server object to handle requests for 
+    socket  -- socket connection 
         """
 
         ## Settings required by BaseHTTPRequestHandler

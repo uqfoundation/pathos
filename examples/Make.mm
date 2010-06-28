@@ -30,6 +30,7 @@ EXPORT_BINS = \
     secure_hello.py \
     simple_tunnel.py \
     spawn.py \
+    xmlrpc_server.py \
 
 
 # export:: export-package-python-modules

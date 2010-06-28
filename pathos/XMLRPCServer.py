@@ -5,8 +5,42 @@
 # by mmckerns@caltech.edu
 
 """
-<summary doc goes here>
+This module contains the base class for pathos XML-RPC servers,
+and derives from python's SimpleXMLRPCServer.
+
+
+Usage
+=====
+
+A typical setup for an XML-RPC server will roughly follow this example:
+
+    >>> # establish a XML-RPC server on a host at a given port
+    >>> host = 'localhost'
+    >>> port = 1234
+    >>> server = XMLRPCServer(host, port)
+    >>> print 'port=%d' % server.port
+    >>>
+    >>> # register a method the server can handle requests for
+    >>> def add(x, y):
+    ...     return x + y
+    >>> server.register_function(add)
+    >>>
+    >>> # activate the callback methods and begin serving requests
+    >>> server.activate()
+    >>> server.serve()
+
+
+The following is an example of how to make requests to the above server:
+
+    >>> # establish a proxy connection to the server at (host,port)
+    >>> host = 'localhost'
+    >>> port = 1234
+    >>> proxy = xmlrpclib.ServerProxy('http://%s:%d' % (host, port))
+    >>> print '1 + 2 =', proxy.add(1, 2)
+    >>> print '3 + 4 =', proxy.add(3, 4)
+
 """
+__all__ = ['XMLRPCServer']
 
 import os
 import socket
@@ -18,15 +52,10 @@ import util
 
 
 class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
-    """ Example:
-          s = XMLRPCServer(host, port)
-          s.register_function(a_method)
-          s.activate()
-          s.serve()
-    """
+    '''extends base pathos server to an XML-RPC dispatcher'''
 
     def activate(self):
-        """ Install callbacks """
+        """install callbacks"""
         
         Server.activate(self)
         self._selector.notifyOnReadReady(self._socket, self._onConnection)
@@ -34,16 +63,14 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
 
         
     def serve(self):
-        """ Enter select loop """
+        """enter the select loop... and wait for service requests"""
         
         timeout = 5
         Server.serve(self, 5)
 
 
     def _marshaled_dispatch(self, data, dispatch_method = None):
-        """ Overriding SimpleXMLRPCDispatcher._marshaled_dispatch()
-        enhanced fault string
-        """
+        """override SimpleXMLRPCDispatcher._marshaled_dispatch() fault string"""
 
         import xmlrpclib
         from xmlrpclib import Fault
@@ -72,9 +99,7 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
 
 
     def _registerChild(self, pid, fromchild):
-        """ Register a child process information so it can be retrieved
-        on select events
-        """
+        """register a child process so it can be retrieved on select events"""
         
         self._activeProcesses[fromchild] = pid
         self._selector.notifyOnReadReady(fromchild,
@@ -82,13 +107,13 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
 
 
     def _unRegisterChild(self, fd):
-        """ Remove a child process from active process register """
+        """remove a child process from active process register"""
         
         del self._activeProcesses[fd]
 
 
     def _handleMessageFromChild(self, selector, fd):
-        """ Handler for message from a child process """
+        """handler for message from a child process"""
         
         line = fd.readline()
         if line[:4] == 'done':
@@ -98,11 +123,12 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
 
 
     def _onSelectorIdle(self, selector):
+        '''something to do when there's no requests'''
         return True
 
 
     def _installSocket(self, host, port):
-        """ Prepare a listening socket """
+        """prepare a listening socket"""
         
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if port == 0: #Get a random port
@@ -124,14 +150,14 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
         return
         
     def _onConnection(self, selector, fd):
-        
+        '''upon socket connection, establish a request handler'''
         if isinstance(fd, socket.SocketType):
             return self._onSocketConnection(fd)
         return None
 
 
     def _onSocketConnection(self, socket):
-        
+        '''upon socket connections, establish a request handler'''
         conn, addr = socket.accept()
         handler = XMLRPCRequestHandler(server=self, socket=conn)
         handler.handle()
@@ -139,7 +165,12 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
 
 
     def __init__(self, host, port):
-        
+        '''create a XML-RPC server
+
+Takes two initial inputs:
+    host  -- hostname of XML-RPC server host
+    port  -- port number for server requests
+        '''
         Server.__init__(self)
         SimpleXMLRPCDispatcher.__init__(self,allow_none=False,encoding=None)
 
@@ -148,24 +179,7 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
 
 
 if __name__ == '__main__':
-    
-    import os, time, xmlrpclib
+    pass
 
-    s = XMLRPCServer('', 0)
-    print 'port=%d' % s.port
-    port = s.port
-
-    pid = os.fork()
-    if pid > 0: #parent
-        def add(x, y): return x + y
-        s.register_function(add)
-        s.activate()
-        #s._selector._info.activate()
-        s.serve()
-    else: #child
-        time.sleep(1)
-        s = xmlrpclib.ServerProxy('http://localhost:%d' % port)
-        print '1 + 2 =', s.add(1, 2)
-        print '3 + 4 =', s.add(3, 4)
 
 # End of file

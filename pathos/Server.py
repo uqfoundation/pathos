@@ -10,16 +10,27 @@
 # 
 #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # 
+"""
+This module contains the base class for pathos servers, and describes
+the pathos server interface.  If a third-party RPC server is selected,
+such as 'parallel python' (i.e. 'pp') or 'RPyC', direct calls to the
+third-party interface are currently used.
 
+"""
+__all__ = ['Server']
 
 class Server(object):
-
+    """
+Server base class for pathos servers for parallel and distributed computing.
+    """
 
     def selector(self):
+        """get the selector"""
         return self._selector
 
 
     def deactivate(self):
+        """turn off the selector"""
         self._selector.state = False
         return
 
@@ -40,11 +51,15 @@ class Server(object):
 
 
     def serve(self, timeout):
+        """begin serving, and set the timeout"""
         self._selector.watch(timeout)
         return
 
 
     def __init__(self):
+        """
+Takes no initial input.
+        """
         self._selector = None
         return
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""ppserver configuration"""
+"""defalut ppserver host and port configuration"""
 
 #tunnelports = ['12345','67890']
 tunnelports = []

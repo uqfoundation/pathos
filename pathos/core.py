@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 """
-interface to core pathos commands
+high-level programming interface to core pathos utilities
 """
 
 def copy(file,rhost,dest):
+  '''copy 'file' object to target destination
+
+Inputs:
+    source      -- path string of source 'file'
+    rhost       -- hostname of destination target
+    destination -- path string for destination target
+  '''
   from LauncherSCP import LauncherSCP
   copier = LauncherSCP('copy_%s' % file)
  #print 'executing {scp %s %s:%s}' % (file,rhost,dest)
@@ -13,6 +20,13 @@ def copy(file,rhost,dest):
 
 
 def run(command,rhost,bg=True): #XXX: default should be fg=True ?
+  '''execute a command on a remote host
+
+Inputs:
+    command -- command string to be executed
+    host    -- hostname of execution target
+    bg      -- run as background process?  [default = True]
+  '''
   if not bg: fgbg = 'foreground'
   else: fgbg = 'background'
   from LauncherSSH import LauncherSSH
@@ -23,12 +37,28 @@ def run(command,rhost,bg=True): #XXX: default should be fg=True ?
   return launcher.response() #XXX: should return launcher, not just response
 
 
-def kill(pid,rhost): #XXX: launcher should have method to "kill self"
+def kill(pid,rhost): #XXX: launcher has a method to "kill self", why not use it?
+  '''kill a process on a remote host
+
+Inputs:
+    pid   -- process id
+    rhost -- hostname where process is running
+  '''
   command = 'kill -n TERM %s' % pid #XXX: TERM=15 or KILL=9 ?
   return run(command,rhost,bg=False)
 
 
 def getpid(target,rhost): #XXX: or 'ps -j' for pid, ppid, pgid ?
+  '''get the process id for a target process running on a remote host
+
+NOTE: This method should only be used as a last-ditch effort to kill a process.
+This method _may_ work when a child has been spawned and the pid was not
+registered... but there's no guarantee.
+
+Inputs:
+    target -- string name of target process
+    rhost  -- hostname where process is running
+  '''
  #command = "ps -A | grep '%s'" % target #XXX: 'other users' only
   command = "ps ax | grep '%s'" % target #XXX: 'all users'
   print 'executing {ssh %s "%s"}' % (rhost,command)
@@ -38,6 +68,11 @@ def getpid(target,rhost): #XXX: or 'ps -j' for pid, ppid, pgid ?
 
 
 def pickport(rhost):
+  '''select a open port on a remote host
+
+Inputs:
+    rhost -- hostname on which to select a open port
+  '''
   from pox import which, getSEP
   file = which('portpicker.py') #file = 'util.py'
   dest = '~' #FIXME: *nix only
@@ -73,6 +108,12 @@ def pickport(rhost):
 
 
 def connect(rhost,rport):
+  '''establish a secure tunnel connection to a remote host at the given port
+
+Inputs:
+    rhost  -- hostname to which a tunnel should be established
+    rport  -- port number (on rhost) to connect the tunnel to
+  '''
   from Tunnel import Tunnel
   t = Tunnel('Tunnel')
   lport = t.connect(rhost,rport)
@@ -81,6 +122,15 @@ def connect(rhost,rport):
 
 
 def serve(server,rhost,rport,profile='.bash_profile'):
+  '''begin serving RPC requests
+
+Inputs:
+    server  -- name of RPC server  (i.e. 'ppserver')
+    rhost   -- hostname on which a server should be launched
+    rport   -- port number (on rhost) that server will accept request at
+    profile -- file on remote host that instantiates the user's environment
+        [default = '.bash_profile']
+  '''
   file = '~/bin/%s.py' % server  #XXX: _should_ be on the $PATH
   #file = '%s.py' % server
   command = "source %s; %s -p %s" % (profile,file,rport)

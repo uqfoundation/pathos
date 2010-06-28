@@ -138,6 +138,16 @@ def ppmap(processes, function, sequence, *sequences):
 
 
 def pp_map(function, sequence, **kwds):
+    '''extend python's parallel map function to parallel python
+
+Inputs:
+    function  -- target function
+    sequence  -- sequence to process in parallel
+
+Additional Inputs:
+    ncpus     -- number of 'local' processors to use  [defaut = 'autodetect']
+    servers   -- available distributed parallel python servers  [default = ()]
+    '''
     processes = None
     servers = ()
     if kwds.has_key('ncpus'): processes = kwds['ncpus']

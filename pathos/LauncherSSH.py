@@ -5,8 +5,27 @@
 # by mmckerns@caltech.edu
 
 """
-<summary doc goes here>
+This module contains the derived class for secure shell (ssh) launchers
+See the following for an example.
+
+
+Usage
+=====
+
+A typical call to a 'ssh launcher' will roughly follow this example:
+
+    >>> # instantiate the launcher, providing it with a unique identifier
+    >>> launcher = SSH_Launcher('launcher')
+    >>>
+    >>> # configure the launcher to perform the command on the selected host
+    >>> launcher.stage(command='hostname', rhost='remote.host.edu')
+    >>>
+    >>> # execute the launch and retrieve the response
+    >>> launcher.launch()
+    >>> print launcher.response()
+ 
 """
+__all__ = ['LauncherSSH']
 
 import os
 import signal
@@ -20,12 +39,19 @@ class LauncherSSH(Launcher):
     def __init__(self, name, **kwds):
         '''create a ssh launcher
 
-Inputs:
-    name    - a (string) name for the launcher
+Takes one initial input:
+    name        -- a unique identifier (string) for the launcher
 
-Optional Inputs:
-    Any of the `stage` method's keywords can be passed during
-    initialization to override the launcher defualts. 
+Additional Inputs:
+    rhost       -- hostname to recieve command [user@host is also valid]
+    command     -- remotely launched command  [default = 'echo hello']
+    launcher    -- remote service mechanism (i.e. ssh, rsh)  [default = 'ssh']
+    options     -- remote service options (i.e. -v, -N, -L)  [default = '']
+    fgbg        -- run in foreground/background  [default = 'foreground']
+
+Default values are set for methods inherited from the base class:
+    nodes       -- number of parallel/distributed nodes  [default = 0]
+    nodelist    -- list of parallel/distributed nodes  [default = None]
         '''
        #Launcher.__init__(self, name)
         super(LauncherSSH, self).__init__(name)
@@ -49,11 +75,13 @@ Optional Inputs:
 
     def stage(self, **kwds):
         '''stage a remote command using given keywords:
-    rhost = hostname to recieve command [ruser@rhost is also valid]
-    launcher = remote service mechanism (i.e. ssh, rsh)
-    options = remote service options (i.e. -v, -N, -L)
-    command = remotely launched command
-    fgbg = run in foreground/background
+
+(Re)configure the copier for the following inputs:
+    rhost       -- hostname to recieve command [user@host is also valid]
+    command     -- remotely launched command  [default = 'echo hello']
+    launcher    -- remote service mechanism (i.e. ssh, rsh)  [default = 'ssh']
+    options     -- remote service options (i.e. -v, -N, -L)  [default = '']
+    fgbg        -- run in foreground/background  [default = 'foreground']
         '''
         for key, value in kwds.items():
             if key == 'command':
@@ -79,7 +107,7 @@ Optional Inputs:
         return
 
     def _execute(self, command):
-        '''execute the launch by piping the command, & saving the file object'''
+       #'''execute the launch by piping the command, & saving the file object'''
         if self.inventory.fgbg in ['foreground','fg']:
             f = os.popen(command, 'r')
             self._fromchild = f #save fileobject
@@ -116,6 +144,7 @@ Optional Inputs:
         return self._pid
 
     def kill(self):
+        '''terminate the launcher'''
         if self._pid > 0:
             print 'Kill ssh pid=%d' % self._pid
             os.kill(self._pid, signal.SIGTERM)

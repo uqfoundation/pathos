@@ -1,13 +1,18 @@
 # dictionary of known host/profile pairs
 """
-_profiles = { \
- 'foobar.danse.us':'.profile',
- 'computer.cacr.caltech.edu':'.cshrc',
-}
+high-level programming interface to pathos host registry
 """
 
-_profiles = { }
 default_profile = '.bash_profile'
+_profiles = { }
+"""
+For example, to register two 'known' host profiles:
+
+  _profiles = { \
+     'foobar.danse.us':'.profile',
+     'computer.cacr.caltech.edu':'.cshrc',
+  }
+"""
 
 def get_profile(rhost, assume=True):
   '''get the default $PROFILE for a remote host'''
