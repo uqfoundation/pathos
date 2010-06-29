@@ -122,8 +122,9 @@ You will be warned of any missing dependencies and/or settings after
 you run the "build" step above. Pathos depends on dill, pox, and pyina,
 each of which are essentially subpackages of pathos that are also
 released independently. Pathos also depends on slightly modified
-versions of `pyre` and `parallel python`. All the aforementioned
-packages are available on this site, and you must install all of
+versions of `pyre` and `parallel python`; these packages are included
+in the `pathos.external` directory.  The aforementioned pathos
+subpackages are also available on this site, and you must install all of
 the dependencies for pathos to have full functionality for heterogeneous
 computing. Currently, pyina is optional.
 
