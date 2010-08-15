@@ -137,7 +137,8 @@ def ppmap(processes, function, sequence, *sequences):
     return (subproc() for subproc in __builtin__.map(submit, *a))
 
 
-def pp_map(function, sequence, **kwds):
+#def pp_map(function, sequence, **kwds):
+def pp_map(function, sequence, *args, **kwds):
     '''extend python's parallel map function to parallel python
 
 Inputs:
@@ -158,7 +159,7 @@ Additional Inputs:
         __STATE['server'] = job_server = pp.Server(ppservers=servers)
        #print "Known servers: [('local',)] %s" % (job_server.ppservers)
        #print "Starting pp with", job_server.get_ncpus(), "local workers"
-    return list(ppmap(processes,function,sequence))
+    return list(ppmap(processes,function,sequence,*args))
 
 
 if __name__ == '__main__':

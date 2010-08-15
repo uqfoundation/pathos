@@ -17,9 +17,9 @@ from sys import platform
 if platform[:3] == 'win':
     pass
 else: #platform = linux or mac
-     if platform[:6] == 'darwin':
-         pass
-     pass
+    if platform[:6] == 'darwin':
+        pass
+    pass
 
 # build the 'setup' call
 setup_code = """
@@ -73,15 +73,17 @@ try:
         raise ImportError
     import dill
     import pox
+   #import pyina
+    from distutils import sysconfig
+    root = sysconfig.get_config_var('prefix')
+    dest = pox.walk(root,'pathos_tunnel.py')[0]
     # copy "util.py" as 'portpicker.py'... very important!!!
-    dest = pox.which('pathos_tunnel.py')
     import os
     dest = os.path.dirname(dest)
     dest = os.sep.join([dest,'portpicker.py'])
     src = os.sep.join(['pathos','util.py'])
     from shutil import copy2
     copy2(src, dest)
-   #import pyina
 except ImportError:
     print "\n***********************************************************"
     print "WARNING: One of the following dependencies is unresolved:"
