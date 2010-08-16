@@ -52,6 +52,26 @@ import pp
 
 __STATE = {'server': None}
 
+def print_stats():
+    "print stats from the pp.Server"
+    if __STATE['server']:
+        __STATE['server'].print_stats()
+    else:
+        print "Stats are not available; no active servers.\n"
+
+def stats():
+    "return stats print string from the pp.Server"
+    import StringIO, sys
+    stdout = sys.stdout
+    try:
+        sys.stdout = result = StringIO.StringIO()
+        print_stats()
+    except:
+        result = None #FIXME: will cause error below
+    sys.stdout = stdout
+    result = result.getvalue()
+    return result
+
 def ppmap(processes, function, sequence, *sequences):
     """Split the work of 'function' across the given number of
     processes.  Set 'processes' to None to let Parallel Python
