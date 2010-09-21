@@ -4,19 +4,20 @@ high-level programming interface to core pathos utilities
 """
 
 import os
+import logging
 
-def copy(file,rhost,dest):
+def copy(filename, rhost, dest):
   '''copy 'file' object to target destination
 
 Inputs:
-    source      -- path string of source 'file'
+    filename    -- path string of source 'file'
     rhost       -- hostname of destination target
     destination -- path string for destination target
   '''
   from LauncherSCP import LauncherSCP
-  copier = LauncherSCP('copy_%s' % file)
- #print 'executing {scp %s %s:%s}' % (file,rhost,dest)
-  copier.stage(options='-q', source=file, destination=rhost+':'+dest)
+  copier = LauncherSCP('copy_%s' % filename)
+  logging.info('executing {scp %s %s:%s}', filename, rhost, dest)
+  copier.stage(options='-q', source=filename, destination=rhost+':'+dest)
   copier.launch()
   return
 
@@ -33,7 +34,7 @@ Inputs:
   else: fgbg = 'background'
   from LauncherSSH import LauncherSSH
   launcher = LauncherSSH('%s' % command)
- #print 'executing {ssh %s "%s"}' % (rhost,command)
+  logging.info('executing {ssh %s "%s"}', rhost, command)
   launcher.stage(options='-q', command=command, rhost=rhost, fgbg=fgbg)
   launcher.launch()
   return launcher.response() #XXX: should return launcher, not just response
@@ -63,7 +64,7 @@ Inputs:
   '''
  #command = "ps -A | grep '%s'" % target #XXX: 'other users' only
   command = "ps ax | grep '%s'" % target #XXX: 'all users'
-  print 'executing {ssh %s "%s"}' % (rhost,command)
+  logging.info('executing {ssh %s "%s"}', rhost, command)
   response = run(command,rhost)
   pid = response.split(" ")[0:2] # pid is 1st or 2nd element of response string
   return pid[0] or pid[1]
@@ -75,38 +76,20 @@ def pickport(rhost):
 Inputs:
     rhost -- hostname on which to select a open port
   '''
-  from pox import which, getSEP
+  from pathos.LauncherSSH import LauncherSSH
   from pathos.portpicker import __file__ as src
   # make sure src is a .py file, not .pyc or .pyo
   src = src.rstrip('co')
-  dest = '~' #FIXME: *nix only
-
-  from time import sleep
-  delay = 0.0
-
-  # copy over the port selector to remote host
-  print 'executing {scp %s %s:%s}' % (src,rhost,dest)
-  copy(src, rhost, dest)
-  srcbase = os.path.basename(src)
-  sleep(delay)
-
-  # get an available remote port number
-  command = 'python %s' % srcbase
-  print 'executing {ssh %s "%s"}' % (rhost,command)
+  launcher = LauncherSSH('pickport')
+  launcher.stage(command='python', rhost=rhost,
+          fgbg='foreground', stdin=open(src))
+  logging.info('executing {python <%s} on %s', src, rhost)
+  launcher.launch()
   try:
-    rport = int(run(command,rhost,bg=False))
+    rport = int(launcher.response())
   except:
     from Tunnel import TunnelException
     raise TunnelException, "failure to pick remote port"
-  #print rport
-  sleep(delay)
-
-  # remove temporary remote file (i.e. the port selector file)
-  dest = dest+'/'+srcbase  #FIXME: *nix only
-  command = 'rm -f %s' % dest #FIXME: *nix only
-  print 'executing {ssh %s "%s"}' % (rhost,command)
-  run(command,rhost)
-
   # return remote port number
   return rport
 
@@ -140,14 +123,15 @@ Inputs:
   command = "source %s; %s -p %s" % (profile,file,rport)
   from LauncherSSH import LauncherSSH
   rserver = LauncherSSH('%s' % command)
-  print 'executing {ssh %s "%s"}' % (rhost,command)
+  logging.info('executing {ssh %s "%s"}', rhost, command)
   rserver.stage(options='-q', command=command, rhost=rhost, fgbg='background')
   rserver.launch()
   response = rserver.response()
+  logging.info('response = %r', response)
   if response in ['', None]: #XXX: other responses allowed (?)
     pass
   else:
-    print response #XXX: not really error checking...
+    logging.error('invalid response = %r', response) #XXX: not really error checking...
   from time import sleep
   delay = 2.0
   sleep(delay)
