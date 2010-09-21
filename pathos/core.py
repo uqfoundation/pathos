@@ -3,6 +3,8 @@
 high-level programming interface to core pathos utilities
 """
 
+import os
+
 def copy(file,rhost,dest):
   '''copy 'file' object to target destination
 
@@ -74,20 +76,22 @@ Inputs:
     rhost -- hostname on which to select a open port
   '''
   from pox import which, getSEP
-  file = which('portpicker.py') #file = 'util.py'
+  from pathos.portpicker import __file__ as src
+  # make sure src is a .py file, not .pyc or .pyo
+  src = src.rstrip('co')
   dest = '~' #FIXME: *nix only
 
   from time import sleep
   delay = 0.0
 
   # copy over the port selector to remote host
-  print 'executing {scp %s %s:%s}' % (file,rhost,dest)
-  copy(file,rhost,dest)
-  file = file.split(getSEP())[-1]   # save only the filename
+  print 'executing {scp %s %s:%s}' % (src,rhost,dest)
+  copy(src, rhost, dest)
+  srcbase = os.path.basename(src)
   sleep(delay)
 
   # get an available remote port number
-  command = 'python %s' % file
+  command = 'python %s' % srcbase
   print 'executing {ssh %s "%s"}' % (rhost,command)
   try:
     rport = int(run(command,rhost,bg=False))
@@ -98,7 +102,7 @@ Inputs:
   sleep(delay)
 
   # remove temporary remote file (i.e. the port selector file)
-  dest = dest+'/'+file  #FIXME: *nix only
+  dest = dest+'/'+srcbase  #FIXME: *nix only
   command = 'rm -f %s' % dest #FIXME: *nix only
   print 'executing {ssh %s "%s"}' % (rhost,command)
   run(command,rhost)

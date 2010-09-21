@@ -48,7 +48,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 import journal
 from Server import Server #XXX: in pythia-0.6, was pyre.ipc.Server
 from XMLRPCRequestHandler import XMLRPCRequestHandler
-import util
+from pathos.util import print_exc_info
 
 
 class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
@@ -87,12 +87,12 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
             response = (response,)
             response = xmlrpclib.dumps(response, methodresponse=1)
         except Fault, fault:
-            fault.faultString = util.print_exc_info()
+            fault.faultString = print_exc_info()
             response = xmlrpclib.dumps(fault)
         except:
             # report exception back to server
             response = xmlrpclib.dumps(
-                xmlrpclib.Fault(1, "\n%s" % util.print_exc_info())
+                xmlrpclib.Fault(1, "\n%s" % print_exc_info())
                 )
 
         return response
@@ -130,9 +130,10 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
     def _installSocket(self, host, port):
         """prepare a listening socket"""
         
+        from pathos.portpicker import portnumber
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if port == 0: #Get a random port
-            pick = util.portnumber(min=port, max=64*1024)
+            pick = portnumber(min=port, max=64*1024)
             while True:
                 try:
                     port = pick()

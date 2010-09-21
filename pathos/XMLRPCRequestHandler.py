@@ -16,7 +16,7 @@ import os
 import xmlrpclib
 from BaseHTTPServer import BaseHTTPRequestHandler
 import journal
-import util
+from pathos.util import print_exc_info, spawn2
 
 class XMLRPCRequestHandler(BaseHTTPRequestHandler):
     ''' create a XML-RPC request handler '''
@@ -26,6 +26,7 @@ class XMLRPCRequestHandler(BaseHTTPRequestHandler):
         
     def do_POST(self):
         """ Access point from HTTP handler """
+
         
         def onParent(pid, fromchild, tochild):
             self._server._registerChild(pid, fromchild)
@@ -40,20 +41,20 @@ class XMLRPCRequestHandler(BaseHTTPRequestHandler):
                 toparent.write('done\n')
                 toparent.flush()
             except:
-                journal.debug('pathos').log(util.print_exc_info())
+                journal.debug('pathos').log(print_exc_info())
             os._exit(0)
 
         try:
             data = self.rfile.read(int(self.headers['content-length']))
             params, method = xmlrpclib.loads(data)
             if method == 'run':
-                return util.spawn2(onParent, onChild)
+                return spawn2(onParent, onChild)
             else:
                 response = self._server._marshaled_dispatch(data)
                 self._sendResponse(response)
                 return
         except:
-            self._error.log(util.print_exc_info())
+            self._error.log(print_exc_info())
             self.send_response(500)
             self.end_headers()
             return

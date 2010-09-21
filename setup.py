@@ -58,9 +58,9 @@ if has_setuptools:
 setup_code += """
     scripts=['scripts/pathos_server.py',
              'scripts/pathos_tunnel.py',
-             'scripts/tunneled_pathos_server.py'])
+             'scripts/tunneled_pathos_server.py',
+             'pathos/portpicker.py'])
 """
-#            'pathos/util.py'])
 
 # exec the 'setup' code
 exec setup_code
@@ -74,16 +74,6 @@ try:
     import dill
     import pox
    #import pyina
-    from distutils import sysconfig
-    root = sysconfig.get_config_var('prefix')
-    dest = pox.walk(root,'pathos_tunnel.py')[0]
-    # copy "util.py" as 'portpicker.py'... very important!!!
-    import os
-    dest = os.path.dirname(dest)
-    dest = os.sep.join([dest,'portpicker.py'])
-    src = os.sep.join(['pathos','util.py'])
-    from shutil import copy2
-    copy2(src, dest)
 except ImportError:
     print "\n***********************************************************"
     print "WARNING: One of the following dependencies is unresolved:"

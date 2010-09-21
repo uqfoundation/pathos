@@ -65,9 +65,9 @@ Input:
 Additional Input:
     through    -- 'tunnel-through' hostname  [default = None]
         '''
-        import util
+        from pathos.portpicker import portnumber
 
-        pick = util.portnumber(self.MINPORT, self.MAXPORT)
+        pick = portnumber(self.MINPORT, self.MAXPORT)
         while True:
             port = pick()
             if port < 0:

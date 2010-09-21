@@ -8,45 +8,7 @@
 utilities for distributed computing
 """
 
-class portnumber(object):
-    '''port selector
-
-Usage:
-    >>> pick = portnumber(min=1024,max=65535)
-    >>> print pick()
-    '''
-
-    def __init__(self, min=0, max=64*1024):
-        '''select a port number from a given range.
-
-The first call will return a random number from the available range,
-and each subsequent call will return the next number in the range.
-
-Inputs:
-    min -- minimum port number  [default = 0]
-    max -- maximum port number  [default = 65536]
-        '''
-        self.min = min
-        self.max = max
-        self.first = -1
-        self.current = -1
-        return
-
-    def __call__(self):
-        import random
-        
-        if self.current < 0: #first call
-            self.current = random.randint(self.min, self.max)
-            self.first = self.current
-            return self.current
-        else:
-            self.current += 1
-            
-            if self.current > self.max:
-                self.current = self.min
-            if self.current == self.first: 
-                raise RuntimeError, 'Range exhausted'
-            return self.current
+import os
 
 
 def print_exc_info():
@@ -67,9 +29,6 @@ def spawn(onParent, onChild):
 Calls onParent(pid, fromchild) in parent process,
       onChild(pid, toparent) in child process.
     """
-    
-    import os
-    
     c2pread, c2pwrite = os.pipe()
         
     pid = os.fork()
@@ -91,8 +50,6 @@ def spawn2(onParent, onChild):
 Calls onParent(pid, fromchild, tochild) in parent process,
       onChild(pid, fromparent, toparent) in child process.
     """
-    
-    import os
 
     p2cread, p2cwrite = os.pipe()
     c2pread, c2pwrite = os.pipe()
@@ -112,12 +69,6 @@ Calls onParent(pid, fromchild, tochild) in parent process,
     pid = os.getpid()
 
     return onChild(pid, fromparent, toparent)
-
-
-if __name__ == '__main__':
-
-    pick = portnumber(min=1024,max=65535)
-    print pick()
 
 
 # End of file
