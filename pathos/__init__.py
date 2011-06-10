@@ -242,6 +242,7 @@ from Tunnel import Tunnel as SSH_Tunnel
 
 # mappers
 import pp_map
+import mp_map
 
 # strategies
 
