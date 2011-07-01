@@ -24,7 +24,7 @@ else: #platform = linux or mac
 # build the 'setup' call
 setup_code = """
 setup(name="pathos",
-    version="0.1a1",
+    version="0.1a2.dev",
     maintainer="Mike McKerns",
     maintainer_email="mmckerns@caltech.edu",
     license="BSD",

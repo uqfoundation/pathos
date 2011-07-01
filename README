@@ -1,7 +1,7 @@
 pathos: a framework for heterogeneous computing
 
 Current release:
-    pathos-0.1a1
+    pathos-0.1a2.dev
 
 Installation:
     $ python setup.py build
