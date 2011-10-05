@@ -7,8 +7,10 @@ NOTE: pathos will refactor to multiprocessing's interface in the near future
 import sys
 if sys.hexversion >= 0x2060000:
   import multiprocessing as mp
+  from multiprocessing import cpu_count
 else:
   import processing as mp
+  from processing import cpuCount as cpu_count
 
 __STATE = {'pool': None}
 
@@ -24,7 +26,7 @@ Additional Inputs:
     nproc     -- number of 'local' processors to use  [defaut = 'autodetect']
     type      -- processing type ['blocking', 'non-blocking', 'unordered']
     '''
-    processes = mp.cpuCount()
+    processes = cpu_count()
     proctype = 'blocking'
     if kwds.has_key('nproc'):
         processes = kwds['nproc']
@@ -34,7 +36,7 @@ Additional Inputs:
         kwds.pop('type')
 
     # Create a new server if one isn't already initialized
-    if not __STATE['pool'] or processes != mp.cpuCount():
+    if not __STATE['pool'] or processes != cpu_count():
         __STATE['pool'] = mp.Pool(processes)
 
     if proctype in ['blocking']:

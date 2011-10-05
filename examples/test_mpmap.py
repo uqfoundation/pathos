@@ -1,51 +1,19 @@
-#
-# A test of `processing.Pool` class
-#
+#!/usr/bin/env python
 
 from pathos.mp_map import mp_map
 
-import time, random, sys
-
-#
-# Functions used by test code
-#
-
-def pow3(x):
-    return x**3
-
-#
-# Test code
-#
-
-def test():
-    
-    N = 100000
-    print 'def pow3(x): return x**3'
-    
-    t = time.time()
-    A = map(pow3, xrange(N))
-    print 'map(pow3, xrange(%d)):\n\t%s seconds' % \
-          (N, time.time() - t)
-    
-    t = time.time()
-    B = mp_map(pow3, xrange(N))
-    print 'mp_map(pow3, xrange(%d)):\n\t%s seconds' % \
-          (N, time.time() - t)
-
-    t = time.time()
-    D = mp_map(pow3, xrange(N), nproc=4)
-    print 'mp_map(pow3, xrange(%d), nproc=4):\n\t%s seconds' % \
-          (N, time.time() - t)
-
-    t = time.time()
-    C = mp_map(pow3, xrange(N), type='ordered', chunksize=N//8)
-    print "mp_map(pow3, xrange(%d), type='ordered', chunksize=%d):\n\t%s" \
-          ' seconds' % (N, N//8, time.time() - t)
-    
-    assert A == B == C == D, (len(A), len(B), len(C), len(D))
+def host(id):
+    import socket
+    return "Rank: %d -- %s" % (id, socket.gethostname())
 
 
-    
-if __name__ == '__main__':
-    test()
+print "Evaluate 5 items on 2 proc:"
+res3 = mp_map(host, range(5), nproc=2)
+print '\n'.join(res3)
+print ''
 
+print "Evaluate 5 items on 10 proc:"
+res5 = mp_map(host, range(5), nproc=10) 
+print '\n'.join(res5)
+
+# end of file
