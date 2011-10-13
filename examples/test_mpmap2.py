@@ -22,4 +22,9 @@ res7 = mp_map(host, range(10))
 print '\n'.join(res7)
 print ''
 
+print "Evaluate 10 items on ? proc (using threads)"
+res9 = mp_map(host, range(10), threads=True) 
+print '\n'.join(res9)
+print ''
+
 # end of file

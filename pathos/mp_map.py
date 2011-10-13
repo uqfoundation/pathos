@@ -8,9 +8,11 @@ import sys
 if sys.hexversion >= 0x2060000:
   import multiprocessing as mp
   from multiprocessing import cpu_count
+  import multiprocessing.dummy as mpdummy
 else:
   import processing as mp
   from processing import cpuCount as cpu_count
+  import processing.dummy as mpdummy
 
 __STATE = {'pool': None}
 
@@ -25,19 +27,25 @@ Inputs:
 Additional Inputs:
     nproc     -- number of 'local' processors to use  [defaut = 'autodetect']
     type      -- processing type ['blocking', 'non-blocking', 'unordered']
+    threads   -- if True, use threading instead of multiprocessing
     '''
     processes = cpu_count()
     proctype = 'blocking'
+    threads = False
     if kwds.has_key('nproc'):
         processes = kwds['nproc']
         kwds.pop('nproc')
     if kwds.has_key('type'):
         proctype = kwds['type']
         kwds.pop('type')
+    if kwds.has_key('threads'):
+        threads = kwds['threads']
+        kwds.pop('threads')
 
     # Create a new server if one isn't already initialized
     if not __STATE['pool'] or processes != cpu_count():
-        __STATE['pool'] = mp.Pool(processes)
+        if threads: __STATE['pool'] = mpdummy.Pool(processes)
+        else: __STATE['pool'] = mp.Pool(processes)
 
     if proctype in ['blocking']:
         return __STATE['pool'].map(function,sequence,*args,**kwds)
