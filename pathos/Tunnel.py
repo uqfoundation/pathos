@@ -21,7 +21,7 @@ A typical call to a pathos 'tunnel' will roughly follow this example:
     >>> remotehost = 'remote.host.edu'
     >>> remoteport = 12345
     >>> localport = tunnel.connect(remotehost, remoteport)
-    >>> print "Tunnel connected at local port: ", localport
+    >>> print "Tunnel connected at local port: ", tunnel._lport
     >>>
     >>> # pause script execution to maintain the tunnel (i.e. do something)
     >>> sys.stdin.readline()
@@ -82,9 +82,7 @@ Additional Input:
                     self.disconnect()
                     continue
                 else:
-                    self._pid = 0
-                    self._tunnel = None #XXX: MMM
-                    self.connected = False
+                    self.__disconnect()
                     raise TunnelException, 'Connection failed'
                 
             self.connected = True
@@ -97,10 +95,17 @@ Additional Input:
             print 'Kill ssh pid=%d' % self._pid
             os.kill(self._pid, signal.SIGTERM)
             os.waitpid(self._pid, 0)
-            self.connected = False
-            self._pid = 0
-            self._tunnel = None
+            self.__disconnect()
         return
+
+    def __disconnect(self):
+       '''disconnect tunnel internals'''
+       self._pid = 0
+       self.connected = False
+       self._tunnel = None
+       self._lport = None
+       self._rport = None
+       return
 
     def __init__(self, name):
         '''create a ssh tunnel launcher
@@ -109,13 +114,8 @@ Takes one initial input:
     name        -- a unique identifier (string) for the launcher
         '''
         Component.__init__(self, name, 'sshtunnel')
-
         self._launcher = self.inventory.launcher
-        
-        self.connected = False
-
-        self._pid = 0
-        self._tunnel = None  #XXX: MMM --> better default?
+        self.__disconnect()
         return
 
     def _connect(self, localport, remotehost, remoteport, through=None):
@@ -128,6 +128,8 @@ Takes one initial input:
                             #options=options, fgbg='foreground')
         self._launcher.launch()
         self._tunnel = options  #XXX: MMM
+        self._lport = localport
+        self._rport = remoteport
         self._pid = self._launcher.pid() #FIXME: should be tunnel_pid [pid()+1]
         line = self._launcher.response()
         if line:
