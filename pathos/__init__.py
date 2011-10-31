@@ -255,7 +255,7 @@ import util
 
 def copyright():
     """print copyright and reference"""
-    print __license__[-417:]
+    print __license__[-599:]
     return
 
 # end of file
