@@ -171,8 +171,19 @@ Additional Inputs:
     '''
     processes = None
     servers = ()
-    if kwds.has_key('ncpus'): processes = kwds['ncpus']
-    if kwds.has_key('servers'): servers = kwds['servers']
+    if kwds.has_key('ncpus'):
+      processes = kwds['ncpus']
+      kwds.pop('ncpus')
+    if kwds.has_key('servers'):
+      servers = kwds['servers']
+      kwds.pop('servers')
+    # remove all the junk kwds that are added due to poor design!
+    if kwds.has_key('nnodes'): kwds.pop('nnodes')
+    if kwds.has_key('launcher'): kwds.pop('launcher')
+    if kwds.has_key('mapper'): kwds.pop('mapper')
+    if kwds.has_key('queue'): kwds.pop('queue')
+    if kwds.has_key('timelimit'): kwds.pop('timelimit')
+    if kwds.has_key('scheduler'): kwds.pop('scheduler')
 
     # Create a new server if one isn't already initialized
     if not __STATE['server']:

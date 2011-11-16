@@ -47,7 +47,7 @@ dill_version = '>=0.1a1'      # NOTE: implicit dependency
 pox_version = '>=0.1a1'
 pyina_version = '>=0.1a1'
 rpyc_version = '>=3.0.6'
-processing_version = '>=0.52'
+processing_version = '==0.52-pathos' # NOTE: modified redistribution
 if has_setuptools:
     setup_code += """
         zip_safe = False,
@@ -76,9 +76,9 @@ try:
     import pox
    #import pyina
     try:
-        import multiprocessing
-    except ImportError:
         import processing
+    except ImportError:
+        import multiprocessing
 except ImportError:
     print "\n***********************************************************"
     print "WARNING: One of the following dependencies is unresolved:"
