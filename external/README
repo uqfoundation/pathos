@@ -32,6 +32,6 @@ the setup.py file was edited to *not* install .odb files
 --------------------------------------------------
 
 'pp' and 'processing' were edited to provide optional support
-for dill (see notes in pp-1.5.7-pathos/README_PATHOS and
-processing-0.52-pathos/README_PATHOS)
+for dill (see notes in pp-1.5.7-pathos/README_MODS and
+processing-0.52-pathos/README_MODS)
 
