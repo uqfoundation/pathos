@@ -91,11 +91,11 @@ except ImportError:
     print "***********************************************************\n"
 
     print """
-Pathos relies on modified distributions of '%s' and '%s'.
+Pathos relies on modified distributions of '%s', '%s', and '%s'.
 Please download and install unresolved dependencies here:
   http://dev.danse.us/packages/
 or from the "external" directory included in the pathos source distribution.
-""" % ('pp','pyre')
+""" % ('processing','pp','pyre')
 
 
 if __name__=='__main__':
