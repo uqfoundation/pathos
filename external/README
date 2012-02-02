@@ -35,3 +35,17 @@ the setup.py file was edited to *not* install .odb files
 for dill (see notes in pp-1.5.7-pathos/README_MODS and
 processing-0.52-pathos/README_MODS)
 
+--------------------------------------------------
+
+UPDATE:
+
+In attempt to merge hydra and pathos, pyre-0.8-pathos.zip
+is replaced with pyre-0.8.2.0-pathos.zip, which is essentially
+a modified version of CIG pythia-0.8.2.0. The .odb files are
+installed. Installation is otherwise as above.  Changes:
+ - migrated "ipc" from pythia-0.8-pathos
+ - uncommented "pyre.ipc" in setup.py
+ - changed version to "0.8.2.0-pathos"
+ - use setuptools instead of distutils.core
+ - renamed package "pyre" instead of "pythia"
+

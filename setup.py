@@ -41,7 +41,7 @@ setup(name="pathos",
 """
 
 # add dependencies
-pyre_version = '==0.8-pathos' # NOTE: repackaging; includes 'journal'
+pyre_version = '==0.8.2.0-pathos' # NOTE: modified CIG-pyre; includes 'journal'
 pp_version = '==1.5.7-pathos' # NOTE: modified redistribution
 dill_version = '>=0.1a1'      # NOTE: implicit dependency
 pox_version = '>=0.1a1'
