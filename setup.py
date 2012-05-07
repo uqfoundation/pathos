@@ -41,7 +41,7 @@ with open('LICENSE') as file:
 
 # generate the readme text
 long_description = \
-""" -----------------------------------------------
+"""-----------------------------------------------
 pathos: a framework for heterogeneous computing
 -----------------------------------------------
 
