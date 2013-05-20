@@ -81,7 +81,7 @@ Inputs:
   # make sure src is a .py file, not .pyc or .pyo
   src = src.rstrip('co')
   launcher = LauncherSSH('pickport')
-  launcher.stage(command='python', rhost=rhost,
+  launcher.stage(command='python', rhost=rhost, #XXX: pox.which or which_python?
           fgbg='foreground', stdin=open(src))
   logging.info('executing {python <%s} on %s', src, rhost)
   launcher.launch()
