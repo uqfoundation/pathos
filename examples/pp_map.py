@@ -5,7 +5,8 @@ example of using the 'raw' distributed parallel mapper
 To run: python pp_map.py
 """
 
-from pathos.pp_map import ppmap
+from pathos.pp import ParallelPythonPool as Pool
+pool = Pool()
 
 
 if __name__ == '__main__':
@@ -22,7 +23,7 @@ if __name__ == '__main__':
     # Immediate evaluation example
     import time
     start = time.time()
-    results = ppmap(None, busybeaver, range(10))
+    results = pool.map(busybeaver, range(10))
     print 'Time to queue the jobs:', time.time() - start
     start = time.time()
     # Casting the ppmap generator to a list forces each result to be
@@ -30,10 +31,10 @@ if __name__ == '__main__':
     # our program twiddles its thumbs while the work is finished.
     print list(results)
     print 'Time to get the results:', time.time() - start
-    '''
+
     # Delayed evaluation example
     start = time.time()
-    results = ppmap(None, busybeaver, range(10))
+    results = pool.imap(busybeaver, range(10))
     print 'Time to queue the jobs:', time.time() - start
     # In contrast with the above example, this time we're submitting a
     # batch of jobs then going off to do more work while they're
@@ -56,16 +57,13 @@ if __name__ == '__main__':
     for i in range(10):
         print '-' * 30
         start = time.time()
-        print i, 'adders'
-        print ppmap(i, add, [1, 2, 3], [4, 5, 6], [7, 8, 9])
+        print pool.map(add, [1, 2, 3], [4, 5, 6], [7, 8, 9])
         print 'Iteration time:', time.time() - start
 
     # Heavier ppmap tests
     for i in range(10):
         print '-' * 30
         start = time.time()
-        print i, 'beavers'
-        print ppmap(i, busybeaver, range(10))
+        print pool.map(busybeaver, range(10))
         print 'Iteration time:', time.time() - start
-    '''
 

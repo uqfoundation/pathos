@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-from pathos.mp_map import mp_map
+from pathos.multiprocessing import ProcessingPool as Pool
+from pathos.multiprocessing import ThreadingPool as TPool
+pool = Pool()
+tpool = TPool()
 
 # pickle fails for nested functions
 def adder(augend):
@@ -17,19 +20,20 @@ squ = lambda x:x**2
 
 # test 'dilled' multiprocessing for inner
 print "Evaluate 10 items on 2 proc:"
-print mp_map(add_me, range(10), nproc=2)
+pool.ncpus = 2
+print pool.map(add_me, range(10))
 print ''
 
 # test 'dilled' multiprocessing for lambda
 print "Evaluate 10 items on 4 proc:"
-print mp_map(squ, range(10), nproc=4)
+pool.ncpus = 4
+print pool.map(squ, range(10))
 print ''
 
-'''
 # test for lambda, but with threads
 print "Evaluate 10 items on 4 threads:"
-print mp_map(squ, range(10), nproc=4, threads=True)
+tpool.ncpus = 4
+print tpool.map(squ, range(10))
 print ''
-'''
 
 # end of file

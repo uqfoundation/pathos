@@ -1,17 +1,8 @@
 #!/usr/bin/env python
 """
 minimal interface to python's multiprocessing module
-
-NOTE: pathos will refactor to multiprocessing's interface in the near future
 """
-try:
-  import processing as mp  # use pathos version of processing
-  from processing import cpuCount as cpu_count
-  import processing.dummy as mpdummy
-except ImportError:  # fall-back to package distributed with python
-  import multiprocessing as mp
-  from multiprocessing import cpu_count
-  import multiprocessing.dummy as mpdummy
+
 '''
 import sys
 if sys.hexversion >= 0x2060000:
@@ -23,9 +14,14 @@ else:
   from processing import cpuCount as cpu_count
   import processing.dummy as mpdummy
 '''
-__STATE = {'pool': None}
 
+from pathos.multiprocessing import ProcessingPool, ThreadingPool, __STATE
+from pathos.helpers import cpu_count
+mp = ProcessingPool()
+tp = ThreadingPool()
 
+# backward compatibility
+#FIXME: deprecated... and buggy!  (fails to dill on imap/uimap)
 def mp_map(function, sequence, *args, **kwds):
     '''extend python's parallel map function to multiprocessing
 
@@ -34,7 +30,7 @@ Inputs:
     sequence  -- sequence to process in parallel
 
 Additional Inputs:
-    nproc     -- number of 'local' processors to use  [defaut = 'autodetect']
+    nproc     -- number of 'local' cpus to use  [defaut = 'autodetect']
     type      -- processing type ['blocking', 'non-blocking', 'unordered']
     threads   -- if True, use threading instead of multiprocessing
     '''
@@ -62,19 +58,26 @@ Additional Inputs:
     if kwds.has_key('ncpus'): kwds.pop('ncpus')
     if kwds.has_key('servers'): kwds.pop('servers')
 
-    # Create a new server if one isn't already initialized
-    if not __STATE['pool'] or processes != cpu_count():
-        if threads: __STATE['pool'] = mpdummy.Pool(processes)#FIXME: not in 0.52
-        else: __STATE['pool'] = mp.Pool(processes)
-
     if proctype in ['blocking']:
-        return __STATE['pool'].map(function,sequence,*args,**kwds)
+        if not threads:
+            return mp.map(function,sequence,*args,**kwds)
+        else:
+            return tp.map(function,sequence,*args,**kwds)
     elif proctype in ['unordered']:
-        return list(__STATE['pool'].imapUnordered(function,sequence,*args,**kwds))
+        if not threads:
+            return mp.uimap(function,sequence,*args,**kwds)
+        else:
+            return tp.uimap(function,sequence,*args,**kwds)
     elif proctype in ['non-blocking', 'ordered']:
-      return list(__STATE['pool'].imap(function,sequence,*args,**kwds))
+        if not threads:
+            return mp.imap(function,sequence,*args,**kwds)
+        else:
+            return tp.imap(function,sequence,*args,**kwds)
     # default
-    return __STATE['pool'].map(function,sequence,*args,**kwds)
+    if not threads:
+        return mp.map(function,sequence,*args,**kwds)
+    else:
+        return tp.map(function,sequence,*args,**kwds)
 
 
 

@@ -35,11 +35,10 @@ from LauncherSCP import LauncherSCP as SCP_Launcher
 # tunnels
 from Tunnel import Tunnel as SSH_Tunnel
 
-# mappers
-import pp_map
-import mp_map
-
-# strategies
+# worker pools
+import python
+import multiprocessing
+import pp
 
 # tools, utilities, etc
 import util

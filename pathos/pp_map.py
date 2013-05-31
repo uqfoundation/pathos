@@ -30,11 +30,7 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# Based on code by Kirk Strauser <kirk@strauser.com>
-# Rev: 1139; Date: 2008-04-16
-#
-# Modified by mmckerns@caltech.edu
-# to mimic 'map' interface, and allow server configuration
+# (also see code fork in pathos.pp)
 
 """
 Very basic parallel processing support
@@ -45,32 +41,10 @@ actual multi-processing, code using this must conform to the usual PP
 restrictions (arguments must be serializable, etc.)
 """
 
-import time
-import __builtin__
+from pathos.pp import __STATE, stats, __print_stats as print_stats
+from pathos.pp import ParallelPythonPool as Pool
+pool = Pool()
 
-import pp
-
-__STATE = {'server': None}
-
-def print_stats():
-    "print stats from the pp.Server"
-    if __STATE['server']:
-        __STATE['server'].print_stats()
-    else:
-        print "Stats are not available; no active servers.\n"
-
-def stats():
-    "return stats print string from the pp.Server"
-    import StringIO, sys
-    stdout = sys.stdout
-    try:
-        sys.stdout = result = StringIO.StringIO()
-        print_stats()
-    except:
-        result = None #FIXME: will cause error below
-    sys.stdout = stdout
-    result = result.getvalue()
-    return result
 
 def ppmap(processes, function, sequence, *sequences):
     """Split the work of 'function' across the given number of
@@ -157,7 +131,6 @@ def ppmap(processes, function, sequence, *sequences):
     return (subproc() for subproc in __builtin__.map(submit, *a))
 
 
-#def pp_map(function, sequence, **kwds):
 def pp_map(function, sequence, *args, **kwds):
     '''extend python's parallel map function to parallel python
 
@@ -185,12 +158,9 @@ Additional Inputs:
     if kwds.has_key('timelimit'): kwds.pop('timelimit')
     if kwds.has_key('scheduler'): kwds.pop('scheduler')
 
-    # Create a new server if one isn't already initialized
-    if not __STATE['server']:
-        __STATE['server'] = job_server = pp.Server(ppservers=servers)
-       #print "Known servers: [('local',)] %s" % (job_server.ppservers)
-       #print "Starting pp with", job_server.get_ncpus(), "local workers"
-    return list(ppmap(processes,function,sequence,*args))
+    pool.ncpus = processes
+    pool.servers = servers
+    return pool.map(function, sequence, *args, **kwds)
 
 
 if __name__ == '__main__':

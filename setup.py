@@ -92,8 +92,8 @@ local processors and distributed RPC services can be selected.  Pathos
 also provides a very basic automated load balancing service, as well as
 the ability for the user to directly select the resources.
 
-The high-level "pp_map" interface, yields a map-reduce implementation that
-hides the RPC internals from the user. With pp_map, the user can launch
+The high-level "pool.map" interface, yields a map-reduce implementation that
+hides the RPC internals from the user. With pool.map, the user can launch
 their code in parallel, and as a distributed service, using standard python
 and without writing a line of server or parallel batch code.
 
@@ -168,14 +168,14 @@ download the tarball, unzip, and run the installer::
     $ python setup py install
 
 You will be warned of any missing dependencies and/or settings after
-you run the "build" step above. Pathos depends on dill, pox, and pyina,
+you run the "build" step above. Pathos depends on dill and pox,
 each of which are essentially subpackages of pathos that are also
 released independently. Pathos also depends on slightly modified
 versions of `pyre` and `parallel python`; these packages are included
 in the `pathos.external` directory.  The aforementioned pathos
 subpackages are also available on this site, and you must install all of
 the dependencies for pathos to have full functionality for heterogeneous
-computing. Currently, pyina is optional.
+computing.
 
 Alternately, pathos can be installed with easy_install::
 
@@ -211,7 +211,10 @@ communications with ssh and scp.
 
 Important classes and functions are found here::
 
-    - pathos.pathos.pp_map          [the map-reduce API definition]
+    - pathos.pathos.abstract        [the worker pool API definition]
+    - pathos.pathos.python          [the serial python worker pool ]
+    - pathos.pathos.multiprocessing [the multiprocessing worker pool]
+    - pathos.pathos.pp              [the parallelpython worker pool]
     - pathos.pathos.core            [the high-level command interface] 
     - pathos.pathos.hosts           [the hostname registry interface] 
     - pathos.pathos.Launcher        [the launcher base class]
@@ -309,8 +312,8 @@ setup(name="pathos",
         "Development Status :: 2 - Pre-Alpha",
         "Topic :: Physics Programming"),
 
-    packages=['pathos'],
-    package_dir={'pathos':'pathos'},
+    packages=['pathos','pathos.helpers'],
+    package_dir={'pathos':'pathos','pathos.helpers':'pathos/helpers'},
 """ % (target_version, long_description)
 
 # add dependencies
@@ -325,8 +328,8 @@ if has_setuptools:
     setup_code += """
         zip_safe = False,
         dependency_links = ['http://dev.danse.us/packages/'],
-        install_requires = ['pp%s','dill%s','pox%s','pyre%s','processing%s'], #'pyina%s'],
-""" % (pp_version, dill_version, pox_version, pyre_version, processing_version, pyina_version)
+        install_requires = ['pp%s','dill%s','pox%s','pyre%s','processing%s'],
+""" % (pp_version, dill_version, pox_version, pyre_version, processing_version)
 
 # add the scripts, and close 'setup' call
 setup_code += """
@@ -347,7 +350,6 @@ try:
         raise ImportError
     import dill
     import pox
-   #import pyina
     try:
         import processing
     except ImportError:
@@ -360,7 +362,6 @@ except ImportError:
     print "    dill %s" % dill_version
     print "    pox %s" % pox_version
     print "    processing %s" % processing_version
-    print "    pyina %s" % pyina_version
     print "***********************************************************\n"
 
     print """
