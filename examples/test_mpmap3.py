@@ -21,18 +21,21 @@ squ = lambda x:x**2
 # test 'dilled' multiprocessing for inner
 print "Evaluate 10 items on 2 proc:"
 pool.ncpus = 2
+print pool
 print pool.map(add_me, range(10))
 print ''
 
 # test 'dilled' multiprocessing for lambda
 print "Evaluate 10 items on 4 proc:"
 pool.ncpus = 4
+print pool
 print pool.map(squ, range(10))
 print ''
 
 # test for lambda, but with threads
 print "Evaluate 10 items on 4 threads:"
-tpool.ncpus = 4
+tpool.nthreads = 4
+print tpool
 print tpool.map(squ, range(10))
 print ''
 

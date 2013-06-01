@@ -30,6 +30,7 @@ assert squ(10) == p_squ(10)
 print "Evaluate 10 items on 2 proc:"
 pool.ncpus = 2
 p_res = pool.map(add_me, range(10))
+print pool
 print '%s' % p_res
 print ''
 
@@ -37,6 +38,7 @@ print ''
 print "Evaluate 10 items on 4 proc:"
 pool.ncpus = 4
 p2res = pool.map(squ, range(10))
+print pool
 print '%s' % p2res
 print ''
 

@@ -13,23 +13,28 @@ def host(id):
 print "Evaluate 10 items on 1 proc"
 pool.ncpus = 1
 res3 = pool.map(host, range(10))
+print pool
 print '\n'.join(res3)
 print ''
 
 print "Evaluate 10 items on 2 proc"
 pool.ncpus = 2
 res5 = pool.map(host, range(10))
+print pool
 print '\n'.join(res5)
 print ''
 
 print "Evaluate 10 items on ? proc"
 pool.ncpus = None
 res7 = pool.map(host, range(10)) 
+print pool
 print '\n'.join(res7)
 print ''
 
 print "Evaluate 10 items on ? proc (using threads)"
+tpool.nthreads = None
 res9 = tpool.map(host, range(10)) 
+print tpool
 print '\n'.join(res9)
 print ''
 

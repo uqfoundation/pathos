@@ -117,7 +117,7 @@ Mapper that leverages python's multiprocessing.
     ########################################################################
     def __repr__(self):
         mapargs = (self.__class__.__name__, self.ncpus)
-        return "<map %s(ncpus=%s)>" % mapargs
+        return "<pool %s(ncpus=%s)>" % mapargs
     def __get_nodes(self):
         """get the number of nodes used in the map"""
         return self.__nodes
@@ -190,7 +190,7 @@ Mapper that leverages python's threading.
     ########################################################################
     def __repr__(self):
         mapargs = (self.__class__.__name__, self.nthreads)
-        return "<map %s(nthreads=%s)>" % mapargs
+        return "<pool %s(nthreads=%s)>" % mapargs
     def __get_nodes(self):
         """get the number of nodes used in the map"""
         return self.__nodes

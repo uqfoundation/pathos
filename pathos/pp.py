@@ -194,7 +194,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
     ########################################################################
     def __repr__(self):
         mapargs = (self.__class__.__name__, self.ncpus, self.servers)
-        return "<map %s(ncpus=%s, servers=%s)>" % mapargs
+        return "<pool %s(ncpus=%s, servers=%s)>" % mapargs
     def __get_nodes(self):
         """get the number of nodes used in the map"""
         nodes = self.__nodes
