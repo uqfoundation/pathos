@@ -55,7 +55,7 @@ __all__ = ['ProcessingPool','ThreadingPool']
 __STATE = _ProcessingPool__STATE = \
           _ThreadingPool__STATE = {'pool':None, 'threads':None}
 
-from pathos.abstract import AbstractWorkerPool
+from pathos.abstract_launcher import AbstractWorkerPool
 from pathos.helpers.mp_helper import starargs as star
 from pathos.helpers import ProcessPool as Pool
 from pathos.helpers import cpu_count, ThreadPool

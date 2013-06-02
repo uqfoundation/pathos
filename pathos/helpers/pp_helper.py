@@ -1,6 +1,11 @@
-from multiprocessing import TimeoutError
-from multiprocessing.pool import MapResult as _MapResult
-from multiprocessing.pool import ApplyResult as _ApplyResult
+try:
+    from processing import TimeoutError
+    from processing.pool import MapResult as _MapResult
+    from processing.pool import ApplyResult as _ApplyResult
+except ImportError:  # fall-back to package distributed with python
+    from multiprocessing import TimeoutError
+    from multiprocessing.pool import MapResult as _MapResult
+    from multiprocessing.pool import ApplyResult as _ApplyResult
 from pp import _Task
 import time
 import dill as pickle

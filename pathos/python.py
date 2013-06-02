@@ -39,7 +39,7 @@ interactively-defined functions.
 """
 __all__ = ['PythonSerial']
 
-from pathos.abstract import AbstractWorkerPool
+from pathos.abstract_launcher import AbstractWorkerPool
 __get_nodes__ = AbstractWorkerPool._AbstractWorkerPool__get_nodes
 __set_nodes__ = AbstractWorkerPool._AbstractWorkerPool__set_nodes
 from itertools import imap as _imap

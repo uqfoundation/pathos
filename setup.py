@@ -192,7 +192,7 @@ Pathos requires::
     - dill, version >= 0.2a.dev
     - pox, version >= 0.2a.dev
     - pyre, version == 0.8-pathos (*)
-    - pp, version == 1.5.7-pathos (*)
+    - pp, version == 1.5.7-pathos-2 (*)
 
 Optional requirements::
 
@@ -211,22 +211,22 @@ communications with ssh and scp.
 
 Important classes and functions are found here::
 
-    - pathos.pathos.abstract        [the worker pool API definition]
-    - pathos.pathos.python          [the serial python worker pool ]
-    - pathos.pathos.multiprocessing [the multiprocessing worker pool]
-    - pathos.pathos.pp              [the parallelpython worker pool]
-    - pathos.pathos.core            [the high-level command interface] 
-    - pathos.pathos.hosts           [the hostname registry interface] 
-    - pathos.pathos.Launcher        [the launcher base class]
-    - pathos.pathos.Tunnel          [the tunnel base class]
+    - pathos.pathos.abstract_launcher [the worker pool API definition]
+    - pathos.pathos.python            [the serial python worker pool ]
+    - pathos.pathos.multiprocessing   [the multiprocessing worker pool]
+    - pathos.pathos.pp                [the parallelpython worker pool]
+    - pathos.pathos.core              [the high-level command interface] 
+    - pathos.pathos.hosts             [the hostname registry interface] 
+    - pathos.pathos.Launcher          [the launcher base class]
+    - pathos.pathos.Tunnel            [the tunnel base class]
 
 Pathos also provides three convience scripts that are used to establish
 secure distributed connections. These scripts are installed to a directory
 on the user's $PATH, and thus can be run from anywhere::
 
-    - pathos_tunnel.py              [establish a ssh-tunnel connection]
-    - pathos_server.py              [launch a remote RPC server]
-    - tunneled_pathos_server.py     [launch a tunneled remote RPC server]
+    - pathos_tunnel.py                [establish a ssh-tunnel connection]
+    - pathos_server.py                [launch a remote RPC server]
+    - tunneled_pathos_server.py       [launch a tunneled remote RPC server]
 
 Typing `--help` as an argument to any of the above three scripts will print
 out an instructive help message.
@@ -318,7 +318,7 @@ setup(name="pathos",
 
 # add dependencies
 pyre_version = '==0.8.2.0-pathos' # NOTE: modified CIG-pyre; includes 'journal'
-pp_version = '==1.5.7-pathos'     # NOTE: modified redistribution
+pp_version = '==1.5.7-pathos-2'   # NOTE: modified redistribution
 dill_version = '>=0.2a.dev'       # NOTE: implicit dependency
 pox_version = '>=0.2a.dev'
 pyina_version = '>=0.2a.dev'

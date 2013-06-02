@@ -95,7 +95,7 @@ def stats():  #XXX: better return object(?) to query? | is per run? compound?
     return result
 
 
-from pathos.abstract import AbstractWorkerPool
+from pathos.abstract_launcher import AbstractWorkerPool
 from pathos.helpers.pp_helper import ApplyResult, MapResult
 
 #XXX: should look into parallelpython for 'cluster computing'
