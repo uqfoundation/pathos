@@ -7,6 +7,7 @@ except ImportError:  # fall-back to package distributed with python
     from multiprocessing.pool import MapResult as _MapResult
     from multiprocessing.pool import ApplyResult as _ApplyResult
 from pp import _Task
+from pp import Server
 import time
 import dill as pickle
 import threading

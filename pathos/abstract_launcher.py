@@ -122,7 +122,8 @@ Other class members:
         """
         # barf if given keywords
         if kwds:
-            raise TypeError, "map() takes no keyword arguments"
+            pass
+       #    raise TypeError, "map() takes no keyword arguments"
            #raise TypeError, "'%s' is an invalid keyword for this function" % kwds.keys()[0]
         # at least one argument is required
         try:
@@ -135,7 +136,8 @@ Other class members:
         """
         # barf if given keywords
         if kwds:
-            raise TypeError, "map() does not take keyword arguments"
+            pass
+       #    raise TypeError, "map() does not take keyword arguments"
            #raise TypeError, "'%s' is an invalid keyword for this function" % kwds.keys()[0]
         # at least one argument is required
         try:
@@ -148,7 +150,8 @@ Other class members:
         """
         # barf if given keywords
         if kwds:
-            raise TypeError, "pipe() does not take keyword arguments"
+            pass
+       #    raise TypeError, "pipe() does not take keyword arguments"
            #raise TypeError, "'%s' is an invalid keyword for this function" % kwds.keys()[0]
         # a valid number of arguments are required
         try:

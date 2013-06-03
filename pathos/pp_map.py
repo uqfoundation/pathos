@@ -42,8 +42,8 @@ restrictions (arguments must be serializable, etc.)
 """
 
 from pathos.pp import __STATE, stats, __print_stats as print_stats
-from pathos.pp import ParallelPythonPool as Pool
-pool = Pool()
+#from pathos.pp import ParallelPythonPool as Pool
+from pathos.helpers.pp_helper import Server as ppServer
 
 
 def ppmap(processes, function, sequence, *sequences):
@@ -69,7 +69,7 @@ def ppmap(processes, function, sequence, *sequences):
 
     # Create a new server if one isn't already initialized
     if not __STATE['server']:
-        __STATE['server'] = pp.Server(ppservers=ppservers)
+        __STATE['server'] = ppServer(ppservers=ppservers)
     
    #class dill_wrapper(object):
    #    """handle non-picklable functions by wrapping with dill"""
@@ -128,7 +128,7 @@ def ppmap(processes, function, sequence, *sequences):
 
     # First, submit all the jobs.  Then harvest the results as they
     # come available.
-    return (subproc() for subproc in __builtin__.map(submit, *a))
+    return (subproc() for subproc in map(submit, *a))
 
 
 def pp_map(function, sequence, *args, **kwds):
@@ -142,10 +142,10 @@ Additional Inputs:
     ncpus     -- number of 'local' processors to use  [defaut = 'autodetect']
     servers   -- available distributed parallel python servers  [default = ()]
     '''
-    processes = None
+    procs = None
     servers = ()
     if kwds.has_key('ncpus'):
-      processes = kwds['ncpus']
+      procs = kwds['ncpus']
       kwds.pop('ncpus')
     if kwds.has_key('servers'):
       servers = kwds['servers']
@@ -158,9 +158,10 @@ Additional Inputs:
     if kwds.has_key('timelimit'): kwds.pop('timelimit')
     if kwds.has_key('scheduler'): kwds.pop('scheduler')
 
-    pool.ncpus = processes
-    pool.servers = servers
-    return pool.map(function, sequence, *args, **kwds)
+#   return Pool(procs, servers=servers).map(function, sequence, *args, **kwds)
+    if not __STATE['server']:
+        __STATE['server'] = job_server = ppServer(ppservers=servers)
+    return list(ppmap(procs,function,sequence,*args))
 
 
 if __name__ == '__main__':
