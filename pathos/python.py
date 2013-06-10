@@ -51,11 +51,11 @@ Mapper that leverages standard (i.e. serial) python maps.
     """
     def map(self, f, *args, **kwds):
        #AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
-        return _map(f, *args, **kwds)
+        return _map(f, *args)#, **kwds)
     map.__doc__ = AbstractWorkerPool.map.__doc__
     def imap(self, f, *args, **kwds):
        #AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
-        return _imap(f, *args, **kwds)
+        return _imap(f, *args)#, **kwds)
     imap.__doc__ = AbstractWorkerPool.imap.__doc__
     ########################################################################
     # PIPES
