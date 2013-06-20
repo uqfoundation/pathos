@@ -69,7 +69,7 @@ Important class members:
 Other class members:
     ???
         """
-        object.__init__(self, *args, **kwds)
+        object.__init__(self)#, *args, **kwds)
         return
     def __repr__(self):
         return "<pipe %s>" % self.__class__.__name__
@@ -95,7 +95,7 @@ Other class members:
     pool        - True, if map is a 'worker pool' strategy
     pickle      - False, if relies on tempfiles for pickling functions
         """
-        object.__init__(self, *args, **kwds)
+        object.__init__(self)#, *args, **kwds)
         self.__init(*args, **kwds)
         return
     def __enter__(self):
