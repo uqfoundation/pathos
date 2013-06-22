@@ -15,7 +15,7 @@ Usage
 A typical call to a 'ssh launcher' will roughly follow this example:
 
     >>> # instantiate the launcher, providing it with a unique identifier
-    >>> launcher = SSH_Launcher('launcher')
+    >>> launcher = LauncherSSH('launcher')
     >>>
     >>> # configure the launcher to perform the command on the selected host
     >>> launcher.stage(command='hostname', rhost='remote.host.edu')
@@ -29,8 +29,6 @@ __all__ = ['LauncherSSH']
 
 import os
 import signal
-import popen2
-import subprocess
 from pyre.ipc.Selector import Selector
 
 from Launcher import Launcher
@@ -115,16 +113,16 @@ Default values are set for methods inherited from the base class:
 
     def _execute(self, command):
        #'''execute the launch by piping the command, & saving the file object'''
-        from subprocess import PIPE, STDOUT
+        from subprocess import Popen, PIPE, STDOUT
         if self.inventory.fgbg in ['foreground','fg']:
-            p = subprocess.Popen(command, shell=True,
-                    stdin=self.inventory.stdin, stdout=PIPE)
+            p = Popen(command, shell=True,
+                      stdin=self.inventory.stdin, stdout=PIPE)
             self._fromchild = p.stdout
             self._pid = 0 #XXX: MMM --> or -1 ?
         else: #Spawn an ssh process 
-            p = subprocess.Popen(command, shell=True,
-                    stdin=self.inventory.stdin, stdout=PIPE,
-                    stderr=STDOUT, close_fds=True)
+            p = Popen(command, shell=True,
+                      stdin=self.inventory.stdin, stdout=PIPE,
+                      stderr=STDOUT, close_fds=True)
             self._pid = p.pid #get fileobject pid
             self._fromchild = p.stdout #save fileobject
         return
