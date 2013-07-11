@@ -20,10 +20,11 @@ One of the most powerful features of pathos is  "tunnel", which enables a
 user to automatically wrap any distributed service calls within a ssh-tunnel.
 
 Pathos is divided into four subpackages::
-    * dill: a utility for serialization of python objects
-    * pox: utilities for filesystem exploration and automated builds
-    * pyina: a MPI-based parallel mapper and launcher
-    * pathos: distributed parallel map-reduce and ssh communication
+
+* dill: a utility for serialization of python objects
+* pox: utilities for filesystem exploration and automated builds
+* pyina: a MPI-based parallel mapper and launcher
+* pathos: distributed parallel map-reduce and ssh communication
 
 
 Pathos Subpackage
@@ -74,19 +75,22 @@ Major Features
 --------------
 Pathos provides a configurable distributed parallel-map reduce interface
 to launching RPC service calls, with::
-    * a map-reduce interface that extends the python 'map' standard
-    * the ability to submit service requests to a selection of servers
-    * the ability to tunnel server communications with ssh
-    * automated load-balancing between multiprocessing and RPC servers
+
+* a map-reduce interface that extends the python 'map' standard
+* the ability to submit service requests to a selection of servers
+* the ability to tunnel server communications with ssh
+* automated load-balancing between multiprocessing and RPC servers
 
 The pathos core is built on low-level communication to remote hosts using
 ssh. The interface to ssh, scp, and ssh-tunneled connections can::
-    * configure and launch remote processes with ssh
-    * configure and copy file objects with scp
-    * establish an tear-down a ssh-tunnel
+
+* configure and launch remote processes with ssh
+* configure and copy file objects with scp
+* establish an tear-down a ssh-tunnel
 
 To get up and running quickly, pathos also provides infrastructure to::
-    * easily establish a ssh-tunneled connection to a RPC server
+
+* easily establish a ssh-tunneled connection to a RPC server
 
 
 Current Release
