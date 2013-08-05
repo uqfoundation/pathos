@@ -28,18 +28,28 @@ A typical call to a pathos pp map will roughly follow this example:
     >>> pool = ParallelPythonPool(nodes=4)
     >>>
     >>> # do a blocking map on the chosen function
-    >>> results = pool.map(pow, [1,2,3,4], [5,6,7,8])
+    >>> print pool.map(pow, [1,2,3,4], [5,6,7,8])
     >>>
     >>> # do a non-blocking map, then extract the results from the iterator
     >>> results = pool.imap(pow, [1,2,3,4], [5,6,7,8])
     >>> print "..."
-    >>> results = list(results)
+    >>> print list(results)
     >>>
     >>> # do an asynchronous map, then get the results
     >>> results = pool.amap(pow, [1,2,3,4], [5,6,7,8])
     >>> while not results.ready():
     >>>     time.sleep(5); print ".",
-    >>> results = results.get()
+    >>> print results.get()
+    >>>
+    >>> # do one item at a time, using a pipe
+    >>> print pool.pipe(pow, 1, 5)
+    >>> print pool.pipe(pow, 2, 6)
+    >>>
+    >>> # do one item at a time, using an asynchronous pipe
+    >>> result1 = pool.apipe(pow, 1, 5)
+    >>> result2 = pool.apipe(pow, 2, 6)
+    >>> print result1.get()
+    >>> print result2.get()
 
 
 Notes
@@ -48,7 +58,7 @@ Notes
 This worker pool leverages the parallelpython (pp) module, and thus
 has many of the limitations associated with that module. The function f and
 the sequences in args must be serializable. The maps in this worker pool
-have full functionality when run from a script, however are somewhat limited
+have full functionality when run from a script, but may be somewhat limited
 when used in the python interpreter. Both imported and interactively-defined
 functions in the interpreter session may fail due to the pool failing to
 find the source code for the target function. For a work-around, try:

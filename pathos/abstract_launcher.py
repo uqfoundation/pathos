@@ -92,8 +92,9 @@ Important class members:
     workdir     - associated $WORKDIR for scratch calculations/files
 
 Other class members:
-    pool        - True, if map is a 'worker pool' strategy
-    pickle      - False, if relies on tempfiles for pickling functions
+    scatter     - True, if uses 'scatter-gather' (instead of 'worker-pool')
+    source      - False, if minimal use of TemporaryFiles is desired
+    timeout	- number of seconds to wait for return value from scheduler
         """
         object.__init__(self)#, *args, **kwds)
         self.__init(*args, **kwds)

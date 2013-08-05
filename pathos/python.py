@@ -20,11 +20,16 @@ A typical call to a pathos python map will roughly follow this example:
     >>> pool = PythonSerial()
     >>>
     >>> # do a blocking map on the chosen function
-    >>> results = pool.map(pow, [1,2,3,4], [5,6,7,8])
+    >>> print pool.map(pow, [1,2,3,4], [5,6,7,8])
     >>>
     >>> # do a non-blocking map, then extract the results from the iterator
     >>> results = pool.imap(pow, [1,2,3,4], [5,6,7,8])
-    >>> results = list(results)
+    >>> print "..."
+    >>> print list(results)
+    >>>
+    >>> # do one item at a time, using a pipe
+    >>> print pool.pipe(pow, 1, 5)
+    >>> print pool.pipe(pow, 2, 6)
 
 
 Notes
