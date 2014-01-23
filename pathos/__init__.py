@@ -1,12 +1,9 @@
 #!/usr/bin/env python
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
-#                         June Kim & Mike McKerns, Caltech
-#                        (C) 1997-2012  All Rights Reserved
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
+ 
+# Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
+# Author: June Kim (jkim @caltech)
+# Copyright (c) 1997-2014 Caltech
+# License: 3-clause BSD
 
 # get version numbers, license, and long description
 try:

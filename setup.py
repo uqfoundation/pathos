@@ -8,7 +8,7 @@ import os
 
 # set version numbers
 stable_version = '0.1a1'
-target_version = '0.2a'
+target_version = '0.2a1'
 is_release = False
 
 # check if easy_install is available
@@ -189,8 +189,8 @@ Requirements
 Pathos requires::
 
     - python, version >= 2.5, version < 3.0
-    - dill, version >= 0.2a.dev
-    - pox, version >= 0.2a.dev
+    - dill, version >= 0.2b2.dev
+    - pox, version >= 0.2a1.dev
     - pyre, version == 0.8-pathos (*)
     - pp, version == 1.5.7-pathos-2 (*)
 
@@ -319,9 +319,9 @@ setup(name="pathos",
 # add dependencies
 pyre_version = '==0.8.2.0-pathos' # NOTE: modified CIG-pyre; includes 'journal'
 pp_version = '==1.5.7-pathos-2'   # NOTE: modified redistribution
-dill_version = '>=0.2a.dev'       # NOTE: implicit dependency
-pox_version = '>=0.2a.dev'
-pyina_version = '>=0.2a.dev'
+dill_version = '>=0.2b2.dev'      # NOTE: implicit dependency
+pox_version = '>=0.2a1.dev'
+pyina_version = '>=0.2a1.dev'
 rpyc_version = '>=3.0.6'
 processing_version = '==0.52-pathos' # NOTE: modified redistribution
 if has_setuptools:
