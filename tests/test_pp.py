@@ -6,7 +6,7 @@ def test1(obj):
     src = source.getsource(obj, alias='_f')
     exec src in globals(), locals()
     assert _f(1.57) == obj(1.57)
-    name = source._get_name(obj)
+    name = source.getname(obj)
     assert name == obj.__name__ or src.split("=",1)[0].strip()
 
 def test2(obj):
