@@ -192,7 +192,7 @@ Pathos requires::
     - dill, version >= 0.2b2.dev
     - pox, version >= 0.2a1.dev
     - pyre, version == 0.8-pathos (*)
-    - pp, version == 1.5.7-pathos-2 (*)
+    - pp, version == 1.5.7-pathos-3 (*)
 
 Optional requirements::
 
@@ -318,7 +318,7 @@ setup(name="pathos",
 
 # add dependencies
 pyre_version = '==0.8.2.0-pathos' # NOTE: modified CIG-pyre; includes 'journal'
-pp_version = '==1.5.7-pathos-2'   # NOTE: modified redistribution
+pp_version = '==1.5.7-pathos-3'   # NOTE: modified redistribution
 dill_version = '>=0.2b2.dev'      # NOTE: implicit dependency
 pox_version = '>=0.2a1.dev'
 pyina_version = '>=0.2a1.dev'

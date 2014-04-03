@@ -3,7 +3,7 @@ from dill import source
 def test1(obj):
     _obj = source._wrap(obj)
     assert _obj(1.57) == obj(1.57)
-    src = source.getsource(obj, alias='_f')
+    src = source.getimportable(obj, alias='_f')
     exec src in globals(), locals()
     assert _f(1.57) == obj(1.57)
     name = source.getname(obj)

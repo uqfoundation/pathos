@@ -6,12 +6,12 @@ to three external dependencies. These dependencies are provided in the
 
 To install the external packages:
     $ unzip pyre-0.8-pathos.zip
-    $ unzip pp-1.5.7-pathos-2.zip
+    $ unzip pp-1.5.7-pathos-3.zip
     $ unzip processing-0.52-pathos.zip
     $ cd processing-0.52-pathos
     $ python setup.py build
     $ python setup.py install
-    $ cd ../pp-1.5.7-pathos-2
+    $ cd ../pp-1.5.7-pathos-3
     $ python setup.py build
     $ python setup.py install
     $ cd ../pyre-0.8-pathos
@@ -32,7 +32,7 @@ the setup.py file was edited to *not* install .odb files
 --------------------------------------------------
 
 'pp' and 'processing' were edited to provide optional support
-for dill (see notes in pp-1.5.7-pathos-2/README_MODS and
+for dill (see notes in pp-1.5.7-pathos-3/README_MODS and
 processing-0.52-pathos/README_MODS)
 
 --------------------------------------------------
