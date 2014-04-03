@@ -1,15 +1,20 @@
 #!/usr/bin/env python
-# 
-#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 
-#                               Michael A.G. Aivazis
-#                        California Institute of Technology
-#                        (C) 1998-2004 All Rights Reserved
-# 
-#  <LicenseText>
-# 
-#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# 
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                              Michael A.G. Aivazis
+#                       California Institute of Technology
+#                       (C) 1998-2004 All Rights Reserved
+#
+# <LicenseText>
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+# Forked by: Mike McKerns (January 2004)
+# Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
+# Copyright (c) 2004-2014 California Institute of Technology.
+# License: 3-clause BSD.  The full license text is available at:
+#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 """
 This module contains the base class for pathos servers, and describes
 the pathos server interface.  If a third-party RPC server is selected,

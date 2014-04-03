@@ -1,4 +1,9 @@
-#!/usr/bin/env/python
+#!/usr/bin/env python
+#
+# Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
+# Copyright (c) 1997-2014 California Institute of Technology.
+# License: 3-clause BSD.  The full license text is available at:
+#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 """
 This module contains the base classes for pathos pool and pipe objects,
 and describes the map and pipe interfaces.  A pipe is defined as a

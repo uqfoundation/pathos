@@ -4,12 +4,17 @@
 #
 #                             Michael A.G. Aivazis
 #                      California Institute of Technology
-#                      (C) 1998-2005  All Rights Reserved
+#                      (C) 1998-2004  All Rights Reserved
 #
 # <LicenseText>
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
+# Forked by: Mike McKerns (January 2004)
+# Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
+# Copyright (c) 2004-2014 California Institute of Technology.
+# License: 3-clause BSD.  The full license text is available at:
+#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 """
 This module contains the base class for pathos launchers, and describes
 the pathos launcher interface. The 'launch' method must be overwritten

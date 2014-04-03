@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+#
+# Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
+# Copyright (c) 1997-2014 California Institute of Technology.
+# License: 3-clause BSD.  The full license text is available at:
+#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
+
 # instantiate and configure the worker pool
 from pathos.multiprocessing import ProcessingPool
 pool = ProcessingPool(nodes=4)

@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 #
+# Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
+# Copyright (c) 1997-2014 California Institute of Technology.
+# License: 3-clause BSD.  The full license text is available at:
+#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
+#
 # this script prints out an available port number.
 # adapted from J. Kim & M. McKerns utility functions
-# by mmckerns@caltech.edu
-
 """
 This script prints out an available port number.
 """

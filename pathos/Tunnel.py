@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 #
-## ssh Tunnel class
+# Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
+# Copyright (c) 1997-2014 California Institute of Technology.
+# License: 3-clause BSD.  The full license text is available at:
+#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
+#
 # adapted from J. Kim & M. McKerns' Tunnel class
-# by mmckerns@caltech.edu
-
 """
 This module contains the base class for secure tunnel connections, and
 describes the pathos tunnel interface.  See the following for an example.

@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 #
-## ssh Launcher class
+# Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
+# Copyright (c) 1997-2014 California Institute of Technology.
+# License: 3-clause BSD.  The full license text is available at:
+#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
+#
 # adapted from Mike McKerns' and June Kim's gsl SSHLauncher class
-# by mmckerns@caltech.edu
-
 """
 This module contains the derived class for secure shell (ssh) launchers
 See the following for an example.

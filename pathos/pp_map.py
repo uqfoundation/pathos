@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# Based on code by Kirk Strauser <kirk@strauser.com>
+# Rev: 1139; Date: 2008-04-16
+# (also see code in pathos.pp)
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
@@ -30,8 +34,11 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# (also see code fork in pathos.pp)
-
+# Forked by: Mike McKerns (April 2008)
+# Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
+# Copyright (c) 2008-2014 California Institute of Technology.
+# License: 3-clause BSD.  The full license text is available at:
+#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 """
 Very basic parallel processing support
 

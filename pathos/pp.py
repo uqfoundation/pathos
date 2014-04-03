@@ -1,10 +1,16 @@
 #!/usr/bin/env python
+#
 # Based on code by Kirk Strauser <kirk@strauser.com>
 # Rev: 1139; Date: 2008-04-16
 # (see license text in pathos.pp_map)
 #
-# Modified by mmckerns@caltech.edu
-# to meet the pathos pool API
+# Forked by: Mike McKerns (April 2008)
+# Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
+# Copyright (c) 2008-2014 California Institute of Technology.
+# License: 3-clause BSD.  The full license text is available at:
+#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
+#
+# Modified to meet the pathos pool API
 """
 This module contains map and pipe interfaces to the parallelpython (pp) module.
 

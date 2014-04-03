@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 #
-## XMLRPC request handler class
+# Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
+# Copyright (c) 1997-2014 California Institute of Technology.
+# License: 3-clause BSD.  The full license text is available at:
+#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
+#
 # adapted from J. Kim's XMLRPC request handler class
-# by mmckerns@caltech.edu
-
 """
 This module contains the base class for XML-RPC request handlers,
 and derives from python's base HTTP request handler. Intended to
