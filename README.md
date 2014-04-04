@@ -98,7 +98,7 @@ Current Release
 The latest released version of pathos is available from::
     http://trac.mystic.cacr.caltech.edu/project/pathos
 
-Pathos is distributed under a modified BSD license.
+Pathos is distributed under a 3-clause BSD license.
 
 Development Release
 -------------------

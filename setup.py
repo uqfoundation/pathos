@@ -237,7 +237,7 @@ out an instructive help message.
 License
 =======
 
-Pathos is distributed under a modified BSD license.
+Pathos is distributed under a 3-clause BSD license.
 
     >>> import pathos
     >>> print pathos.license()
