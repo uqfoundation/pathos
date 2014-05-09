@@ -29,8 +29,7 @@ if __name__ == '__main__':
     def g(x):
         return x+2
 
-   #for func in [g, f, abs, sin]:
-    for func in [g, f, sin]:
+    for func in [g, f, abs, sin]:
         test1(func)
         test2(func)
 
