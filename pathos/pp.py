@@ -176,7 +176,8 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
             """send a job to the server"""
            #print "using", __STATE['server'].get_ncpus(), 'local workers'
             return __STATE['server'].submit(f, argz, globals=globals())
-        elem_size = kwds.pop('size', 8) #FIXME: should be size of output type
+        override = True if kwds.has_key('size') else False
+        elem_size = kwds.pop('size', 2)
         args = zip(*args)
         # submit all jobs, to be collected later with 'get()'
         tasks = [submit(*task) for task in args]
@@ -186,7 +187,14 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         nodes = self.nodes
         if self.nodes in ['*','autodetect',None]:
             nodes = __STATE['server'].get_ncpus() #XXX: local workers only?
-        chunksize, extra = divmod(length, nodes * elem_size)
+        # try to quickly find a small chunksize that gives good results
+        maxsize = 2**62 #XXX: HOPEFULLY, this will never be reached...
+        chunksize = 1
+        while chunksize < maxsize:
+            chunksize, extra = divmod(length, nodes * elem_size)
+            if override: break # the user *wants* to override this loop
+            if extra >= length: break # we found something that 'works'
+            elem_size = elem_size * 2
         if extra: chunksize += 1
         m = MapResult((chunksize,length))
         # queue the tasks

@@ -18,7 +18,7 @@ def busy_add(x,y, delay=0.01):
 
 def busy_squared(x):
     import time, random
-    time.sleep(2*random.random())
+    time.sleep(0.01*random.random())
     return x*x
 
 def squared(x):
@@ -31,16 +31,20 @@ def quad_factory(a=1, b=1, c=0):
 
 square_plus_one = quad_factory(2,0,1)
 
-
-def test4(pool, maxtries, delay):
+ 
+def test4(pool, f, maxtries, delay, args):
     print pool
-    f = busy_add
     print "y = %s(x1,x2)" % f.__name__
     print "x1 = %s" % str(x[:10])
     print "x2 = %s" % str(x[:10])
     print "I'm sleepy..."
-   #m = pool.amap(f, x)
-    m = pool.amap(f, x, x)
+    if args == 1:
+        m = pool.amap(f, x)
+    elif args == 2:
+        m = pool.amap(f, x, x)
+    else:
+        msg = 'a function with 1 or 2 arguments is required, %s given' % args
+        raise NotImplementedError(msg)
 
     tries = 0
     print "Z",
@@ -66,13 +70,16 @@ if __name__ == '__main__':
     x = range(500)
     delay = 0.01
     maxtries = 200
+    f = busy_add; args = 2
+   #f = busy_squared; args = 1
+   #f = squared; args = 1
 
-    from pathos.multiprocessing import ProcessingPool as Pool; skip = False
-   #from pathos.multiprocessing import ThreadingPool as Pool; skip = False
-   #from pathos.pp import ParallelPythonPool as Pool; skip = True
+   #from pathos.multiprocessing import ProcessingPool as Pool
+   #from pathos.multiprocessing import ThreadingPool as Pool
+    from pathos.pp import ParallelPythonPool as Pool
 
     pool = Pool(nodes=4)
-    test4( pool, maxtries, delay )
+    test4( pool, f, maxtries, delay, args )
 
 
 # EOF
