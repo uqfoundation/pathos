@@ -16,7 +16,7 @@ class portnumber(object):
 
 Usage:
     >>> pick = portnumber(min=1024,max=65535)
-    >>> print pick()
+    >>> print( pick() )
     '''
 
     def __init__(self, min=0, max=64*1024):
@@ -48,17 +48,24 @@ Inputs:
             if self.current > self.max:
                 self.current = self.min
             if self.current == self.first: 
-                raise RuntimeError, 'Range exhausted'
+                raise RuntimeError( 'Range exhausted' )
             return self.current
         return
 
-# class portnumber
+def randomport(min=1024, max=65536):
+    '''select a random port number
+
+Inputs:
+    min -- minimum port number  [default = 1024]
+    max -- maximum port number  [default = 65536]
+    '''
+    return portnumber(min, max)()
 
 
 if __name__ == '__main__':
 
     pick = portnumber(min=1024,max=65535)
-    print pick()
+    print( pick() )
 
 
 # End of file
