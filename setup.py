@@ -49,7 +49,7 @@ pathos: a framework for heterogeneous computing
 
 Pathos is a framework for heterogenous computing. It primarily provides
 the communication mechanisms for configuring and launching parallel
-computations across heterogenous resources. Pathos provides stagers and
+computations across heterogenous resources. Pathos provides configurable
 launchers for parallel and distributed computing, where each launcher
 contains the syntactic logic to configure and launch jobs in an execution
 environment.  Some examples of included launchers are: a queue-less

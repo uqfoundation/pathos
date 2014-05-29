@@ -22,7 +22,7 @@ Inputs:
   from LauncherSCP import LauncherSCP
   copier = LauncherSCP('copy_%s' % filename)
   logging.info('executing {scp %s %s:%s}', filename, rhost, dest)
-  copier.stage(options='-q', source=filename, destination=rhost+':'+dest)
+  copier.config(options='-q', source=filename, destination=rhost+':'+dest)
   copier.launch()
   return
 
@@ -35,12 +35,11 @@ Inputs:
     host    -- hostname of execution target
     bg      -- run as background process?  [default = True]
   '''
-  if not bg: fgbg = 'foreground'
-  else: fgbg = 'background'
+  bg = True if bg else False
   from LauncherSSH import LauncherSSH
   launcher = LauncherSSH('%s' % command)
   logging.info('executing {ssh %s "%s"}', rhost, command)
-  launcher.stage(options='-q', command=command, rhost=rhost, fgbg=fgbg)
+  launcher.config(options='-q', command=command, rhost=rhost, background=bg)
   launcher.launch()
   return launcher.response() #XXX: should return launcher, not just response
 
@@ -86,8 +85,8 @@ Inputs:
   # make sure src is a .py file, not .pyc or .pyo
   src = src.rstrip('co')
   launcher = LauncherSSH('pickport')
-  launcher.stage(command='python', rhost=rhost, #XXX: pox.which or which_python?
-          fgbg='foreground', stdin=open(src))
+  launcher.config(command='python', rhost=rhost, #XXX: pox.which / which_python?
+                  background=False, stdin=open(src))
   logging.info('executing {python <%s} on %s', src, rhost)
   launcher.launch()
   try:
@@ -129,7 +128,7 @@ Inputs:
   from LauncherSSH import LauncherSSH
   rserver = LauncherSSH('%s' % command)
   logging.info('executing {ssh %s "%s"}', rhost, command)
-  rserver.stage(options='-q', command=command, rhost=rhost, fgbg='background')
+  rserver.config(options='-q', command=command, rhost=rhost, background=True)
   rserver.launch()
   response = rserver.response()
   logging.info('response = %r', response)

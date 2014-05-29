@@ -20,7 +20,7 @@ A typical call to a 'ssh launcher' will roughly follow this example:
     >>> launcher = LauncherSSH('launcher')
     >>>
     >>> # configure the launcher to perform the command on the selected host
-    >>> launcher.stage(command='hostname', rhost='remote.host.edu')
+    >>> launcher.config(command='hostname', rhost='remote.host.edu')
     >>>
     >>> # execute the launch and retrieve the response
     >>> launcher.launch()
@@ -48,6 +48,11 @@ Additional Inputs:
     command     -- remotely launched command  [default = 'echo hello']
     launcher    -- remote service mechanism (i.e. ssh, rsh)  [default = 'ssh']
     options     -- remote service options (i.e. -v, -N, -L)  [default = '']
+    background  -- run in background  [default = False]
+    stdin       -- file type object that should be used as a standard input
+                   for the remote process.
+        '''
+        '''Additional inputs (intended for internal use):
     fgbg        -- run in foreground/background  [default = 'foreground']
 
 Default values are set for methods inherited from the base class:
@@ -56,7 +61,7 @@ Default values are set for methods inherited from the base class:
         '''
        #Launcher.__init__(self, name)
         super(LauncherSSH, self).__init__(name)
-        self.stage(**kwds)
+        self.config(**kwds)
         return
 
     class Inventory(Launcher.Inventory):
@@ -66,24 +71,25 @@ Default values are set for methods inherited from the base class:
         options = pyre.inventory.str('options', default='')
         rhost = pyre.inventory.str('rhost', default='localhost')
         command = pyre.inventory.str('command', default='echo hello')
-        fgbg = pyre.inventory.str('fgbg', default='foreground')
+       #fgbg = pyre.inventory.str('fgbg', default='foreground')
+        background = pyre.inventory.bool('background', default=False)
         stdin = pyre.inventory.inputFile('stdin')
        #XXX: also inherits 'nodes' and 'nodelist'
         pass
 
    #def _configure(self):
-   #    #FIXME: bypassing this with 'stage'
+   #    #FIXME: bypassing this with 'config'
    #    return
 
-    def stage(self, **kwds):
-        '''stage a remote command using given keywords:
+    def config(self, **kwds):
+        '''configure a remote command using given keywords:
 
 (Re)configure the copier for the following inputs:
     rhost       -- hostname to recieve command [user@host is also valid]
     command     -- remotely launched command  [default = 'echo hello']
     launcher    -- remote service mechanism (i.e. ssh, rsh)  [default = 'ssh']
     options     -- remote service options (i.e. -v, -N, -L)  [default = '']
-    fgbg        -- run in foreground/background  [default = 'foreground']
+    background  -- run in background  [default = False]
     stdin       -- file type object that should be used as a standard input
                    for the remote process.
         '''
@@ -96,14 +102,20 @@ Default values are set for methods inherited from the base class:
                 self.inventory.launcher = value
             elif key == 'options':
                 self.inventory.options = value
-            elif key == 'fgbg':
-                self.inventory.fgbg = value
+            elif key == 'background':
+                self.inventory.background = value
             elif key == 'stdin':
                 self.inventory.stdin = value
-        return
+            # backward compatability
+            elif key == 'fgbg':
+                value = True if value in ['bg','background'] else False
+                self.inventory.background = value
+        names = ['command','rhost','launcher','options','background','stdin']
+        return {i:getattr(self.inventory, i) \
+                for i in self.inventory.propertyNames() if i in names}
 
     def launch(self):
-        '''launch a staged command'''
+        '''launch a configured command'''
         command = '%s %s %s "%s"' % (self.inventory.launcher,
                                    self.inventory.options,
                                    self.inventory.rhost,
@@ -116,17 +128,17 @@ Default values are set for methods inherited from the base class:
     def _execute(self, command):
        #'''execute the launch by piping the command, & saving the file object'''
         from subprocess import Popen, PIPE, STDOUT
-        if self.inventory.fgbg in ['foreground','fg']:
-            p = Popen(command, shell=True,
-                      stdin=self.inventory.stdin, stdout=PIPE)
-            self._fromchild = p.stdout
-            self._pid = 0 #XXX: MMM --> or -1 ?
-        else: #Spawn an ssh process 
+        if self.inventory.background: #Spawn an ssh process 
             p = Popen(command, shell=True,
                       stdin=self.inventory.stdin, stdout=PIPE,
                       stderr=STDOUT, close_fds=True)
             self._pid = p.pid #get fileobject pid
             self._fromchild = p.stdout #save fileobject
+        else:
+            p = Popen(command, shell=True,
+                      stdin=self.inventory.stdin, stdout=PIPE)
+            self._fromchild = p.stdout
+            self._pid = 0 #XXX: MMM --> or -1 ?
         return
 
     def response(self):
@@ -173,6 +185,9 @@ Default values are set for methods inherited from the base class:
             os.waitpid(self._pid, 0)
             self._pid = 0
         return
+
+    # backward compatability
+    stage = config
     pass
 
 

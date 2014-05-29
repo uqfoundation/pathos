@@ -31,7 +31,7 @@ A typical call to a pathos 'launcher' will roughly follow this example:
     >>> launcher = SSH_Launcher('launcher')
     >>>
     >>> # configure the launcher to perform the command on the selected host
-    >>> launcher.stage(command='hostname', rhost='remote.host.edu')
+    >>> launcher.config(command='hostname', rhost='remote.host.edu')
     >>>
     >>> # execute the launch and retrieve the response
     >>> launcher.launch()

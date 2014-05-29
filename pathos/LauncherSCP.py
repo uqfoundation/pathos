@@ -20,11 +20,11 @@ A typical call to a 'scp launcher' will roughly follow this example:
     >>> copier = LauncherSCP('copier')
     >>>
     >>> # configure and launch the copy to the selected destination
-    >>> copier.stage(source='~/foo.txt', destination='remote.host.edu:~')
+    >>> copier.config(source='~/foo.txt', destination='remote.host.edu:~')
     >>> copier.launch()
     >>>
     >>> # configure and launch the copied file to a new destination
-    >>> copier.stage(source='remote.host.edu:~/foo.txt', destination='.')
+    >>> copier.config(source='remote.host.edu:~/foo.txt', destination='.')
     >>> copier.launch()
     >>> print copier.response()
  
@@ -46,14 +46,19 @@ class LauncherSCP(Launcher):
     def __init__(self, name, **kwds):
         '''create a scp launcher
 
-Takes one initial input:
+Input:
     name        -- a unique identifier (string) for the launcher
 
-Additional Inputs:
+Additional inputs:
     source      -- hostname:path of original  [user@host:path is also valid]
     destination -- hostname:path for copy  [user@host:path is also valid]
     launcher    -- remote service mechanism (i.e. scp, cp)  [default = 'scp']
     options     -- remote service options (i.e. -v, -P)  [default = '']
+    background  -- run in background  [default = False]
+    stdin       -- file type object that should be used as a standard input
+                   for the remote process.
+        '''
+        '''Additional inputs (intended for internal use):
     fgbg        -- run in foreground/background  [default = 'foreground']
 
 Default values are set for methods inherited from the base class:
@@ -62,7 +67,7 @@ Default values are set for methods inherited from the base class:
         '''
        #Launcher.__init__(self, name)
         super(LauncherSCP, self).__init__(name)
-        self.stage(**kwds)
+        self.config(**kwds)
         return
 
     class Inventory(Launcher.Inventory):
@@ -72,24 +77,25 @@ Default values are set for methods inherited from the base class:
         options = pyre.inventory.str('options', default='')
         source = pyre.inventory.str('source', default='')
         destination = pyre.inventory.str('destination', default='')
-        fgbg = pyre.inventory.str('fgbg', default='foreground')
+       #fgbg = pyre.inventory.str('fgbg', default='foreground')
+        background = pyre.inventory.bool('background', default=False)
         stdin = pyre.inventory.inputFile('stdin')
        #XXX: also inherits 'nodes' and 'nodelist'
         pass
 
    #def _configure(self):
-   #    #FIXME: bypassing this with 'stage'
+   #    #FIXME: bypassing this with 'config'
    #    return
 
-    def stage(self, **kwds):
-        '''stage a remote copy
+    def config(self, **kwds):
+        '''configure a remote copy
 
 (Re)configure the copier for the following inputs:
     source      -- hostname:path of original  [user@host:path is also valid]
     destination -- hostname:path for copy  [user@host:path is also valid]
     launcher    -- remote service mechanism (i.e. scp, cp)  [default = 'scp']
     options     -- remote service options (i.e. -v, -P)  [default = '']
-    fgbg        -- run in foreground/background  [default = 'foreground']
+    background  -- run in background  [default = False]
     stdin       -- file type object that should be used as a standard input
                    for the remote process.
         '''
@@ -102,14 +108,21 @@ Default values are set for methods inherited from the base class:
                 self.inventory.launcher = value
             elif key == 'options':
                 self.inventory.options = value
-            elif key == 'fgbg':
-                self.inventory.fgbg = value
+            elif key == 'background':
+                self.inventory.background = value
             elif key == 'stdin':
                 self.inventory.stdin = value
-        return
+            # backward compatability
+            elif key == 'fgbg':
+                value = True if value in ['bg','background'] else False
+                self.inventory.background = value
+        names = ['source','destination','launcher','options',\
+                                        'background','stdin']
+        return {i:getattr(self.inventory, i) \
+                for i in self.inventory.propertyNames() if i in names}
 
     def launch(self):
-        '''launch a staged command'''
+        '''launch a configured command'''
         command = '%s %s %s %s' % (self.inventory.launcher,
                                    self.inventory.options,
                                    self.inventory.source,
@@ -122,18 +135,18 @@ Default values are set for methods inherited from the base class:
     def _execute(self, command):
        #'''execute the launch by piping the command, & saving the file object'''
         from subprocess import Popen, PIPE, STDOUT
-        if self.inventory.fgbg in ['foreground','fg']:
-            p = Popen(command, shell=True,
-                      stdin=self.inventory.stdin, stdout=PIPE)
-            self._fromchild = p.stdout
-            self._pid = 0 #XXX: MMM --> or -1 ?
-        else: #Spawn an scp process 
+        if self.inventory.background: #Spawn an scp process 
             p = Popen(command, shell=True,
                       stdin=self.inventory.stdin, stdout=PIPE,
                       stderr=STDOUT, close_fds=True)
             self._pid = p.pid #get fileobject pid
             self._fromchild = p.stdout #save fileobject
            #self._fromchild = p.fromchild #save fileobject
+        else:
+            p = Popen(command, shell=True,
+                      stdin=self.inventory.stdin, stdout=PIPE)
+            self._fromchild = p.stdout
+            self._pid = 0 #XXX: MMM --> or -1 ?
         return
 
     def response(self):
@@ -180,6 +193,9 @@ Default values are set for methods inherited from the base class:
             os.waitpid(self._pid, 0)
             self._pid = 0
         return
+
+    # backward compatability
+    stage = config
     pass
 
 

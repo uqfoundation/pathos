@@ -101,13 +101,13 @@ Additional Input:
         return
 
     def __disconnect(self):
-       '''disconnect tunnel internals'''
-       self._pid = 0
-       self.connected = False
-       self._tunnel = None
-       self._lport = None
-       self._rport = None
-       return
+        '''disconnect tunnel internals'''
+        self._pid = 0
+        self.connected = False
+        self._tunnel = None
+        self._lport = None
+        self._rport = None
+        return
 
     def __init__(self, name):
         '''create a ssh tunnel launcher
@@ -120,14 +120,19 @@ Takes one initial input:
         self.__disconnect()
         return
 
+    def __repr__(self):
+        if not self.connected:
+            return "Tunnel('%s')" % self.name
+        return "Tunnel('ssh %s')" % self._tunnel
+
     def _connect(self, localport, remotehost, remoteport, through=None):
         options = '-q -N -L%d:%s:%d' % (localport, remotehost, remoteport)
         command = ''
         if through: rhost = through
         else: rhost = remotehost
-        self._launcher.stage(rhost=rhost, command=command,
-                             options=options, fgbg='background') #XXX: MMM
-                            #options=options, fgbg='foreground')
+        self._launcher.config(rhost=rhost, command=command,
+                              options=options, background=True) #XXX: MMM
+                             #options=options, background=False)
         self._launcher.launch()
         self._tunnel = options  #XXX: MMM
         self._lport = localport
