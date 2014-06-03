@@ -13,7 +13,7 @@ Usage: python install_pathos_server.py [package] [version] [hostname]
     [hostname] - name of the host on which to install the package
 """
 
-from pathos.core import copy,run
+from pathos.core import copy,execute
 from pathos.hosts import get_profile, register_profiles
 
 
@@ -91,8 +91,7 @@ if __name__ == '__main__':
 
   # check for existing installation
   command = "source %s; python -c 'import %s'" % (profile,package)
-  print 'executing {ssh %s "%s"}' % (rhost,command)
-  error = run(command,rhost)
+  error = execute(command,rhost).response()
   if error in ['', None]:
     print '%s is already installed on %s' % (package,rhost)
 # elif error[:39] == 'This system is available for legitimate use'[:39] \
@@ -108,45 +107,38 @@ if __name__ == '__main__':
 
     # create install directory
     command = 'mkdir -p %s' % dest #FIXME: *nix only
-    print 'executing {ssh %s "%s"}' % (rhost,command)
-    report = run(command,rhost)
+    report = execute(command,rhost).response()
     #XXX: could check for clean install by parsing for "Error" (?)
     sleep(delay)
 
     # copy over the installer to remote host
-    print 'executing {scp %s %s:%s}' % (file,rhost,dest)
     copy(file,rhost,dest)
     sleep(delay)
 
     # run the installer
     command = 'cd %s; ./%s' % (dest,file) #FIXME: *nix only
-    print 'executing {ssh %s "%s"}' % (rhost,command)
-    report = run(command,rhost)
+    report = execute(command,rhost).response()
     #XXX: could check for clean install by parsing for "Error" (?)
     sleep(big_delay)
 
     # remove remote install file
 #   killme = dest+'/'+file  #FIXME: *nix only
 #   command = 'rm -f %s' % killme #FIXME: *nix only
-#   print 'executing {ssh %s "%s"}' % (rhost,command)
-#   run(command,rhost)
+#   execute(command,rhost).response()
 
     # remove remote package unpacking directory
 #   killme = dest+'/'+package+'-'+version #FIXME: dies for NON-STANDARD naming
 #   command = 'rm -rf %s' % killme #FIXME: *nix only
-#   print 'executing {ssh %s "%s"}' % (rhost,command)
-#   run(command,rhost)
+#   execute(command,rhost).response()
 
     # remove remote install directory
     killme = dest
     command = 'rm -rf %s' % killme #FIXME: *nix only
-    print 'executing {ssh %s "%s"}' % (rhost,command)
-    run(command,rhost)
+    execute(command,rhost).response()
 
     # check installation
     command = "source %s; python -c 'import %s'" % (profile,package)
-    print 'executing {ssh %s "%s"}' % (rhost,command)
-    error = run(command,rhost)
+    error = execute(command,rhost).response()
     if error in ['', None]:
       pass # is installed
     else:

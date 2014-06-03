@@ -27,13 +27,13 @@ if __name__ == '__main__':
 
     launcher = SSH_Launcher('LauncherSSH')
    #journal.debug('LauncherSSH').activate()
-    launcher.config(command=command1, rhost=rhost, background=False)
+    launcher(command=command1, rhost=rhost, background=False)
     launcher.launch()
     print launcher.response()
-    launcher.config(command=command2, rhost=rhost, background=False)
+    launcher(command=command2, rhost=rhost, background=False)
     launcher.launch()
     print launcher.response()
-   #launcher.config(command=command3, rhost=rhost, background=False)
+   #launcher(command=command3, rhost=rhost, background=False)
    #launcher.launch()
    #print launcher.response()
 

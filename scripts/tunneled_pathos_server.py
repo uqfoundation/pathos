@@ -76,24 +76,31 @@ if __name__ == '__main__':
   del myinp
 ##### CONFIGURATION & INPUT ########################
 
-  # get available remote port number
-  rport = pickport(rhost)
-
   # establish ssh tunnel
-  tunnel,lport = connect(rhost,rport)
-  print 'executing {ssh -N -L %d:%s:%d}' % (lport,rhost,rport)
+  tunnel = connect(rhost)
+  print 'executing {ssh -N -L %d:%s:%d}' % (tunnel._lport,rhost,tunnel._rport)
 
   # run server
-  serve(server,rhost,rport, profile=profile)
+  rserver = serve(server, rhost, tunnel._rport, profile=profile)
+  response = rserver.response()
+  if response:
+    tunnel.disconnect()
+    print response
+    raise OSError('Failure to start server')
 
   # get server pid  #FIXME: launcher.pid is not pid(server)
-  target = 'python[^#]*'+server #XXX: filter w/ regex for python-based server
-  pid = getpid(target,rhost)
+  target = '[P,p]ython[^#]*'+server # filter w/ regex for python-based server
+  try:
+    pid = getpid(target, rhost)
+  except OSError:
+    print "Cleanup on host may be required..."
+    tunnel.disconnect()
+    raise
 
   # test server
   # XXX: add a simple one-liner...
-  print "\nServer running at port=%s with pid=%s" % (rport,pid)
-  print "Connected to localhost at port=%s" % (lport)
+  print "\nServer running at port=%s with pid=%s" % (tunnel._rport, pid)
+  print "Connected to localhost at port=%s" % (tunnel._lport)
   import sys
   print 'Press <Enter> to kill server'
   sys.stdin.readline()
@@ -107,6 +114,5 @@ if __name__ == '__main__':
   # FIXME: just kills 'ssh', not the tunnel
   # get local pid: ps u | grep "ssh -N -L%s:%s$s" % (lport,rhost,rport)
   # kill -15 int(tunnelpid)
-
 
 # EOF

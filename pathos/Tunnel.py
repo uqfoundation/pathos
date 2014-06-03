@@ -44,9 +44,7 @@ class TunnelException(Exception):
     pass
 
 class Tunnel(Component):
-    """
-Base class for tunneled launchers for parallel and distributed computing.
-    """
+    """a ssh-tunnel launcher for parallel and distributed computing."""
     #MINPORT = 49152    
     MINPORT = 1024 
     MAXPORT = 65535
@@ -57,28 +55,28 @@ Base class for tunneled launchers for parallel and distributed computing.
         launcher = pyre.inventory.facility('launcher',
                                            default=LauncherSSH('launcher'))
     
-    def connect(self, remotehost, remoteport, through=None):
+    def connect(self, host, port, through=None):
         '''establish a secure shell tunnel between local and remote host
 
 Input:
-    host       -- remote hostname  [user@host:path is also valid]
-    tunnelport -- remote port number
+    host     -- remote hostname  [user@host:path is also valid]
+    port     -- remote port number
 
 Additional Input:
-    through    -- 'tunnel-through' hostname  [default = None]
+    through  -- 'tunnel-through' hostname  [default = None]
         '''
         from pathos.portpicker import portnumber
 
         pick = portnumber(self.MINPORT, self.MAXPORT)
         while True:
-            port = pick()
-            if port < 0:
+            localport = pick()
+            if localport < 0:
                 raise TunnelException, 'No available local port'
-            #print 'Trying port %d...' % port
+            #print 'Trying port %d...' % localport
             
             try:
-                self._connect(port, remotehost, remoteport, through=through)
-                #print 'SSH tunnel %d:%s:%d' % (port, remotehost, remoteport)
+                self._connect(localport, host, port, through=through)
+                #print 'SSH tunnel %d:%s:%d' % (localport, host, port)
             except TunnelException, e:
                 if e.args[0] == 'bind':
                     self.disconnect()
@@ -88,7 +86,7 @@ Additional Input:
                     raise TunnelException, 'Connection failed'
                 
             self.connected = True
-            return port
+            return localport
 
     def disconnect(self):
         '''destroy the ssh tunnel'''
@@ -107,15 +105,19 @@ Additional Input:
         self._tunnel = None
         self._lport = None
         self._rport = None
+        self._host = None
         return
 
     def __init__(self, name):
         '''create a ssh tunnel launcher
 
-Takes one initial input:
+Inputs:
     name        -- a unique identifier (string) for the launcher
         '''
-        Component.__init__(self, name, 'sshtunnel')
+      # name = ''.join(random.choice(string.ascii_letters) for i in range(16)) \
+      #        if name is None else name
+       #Component.__init__(self, name, 'sshtunnel')
+        super(Tunnel, self).__init__(name, facility='sshtunnel')
         self._launcher = self.inventory.launcher
         self.__disconnect()
         return
@@ -130,13 +132,14 @@ Takes one initial input:
         command = ''
         if through: rhost = through
         else: rhost = remotehost
-        self._launcher.config(rhost=rhost, command=command,
-                              options=options, background=True) #XXX: MMM
-                             #options=options, background=False)
+        self._launcher(host=rhost, command=command,
+                       options=options, background=True) #XXX: MMM
+                      #options=options, background=False)
         self._launcher.launch()
         self._tunnel = options  #XXX: MMM
         self._lport = localport
         self._rport = remoteport
+        self._host = rhost
         self._pid = self._launcher.pid() #FIXME: should be tunnel_pid [pid()+1]
         line = self._launcher.response()
         if line:

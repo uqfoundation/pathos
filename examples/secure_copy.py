@@ -38,17 +38,17 @@ if __name__=='__main__':
     from time import sleep
     sleep(1) #FIXME: needs time to work...
     print 'executing {scp %s %s:%s}' % (source0,cpu1,dest0)
-    copier.config(source=source0, destination=cpu1+':'+dest0)
+    copier(source=source0, destination=cpu1+':'+dest0)
     copier.launch()
 
     sleep(1) #FIXME: needs time to work...
     print 'executing {scp %s:%s %s:%s}' % (cpu1,source1,cpu2,dest1)
-    copier.config(source=cpu1+':'+source1, destination=cpu2+':'+dest1)
+    copier(source=cpu1+':'+source1, destination=cpu2+':'+dest1)
     copier.launch()
 
     sleep(1) #FIXME: needs time to work...
     print 'executing {scp %s:%s %s}' % (cpu2,source2,dest2)
-    copier.config(source=cpu2+':'+source2, destination=dest2)
+    copier(source=cpu2+':'+source2, destination=dest2)
     copier.launch()
 
     sleep(1) #FIXME: needs time to work...
@@ -57,9 +57,9 @@ if __name__=='__main__':
     os.remove(source0)
 
     launcher = SSH_Launcher('cleanup')
-    launcher.config(command=del1, rhost=cpu1, background=True)
+    launcher(command=del1, rhost=cpu1, background=True)
     launcher.launch()
-    launcher.config(command=del2, rhost=cpu2, background=True)
+    launcher(command=del2, rhost=cpu2, background=True)
     launcher.launch()
 
 #   print 'cleanup result file...'

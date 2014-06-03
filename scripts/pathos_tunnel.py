@@ -38,12 +38,9 @@ if __name__ == '__main__':
   else: pass # use default
 ##### CONFIGURATION & INPUT ########################
 
-  # get available remote port number
-  rport = pickport(rhost)
-
   # establish ssh tunnel
-  tunnel,lport = connect(rhost,rport)
-  print 'executing {ssh -N -L %d:%s:%d}' % (lport,rhost,rport)
+  tunnel = connect(rhost)
+  print 'executing {ssh -N -L %d:%s:%d}' % (tunnel._lport,rhost,tunnel._rport)
 
   # do stuff (i.e. wait) while the tunnel is connected
   import sys

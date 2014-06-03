@@ -20,11 +20,11 @@ A typical call to a 'scp launcher' will roughly follow this example:
     >>> copier = LauncherSCP('copier')
     >>>
     >>> # configure and launch the copy to the selected destination
-    >>> copier.config(source='~/foo.txt', destination='remote.host.edu:~')
+    >>> copier(source='~/foo.txt', destination='remote.host.edu:~')
     >>> copier.launch()
     >>>
     >>> # configure and launch the copied file to a new destination
-    >>> copier.config(source='remote.host.edu:~/foo.txt', destination='.')
+    >>> copier(source='remote.host.edu:~/foo.txt', destination='.')
     >>> copier.launch()
     >>> print copier.response()
  
@@ -35,21 +35,17 @@ class FileNotFound(Exception):
     '''Exception for improper source or destination format'''
     pass
 
-import os
-import signal
-from pyre.ipc.Selector import Selector
-
 from Launcher import Launcher
+
+# broke backward compatability: 30/05/14 ==> replace base-class almost entirely
 class LauncherSCP(Launcher):
-    '''a remote copier using scp'''
+    '''a popen-based copier for parallel and distributed computing.'''
 
-    def __init__(self, name, **kwds):
-        '''create a scp launcher
+    def __init__(self, name=None, **kwds):
+        '''create a copier
 
-Input:
+Inputs:
     name        -- a unique identifier (string) for the launcher
-
-Additional inputs:
     source      -- hostname:path of original  [user@host:path is also valid]
     destination -- hostname:path for copy  [user@host:path is also valid]
     launcher    -- remote service mechanism (i.e. scp, cp)  [default = 'scp']
@@ -75,20 +71,13 @@ Default values are set for methods inherited from the base class:
 
         launcher = pyre.inventory.str('launcher', default='scp')
         options = pyre.inventory.str('options', default='')
-        source = pyre.inventory.str('source', default='')
-        destination = pyre.inventory.str('destination', default='')
+        source = pyre.inventory.str('source', default='.')
+        destination = pyre.inventory.str('destination', default='.')
        #fgbg = pyre.inventory.str('fgbg', default='foreground')
-        background = pyre.inventory.bool('background', default=False)
-        stdin = pyre.inventory.inputFile('stdin')
-       #XXX: also inherits 'nodes' and 'nodelist'
         pass
 
-   #def _configure(self):
-   #    #FIXME: bypassing this with 'config'
-   #    return
-
     def config(self, **kwds):
-        '''configure a remote copy
+        '''configure the copier using given keywords:
 
 (Re)configure the copier for the following inputs:
     source      -- hostname:path of original  [user@host:path is also valid]
@@ -100,7 +89,9 @@ Default values are set for methods inherited from the base class:
                    for the remote process.
         '''
         for key, value in kwds.items():
-            if key == 'source': #note: if quoted, can be multiple sources
+            if key == 'command':
+                raise KeyError('command')
+            elif key == 'source': #note: if quoted, can be multiple sources
                 self.inventory.source = value
             elif key == 'destination':
                 self.inventory.destination = value
@@ -113,94 +104,27 @@ Default values are set for methods inherited from the base class:
             elif key == 'stdin':
                 self.inventory.stdin = value
             # backward compatability
-            elif key == 'fgbg':
-                value = True if value in ['bg','background'] else False
-                self.inventory.background = value
-        names = ['source','destination','launcher','options',\
-                                        'background','stdin']
+           #elif key == 'fgbg':
+           #    value = True if value in ['bg','background'] else False
+           #    self.inventory.background = value
+
+        self._stdout = None
+        self.message = '%s %s %s %s' % (self.inventory.launcher,
+                                        self.inventory.options,
+                                        self.inventory.source,
+                                        self.inventory.destination)
+        self.inventory.command = self.message
+        names=['source','destination','launcher','options','background','stdin']
         return {i:getattr(self.inventory, i) \
                 for i in self.inventory.propertyNames() if i in names}
 
-    def launch(self):
-        '''launch a configured command'''
-        command = '%s %s %s %s' % (self.inventory.launcher,
-                                   self.inventory.options,
-                                   self.inventory.source,
-                                   self.inventory.destination)
-       #self._execStrategy(command)
-        self._response = None
-        self._execute(command)
-        return
-
-    def _execute(self, command):
-       #'''execute the launch by piping the command, & saving the file object'''
-        from subprocess import Popen, PIPE, STDOUT
-        if self.inventory.background: #Spawn an scp process 
-            p = Popen(command, shell=True,
-                      stdin=self.inventory.stdin, stdout=PIPE,
-                      stderr=STDOUT, close_fds=True)
-            self._pid = p.pid #get fileobject pid
-            self._fromchild = p.stdout #save fileobject
-           #self._fromchild = p.fromchild #save fileobject
-        else:
-            p = Popen(command, shell=True,
-                      stdin=self.inventory.stdin, stdout=PIPE)
-            self._fromchild = p.stdout
-            self._pid = 0 #XXX: MMM --> or -1 ?
-        return
-
-    def response(self):
-        '''Return the response from a remotely launched process.
-        Return None if there was no response yet from a background process.
-        '''
-
-        if self._response is not None:  return self._response
-
-        # when running in foreground _pid is 0 (may change to -1)
-        if self._pid <= 0:
-            self._response = self._fromchild.read()
-            return self._response
-        
-        # handle response from a background process
-        def onData(selector, fobj):
-            print "in LauncherSCP.response.onData"
-            self._debug.log('on_remote')
-            self._response = fobj.read()
-            selector.state = False
-            return
-
-        def onTimeout(selector):
-            selector.state = False
-        
-        sel = Selector()
-        #sel._info.activate()
-        sel.notifyOnReadReady(self._fromchild, onData)
-        sel.notifyWhenIdle(onTimeout)
-        sel.watch(2.0)
-        # reset _response to None to allow capture of a next response
-        # from a background process
-        return self._response
-
-    def pid(self):
-        '''get copier pid'''
-        return self._pid
-
-    def kill(self):
-        '''terminate the launcher'''
-        if self._pid > 0:
-            print 'Kill scp pid=%d' % self._pid
-            os.kill(self._pid, signal.SIGTERM)
-            os.waitpid(self._pid, 0)
-            self._pid = 0
-        return
-
-    # backward compatability
-    stage = config
+    # interface
+    __call__ = config
     pass
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     pass
 
 
-# End of file 
+# End of file

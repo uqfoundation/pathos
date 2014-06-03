@@ -20,7 +20,7 @@ A typical call to a 'ssh launcher' will roughly follow this example:
     >>> launcher = LauncherSSH('launcher')
     >>>
     >>> # configure the launcher to perform the command on the selected host
-    >>> launcher.config(command='hostname', rhost='remote.host.edu')
+    >>> launcher(command='hostname', host='remote.host.edu')
     >>>
     >>> # execute the launch and retrieve the response
     >>> launcher.launch()
@@ -29,23 +29,19 @@ A typical call to a 'ssh launcher' will roughly follow this example:
 """
 __all__ = ['LauncherSSH']
 
-import os
-import signal
-from pyre.ipc.Selector import Selector
-
 from Launcher import Launcher
-class LauncherSSH(Launcher):
-    '''a remote process launcher using ssh'''
 
-    def __init__(self, name, **kwds):
+# broke backward compatability: 30/05/14 ==> replace base-class almost entirely
+class LauncherSSH(Launcher):
+    '''a popen-based ssh-launcher for parallel and distributed computing.'''
+
+    def __init__(self, name=None, **kwds):
         '''create a ssh launcher
 
-Takes one initial input:
+Inputs:
     name        -- a unique identifier (string) for the launcher
-
-Additional Inputs:
-    rhost       -- hostname to recieve command [user@host is also valid]
-    command     -- remotely launched command  [default = 'echo hello']
+    host        -- hostname to recieve command [user@host is also valid]
+    command     -- a command to send  [default = 'echo <name>']
     launcher    -- remote service mechanism (i.e. ssh, rsh)  [default = 'ssh']
     options     -- remote service options (i.e. -v, -N, -L)  [default = '']
     background  -- run in background  [default = False]
@@ -69,12 +65,8 @@ Default values are set for methods inherited from the base class:
 
         launcher = pyre.inventory.str('launcher', default='ssh')
         options = pyre.inventory.str('options', default='')
-        rhost = pyre.inventory.str('rhost', default='localhost')
-        command = pyre.inventory.str('command', default='echo hello')
+        host = pyre.inventory.str('host', default='localhost')
        #fgbg = pyre.inventory.str('fgbg', default='foreground')
-        background = pyre.inventory.bool('background', default=False)
-        stdin = pyre.inventory.inputFile('stdin')
-       #XXX: also inherits 'nodes' and 'nodelist'
         pass
 
    #def _configure(self):
@@ -85,19 +77,21 @@ Default values are set for methods inherited from the base class:
         '''configure a remote command using given keywords:
 
 (Re)configure the copier for the following inputs:
-    rhost       -- hostname to recieve command [user@host is also valid]
-    command     -- remotely launched command  [default = 'echo hello']
+    host        -- hostname to recieve command [user@host is also valid]
+    command     -- a command to send  [default = 'echo <name>']
     launcher    -- remote service mechanism (i.e. ssh, rsh)  [default = 'ssh']
     options     -- remote service options (i.e. -v, -N, -L)  [default = '']
     background  -- run in background  [default = False]
     stdin       -- file type object that should be used as a standard input
                    for the remote process.
         '''
+        if self.message is None:
+            self.inventory.command = 'echo %s' % self.name 
         for key, value in kwds.items():
             if key == 'command':
                 self.inventory.command = value
-            elif key == 'rhost':
-                self.inventory.rhost = value
+            elif key == 'host':
+                self.inventory.host = value
             elif key == 'launcher':
                 self.inventory.launcher = value
             elif key == 'options':
@@ -107,87 +101,21 @@ Default values are set for methods inherited from the base class:
             elif key == 'stdin':
                 self.inventory.stdin = value
             # backward compatability
-            elif key == 'fgbg':
-                value = True if value in ['bg','background'] else False
-                self.inventory.background = value
-        names = ['command','rhost','launcher','options','background','stdin']
+           #elif key == 'fgbg':
+           #    value = True if value in ['bg','background'] else False
+           #    self.inventory.background = value
+
+        self._stdout = None
+        self.message = '%s %s %s "%s"' % (self.inventory.launcher,
+                                          self.inventory.options,
+                                          self.inventory.host,
+                                          self.inventory.command)
+        names = ['command','host','launcher','options','background','stdin']
         return {i:getattr(self.inventory, i) \
                 for i in self.inventory.propertyNames() if i in names}
 
-    def launch(self):
-        '''launch a configured command'''
-        command = '%s %s %s "%s"' % (self.inventory.launcher,
-                                   self.inventory.options,
-                                   self.inventory.rhost,
-                                   self.inventory.command)
-       #self._execStrategy(command)
-        self._response = None
-        self._execute(command)
-        return
-
-    def _execute(self, command):
-       #'''execute the launch by piping the command, & saving the file object'''
-        from subprocess import Popen, PIPE, STDOUT
-        if self.inventory.background: #Spawn an ssh process 
-            p = Popen(command, shell=True,
-                      stdin=self.inventory.stdin, stdout=PIPE,
-                      stderr=STDOUT, close_fds=True)
-            self._pid = p.pid #get fileobject pid
-            self._fromchild = p.stdout #save fileobject
-        else:
-            p = Popen(command, shell=True,
-                      stdin=self.inventory.stdin, stdout=PIPE)
-            self._fromchild = p.stdout
-            self._pid = 0 #XXX: MMM --> or -1 ?
-        return
-
-    def response(self):
-        '''Return the response from a remotely launched process.
-        Return None if there was no response yet from a background process.
-        '''
-
-        if self._response is not None:  return self._response
-
-        # when running in foreground _pid is 0 (may change to -1)
-        if self._pid <= 0:
-            self._response = self._fromchild.read()
-            return self._response
-        
-        # handle response from a background process
-        def onData(selector, fobj):
-            print "in LauncherSSH.response.onData"
-            self._debug.log('on_remote')
-            self._response = fobj.read()
-            selector.state = False
-            return
-
-        def onTimeout(selector):
-            selector.state = False
-        
-        sel = Selector()
-        #sel._info.activate()
-        sel.notifyOnReadReady(self._fromchild, onData)
-        sel.notifyWhenIdle(onTimeout)
-        sel.watch(2.0)
-        # reset _response to None to allow capture of a next response
-        # from a background process
-        return self._response
-
-    def pid(self):
-        '''get launcher pid'''
-        return self._pid
-
-    def kill(self):
-        '''terminate the launcher'''
-        if self._pid > 0:
-            print 'Kill ssh pid=%d' % self._pid
-            os.kill(self._pid, signal.SIGTERM)
-            os.waitpid(self._pid, 0)
-            self._pid = 0
-        return
-
-    # backward compatability
-    stage = config
+    # interface
+    __call__ = config
     pass
 
 

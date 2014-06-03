@@ -93,11 +93,19 @@ if __name__ == '__main__':
 ##### CONFIGURATION & INPUT ########################
 
   # run server
-  serve(server,rhost,rport, profile=profile)
+  rserver = serve(server,rhost,rport, profile=profile)
+  response = rserver.response()
+  if response:
+    print response
+    raise OSError('Failure to start server')
 
   # get server pid  #FIXME: launcher.pid is not pid(server)
-  target = 'python[^#]*'+server #XXX: filter w/ regex for python-based server
-  pid = getpid(target,rhost)
+  target = '[P,p]ython[^#]*'+server # filter w/ regex for python-based server
+  try:
+    pid = getpid(target, rhost)
+  except OSError:
+    print "Cleanup on host may be required..."
+    raise
 
   # test server
   # XXX: add a simple one-liner...
