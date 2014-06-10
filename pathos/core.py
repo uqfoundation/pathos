@@ -19,7 +19,7 @@ import re
 _psaxj = re.compile("((\S+\s+)?\d+\s+\d+\s+\d+\s)")
 
 
-def copy(source, destination):
+def copy(source, destination=None, **kwds):
   '''copy source to (possibly) remote destination
 
 Execute a copy, and return the copier. Use 'kill' to kill the copier, and 
@@ -29,19 +29,25 @@ Inputs:
     source      -- path string of source 'file'
     destination -- path string for destination target
   '''
+  #XXX: options, background, stdin can be set w/ kwds (also name, launcher)
+  if destination is None: destination = os.getcwd()
   from LauncherSCP import LauncherSCP
-  copier = LauncherSCP()
+  opt = kwds.pop('options', None)
+  kwds['background'] = kwds.pop('bg', False) # ignores 'background'
+  copier = LauncherSCP(**kwds)
   if ':' in source or ':' in destination:
-    copier(options='-q -r', source=source, destination=destination)
+    if opt is None: opt = '-q -r'
+    copier(options=opt, source=source, destination=destination)
   else:
-    copier(launcher='cp', options='-r', source=source, destination=destination)
+    if opt is None: opt = '-r'
+    copier(launcher='cp', options=opt, source=source, destination=destination)
   logging.info('executing {%s}', copier.message)
   copier.launch()
   copier.kill()
   return copier
 
 
-def execute(command, host=None, bg=True):
+def execute(command, host=None, bg=True, **kwds):
   '''execute a command (possibly) on a remote host
 
 Execute a process, and return the launcher. Use 'response' to retrieve the
@@ -53,15 +59,17 @@ Inputs:
     host    -- hostname of execution target  [default = None (i.e. run locally)]
     bg      -- run as background process?  [default = True]
   '''
-  bg = bool(bg)
+  #XXX: options, background, stdin can be set w/ kwds (also name, launcher)
+  bg = bool(bg) # overrides 'background'
   if host in [None, '']:
     from Launcher import Launcher
-    launcher = Launcher()
+    launcher = Launcher(**kwds)
     launcher(command=command, background=bg)
   else:
     from LauncherSSH import LauncherSSH
-    launcher = LauncherSSH()
-    launcher(options='-q', command=command, host=host, background=bg)
+    opt = kwds.pop('options', '-q')
+    launcher = LauncherSSH(**kwds)
+    launcher(options=opt, command=command, host=host, background=bg)
   logging.info('executing {%s}', launcher.message)
   launcher.launch()
  #response = launcher.response()
@@ -70,17 +78,21 @@ Inputs:
   return launcher
 
 
-#XXX: add local-only equivalents for kill and *pid to pox?
-def kill(pid, host=None): #XXX: launcher "kill self" method; use it?
+#XXX: add local-only versions of kill and *pid to pox?
+#XXX: use threading.Timer (or sched) to schedule or kill after N seconds?
+def kill(pid, host=None, **kwds):
   '''kill a process (possibly) on a remote host
 
 Inputs:
     pid   -- process id
     host  -- hostname where process is running [default = None (i.e. locally)]
   '''
-  command = 'kill -n TERM %s' % pid #XXX: TERM=15 or KILL=9 ?
-  return execute(command, host, bg=False).response()
-  #XXX: raise OSError('[Errno 3] No such process') when no process found ?
+  #XXX: launcher has "kill self" method; use it? note that this is different?
+  command = 'kill -n TERM %s' % pid #XXX: use TERM=15 or KILL=9 ?
+  getpid(pid, host) # throw error if pid doesn't exist #XXX: bad idea?
+  response = execute(command, host, bg=False, **kwds).response()
+  return response
+  #XXX: how handle failed response?  bg=True prints, bg=False returns stderr
 
 
 def _psax(response, pattern=None):
@@ -99,7 +111,7 @@ def _psax(response, pattern=None):
   return '\n'.join(response)
 
 
-def getpid(target=None, host=None):
+def getpid(target=None, host=None, all=False, **kwds):
   '''get the process id for a target process (possibly) running on remote host
 
 This method should only be used as a last-ditch effort to find a process id.
@@ -111,17 +123,28 @@ If target is None, then get the process id of the __main__  python instance.
 Inputs:
     target -- string name of target process
     host   -- hostname where process is running
+    all    -- get all resulting lines from query?  [default = False]
   '''
   if target is None:
-    return None if host else os.getpid()
+    if all:
+      target = ''
+    elif host:
+      raise OSError('[Error 3] No such process')
+    else:
+      return os.getpid()
+  elif isinstance(target, int): #NOTE: passing pid useful for all=True
+    target = "%5d " % target    #NOTE: assumes max pid is 99999
  #command = "ps -A | grep '%s'" % target # 'other users' only
   command = "ps ax | grep '%s'" % target # 'all users'
-  response = _psax(execute(command, host, bg=False).response())
-  ignore = "grep '%s'" % target
+  response = _psax(execute(command, host, bg=False, **kwds).response())
+  ignore = "grep %s" % target
+  if all: return response
+
   try: # select the PID
     # find most recent where "grep '%s'" not in line
     pid = sorted(_select(line,(0,))[0] \
-          for line in response.split('\n') if line and ignore not in line)
+          for line in response.split('\n') if line and ignore not in line \
+                                                   and command not in line)
     if pid is None:
       raise OSError('Failure to recover process id')
     #XXX: take advantage of *ppid to help match correct pid?
@@ -152,14 +175,20 @@ Inputs:
     group  -- get parent group id (pgid) instead of direct parent id?
   '''
   if pid is None:
-    return None if host else os.getpgrp() if group else os.getppid()
+    if host:
+      raise OSError('[Error 3] No such process')
+    return os.getpgrp() if group else os.getppid()
   pid = str(pid)
   command = "ps axj"
   response = execute(command, host).response()
+  if response is None:
+    raise OSError('[Errno 3] No such process')
   # analyze header for correct pattern and indx
   head = (line for line in response.split('\n') if 'PPID' in line)
-  try: head = head.next().split()
-  except StopIteration: return None
+  try:
+    head = head.next().split()
+  except StopIteration:
+    raise OSError('Failure to recover process id')
   parent = 'PGID' if group else 'PPID'
   indx = (head.index('PID'), head.index(parent))
   # extract good data lines from response
@@ -167,8 +196,9 @@ Inputs:
   # select the PID and parent id
   response = dict(_select(line,indx) for line in response.split('\n') if line)
   response = response.get(pid, None)
-  return None if response is None else int(response)
-  #XXX: raise OSError('[Errno 3] No such process') when no process found ?
+  if response is None:
+    raise OSError('[Errno 3] No such process')
+  return int(response)
 
 
 def getchild(pid=None, host=None, group=False): # find all children of pid
@@ -182,23 +212,33 @@ Inputs:
     group  -- get process ids for the parent group id (pgid) instead?
   '''
   if pid is None:
-    if host: return None
+    if host:
+      raise OSError('[Error 3] No such process')
     pid = getpid()
   pid = str(pid)
   command = "ps axj"
   response = execute(command, host).response()
+  if response is None:
+    raise OSError('[Errno 3] No such process')
   # analyze header for correct pattern and indx
   head = (line for line in response.split('\n') if 'PPID' in line)
   try: head = head.next().split()
-  except StopIteration: return []
+  except StopIteration:
+    raise OSError('Failure to recover process id')
   parent = 'PGID' if group else 'PPID'
   indx = (head.index('PID'), head.index(parent))
   # extract good data lines from response
   response = _psax(response, pattern=_psaxj)
   # select the PID and parent id
   response = dict(_select(line,indx) for line in response.split('\n') if line)
-  return [int(key) for (key,value) in response.items() if value == pid]
-  #XXX: raise OSError('[Errno 3] No such process') when no process found ?
+  children = [int(key) for (key,value) in response.items() if value == pid]
+  if children:
+    return children
+  if not group: # check to see if given 'PID' actually exists
+    exists = [int(key) for (key,value) in response.items() if key == pid]
+  else: exists = False # if 'PGID' not found, then doesn't exist
+  if exists: return children
+  raise OSError('[Errno 3] No such process')
 
 
 def randomport(host=None):
@@ -227,20 +267,21 @@ Inputs:
   return rport
 
 
-def connect(host, port=None):
+def connect(host, port=None, through=None):
   '''establish a secure tunnel connection to a remote host at the given port
 
 Inputs:
-    host  -- hostname to which a tunnel should be established
-    port  -- port number (on host) to connect the tunnel to
+    host     -- hostname to which a tunnel should be established
+    port     -- port number (on host) to connect the tunnel to
+    through  -- 'tunnel-through' hostname  [default = None]
   '''
   from Tunnel import Tunnel
-  t = Tunnel('connect') #FIXME: better default (i.e. don't give a name)
-  if port is None: port = randomport(host)
-  t.connect(host, port)
+  t = Tunnel()
+  t.connect(host, port, through)
   return t
 
 
+#FIXME: needs work...
 def serve(server, host=None, port=None, profile='.bash_profile'):
   '''begin serving RPC requests
 

@@ -52,6 +52,8 @@ from pyre.components.Component import Component
 class Launcher(Component):
     """a popen-based launcher for parallel and distributed computing."""
 
+    verbose = True
+
     class Inventory(Component.Inventory):
 
         import pyre.inventory
@@ -166,7 +168,7 @@ Additionally, default values are set for 'inventory' class members:
         
         # handle response from a background process
         def onData(selector, fobj):
-            print "in Launcher.response.onData"
+            if self.verbose: print("in Launcher.response.onData")
             self._debug.log('on_remote')
             self._response = fobj.read()
             selector.state = False
@@ -191,7 +193,7 @@ Additionally, default values are set for 'inventory' class members:
     def kill(self):
         '''terminate the launcher'''
         if self._pid > 0:
-            print 'Kill pid=%d' % self._pid
+            if self.verbose: print('Kill pid=%d' % self._pid)
             os.kill(self._pid, signal.SIGTERM)
             os.waitpid(self._pid, 0)
             self._pid = 0

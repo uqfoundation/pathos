@@ -36,6 +36,8 @@ __all__ = ['Tunnel','TunnelException']
 
 import os
 import signal
+import random
+import string
 from pyre.components.Component import Component
 from LauncherSSH import LauncherSSH
 
@@ -48,6 +50,7 @@ class Tunnel(Component):
     #MINPORT = 49152    
     MINPORT = 1024 
     MAXPORT = 65535
+    verbose = True
 
     class Inventory(Component.Inventory):
         import pyre.inventory
@@ -55,7 +58,7 @@ class Tunnel(Component):
         launcher = pyre.inventory.facility('launcher',
                                            default=LauncherSSH('launcher'))
     
-    def connect(self, host, port, through=None):
+    def connect(self, host, port=None, through=None):
         '''establish a secure shell tunnel between local and remote host
 
 Input:
@@ -66,6 +69,9 @@ Additional Input:
     through  -- 'tunnel-through' hostname  [default = None]
         '''
         from pathos.portpicker import portnumber
+        if port is None:
+            from pathos.core import randomport
+            port = randomport(through) if through else randomport(host)
 
         pick = portnumber(self.MINPORT, self.MAXPORT)
         while True:
@@ -90,9 +96,9 @@ Additional Input:
 
     def disconnect(self):
         '''destroy the ssh tunnel'''
-        #FIXME: grep (?) for self._tunnel, then kill the pid
+        #FIXME: grep (?) for self._launcher.message, then kill the pid
         if self._pid > 0:
-            print 'Kill ssh pid=%d' % self._pid
+            if self.verbose: print('Kill ssh pid=%d' % self._pid)
             os.kill(self._pid, signal.SIGTERM)
             os.waitpid(self._pid, 0)
             self.__disconnect()
@@ -102,30 +108,33 @@ Additional Input:
         '''disconnect tunnel internals'''
         self._pid = 0
         self.connected = False
-        self._tunnel = None
         self._lport = None
         self._rport = None
         self._host = None
         return
 
-    def __init__(self, name):
+    def __init__(self, name=None, **kwds):
         '''create a ssh tunnel launcher
 
 Inputs:
     name        -- a unique identifier (string) for the launcher
         '''
-      # name = ''.join(random.choice(string.ascii_letters) for i in range(16)) \
-      #        if name is None else name
+        name = ''.join(random.choice(string.ascii_letters) for i in range(16)) \
+               if name is None else name
        #Component.__init__(self, name, 'sshtunnel')
         super(Tunnel, self).__init__(name, facility='sshtunnel')
         self._launcher = self.inventory.launcher
         self.__disconnect()
+        if kwds: self.connect(**kwds)
         return
 
     def __repr__(self):
         if not self.connected:
             return "Tunnel('%s')" % self.name
-        return "Tunnel('ssh %s')" % self._tunnel
+        try:
+            msg = self._launcher.message.split(' ',1)[-1].rstrip('"').rstrip()
+        except: msg = self._launcher.message
+        return "Tunnel('%s')" % msg
 
     def _connect(self, localport, remotehost, remoteport, through=None):
         options = '-q -N -L%d:%s:%d' % (localport, remotehost, remoteport)
@@ -136,7 +145,6 @@ Inputs:
                        options=options, background=True) #XXX: MMM
                       #options=options, background=False)
         self._launcher.launch()
-        self._tunnel = options  #XXX: MMM
         self._lport = localport
         self._rport = remoteport
         self._host = rhost
@@ -146,7 +154,7 @@ Inputs:
             if line.startswith('bind'):
                 raise TunnelException, 'bind'
             else:
-                print line
+                print(line)
                 raise TunnelException, 'failure'
         return
 
