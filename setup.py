@@ -193,7 +193,7 @@ Pathos requires::
     - python, version >= 2.5, version < 3.0
     - dill, version >= 0.2.1
     - pox, version >= 0.2
-    - pyre, version == 0.8-pathos (*)
+    - pyre, version == 0.8.2.0-pathos (*)
     - pp, version >= 1.6.4.1 (*)
 
 Optional requirements::
@@ -348,7 +348,7 @@ exec setup_code
 try:
     import pyre
     import pp
-    if pp.__version__ != pp_version[2:]:
+    if pp.__version__[:-1] != pp_version[2:-1]:
         raise ImportError
     import dill
     import pox

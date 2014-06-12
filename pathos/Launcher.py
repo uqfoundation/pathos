@@ -39,7 +39,7 @@ A typical call to a popen 'launcher' will roughly follow this example:
     >>> print launcher.response()
  
 """
-__all__ = ['Launcher']
+__all__ = ['Launcher', 'LauncherException']
 
 import os
 import signal
@@ -47,6 +47,10 @@ import random
 import string
 from pyre.ipc.Selector import Selector
 from pyre.components.Component import Component
+
+class LauncherException(Exception):
+    '''Exception for failure to launch a command'''
+    pass
 
 # broke backward compatability: 30/05/14 ==> replace base-class almost entirely
 class Launcher(Component):
@@ -141,14 +145,20 @@ Additionally, default values are set for 'inventory' class members:
         #XXX: what if saved list/dict of _stdout instead of just the one?
         #     could associated name/_pid and _stdout
         if self.inventory.background: #Spawn a background process 
-            p = Popen(self.message, shell=True,
-                      stdin=self.inventory.stdin, stdout=PIPE,
-                      stderr=STDOUT, close_fds=True)
+            try:
+                p = Popen(self.message, shell=True,
+                          stdin=self.inventory.stdin, stdout=PIPE,
+                          stderr=STDOUT, close_fds=True)
+            except:
+                raise LauncherException('failure to pipe: %s' % self.message)
             self._pid = p.pid #get fileobject pid
             self._stdout = p.stdout #save fileobject
         else:
-            p = Popen(self.message, shell=True,
-                      stdin=self.inventory.stdin, stdout=PIPE)
+            try:
+                p = Popen(self.message, shell=True,
+                          stdin=self.inventory.stdin, stdout=PIPE)
+            except:
+                raise LauncherException('failure to pipe: %s' % self.message)
             self._stdout = p.stdout
             self._pid = 0 #XXX: MMM --> or -1 ?
         return
@@ -158,7 +168,8 @@ Additionally, default values are set for 'inventory' class members:
         Return None if no response was received yet from a background process.
         '''
 
-        if self._stdout is None: raise RuntimeError("must 'launch' a newly-configured connection before obtaining a response")
+        if self._stdout is None:
+            raise LauncherException("'launch' is required after any reconfiguration")
         if self._response is not None: return self._response
 
         # when running in foreground _pid is 0 (may change to -1)
