@@ -347,10 +347,11 @@ exec setup_code
 # if dependencies are missing, print a warning
 try:
     import pyre
-    import pp
+    import ppcommon as pp
     if pp.__version__[:-1] != pp_version[2:-1]:
         raise ImportError
     import dill
+    import six
     import pox
     try:
         import processing
