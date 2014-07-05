@@ -115,8 +115,8 @@ Default values are set for methods inherited from the base class:
                                         self.inventory.destination)
         self.inventory.command = self.message
         names=['source','destination','launcher','options','background','stdin']
-        return {i:getattr(self.inventory, i) \
-                for i in self.inventory.propertyNames() if i in names}
+        return dict((i,getattr(self.inventory, i)) \
+                for i in self.inventory.propertyNames() if i in names)
 
     # interface
     __call__ = config

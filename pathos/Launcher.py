@@ -129,8 +129,8 @@ Additionally, default values are set for 'inventory' class members:
         self._stdout = None
         self.message = self.inventory.command
         names=['command','background','stdin']
-        return {i:getattr(self.inventory, i) \
-                for i in self.inventory.propertyNames() if i in names}
+        return dict((i,getattr(self.inventory, i)) \
+                for i in self.inventory.propertyNames() if i in names)
 
     def launch(self):
         '''launch a configured command'''
