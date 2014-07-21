@@ -33,7 +33,7 @@ def optimize(solver, mapper, nodes, target='rosen', **kwds):
     x0 = ([random.uniform(-100,100) for i in xrange(ndim)] for i in xrange(N))
 
     # minimize the function
-    results = mapper(nodes).map(the_solver, model, x0)
+    results = mapper(nodes).map(solver, x0)
 
     # find the results with the lowest energy
     from optimize_helper import best_results
