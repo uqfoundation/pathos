@@ -5,18 +5,26 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
+import time, random
+
+x = range(18)
+delay = 0.01
+items = 20
+maxtries = 20
+
+
 def busy_add(x,y, delay=0.01):
     for n in range(x):
        x += n
     for n in range(y):
        y -= n
-    import time
     time.sleep(delay)
     return x + y
 
-def busy_squared(x):
-    import time, random
-    time.sleep(2*random.random())
+def busy_squared(x, delay=True):
+    if delay is True: delay = random.random()
+    if not delay: delay = 0
+    time.sleep(2*delay)
     return x*x
 
 def squared(x):
@@ -29,89 +37,106 @@ def quad_factory(a=1, b=1, c=0):
 
 square_plus_one = quad_factory(2,0,1)
 
+x2 = map(squared, x)
 
-def test1(pool):
-    print pool
-    print "x: %s\n" % str(x)
 
-    print pool.map.__name__
+def test_sanity(pool, verbose=False):
+    if verbose:
+        print pool
+        print "x: %s\n" % str(x)
+
+        print pool.map.__name__
+    # blocking map
     start = time.time()
     res = pool.map(squared, x)
-    print "time to results:", time.time() - start
-    print "y: %s\n" % str(res)
+    end = time.time() - start
+    assert res == x2
+    if verbose:
+        print "time to results:", end
+        print "y: %s\n" % str(res)
 
-    print pool.imap.__name__
+        print pool.imap.__name__
+    # iterative map
     start = time.time()
     res = pool.imap(squared, x)
-    print "time to queue:", time.time() - start
+    fin = time.time() - start
+    # get result from iterator
     start = time.time()
     res = list(res)
-    print "time to results:", time.time() - start
-    print "y: %s\n" % str(res)
+    end = time.time() - start
+    assert res == x2
+    if verbose:
+        print "time to queue:", fin
+        print "time to results:", end
+        print "y: %s\n" % str(res)
 
-   #print pool.uimap.__name__
-   #start = time.time()
-   #res = pool.uimap(squared, x)
-   #print "time to queue:", time.time() - start
-   #start = time.time()
-   #res = list(res)
-   #print "time to results:", time.time() - start
-   #print "y: %s\n" % str(res)
-
-    print pool.amap.__name__
+        print pool.amap.__name__
+    # asyncronous map
     start = time.time()
     res = pool.amap(squared, x)
-    print "time to queue:", time.time() - start
+    fin = time.time() - start
+    # get result from result object
     start = time.time()
     res = res.get()
-    print "time to results:", time.time() - start
-    print "y: %s\n" % str(res)
+    end = time.time() - start
+    assert res == x2
+    if verbose:
+        print "time to queue:", fin
+        print "time to results:", end
+        print "y: %s\n" % str(res)
 
 
 def test2(pool, items=4, delay=0):
     _x = range(-items/2,items/2,2)
     _y = range(len(_x))
     _d = [delay]*len(_x)
+    _z = [0]*len(_x)
 
-    print map
-    res1 = map(busy_squared, _x)
-    res2 = map(busy_add, _x, _y, _d)
+   #print map
+    res1 = map(squared, _x)
+    res2 = map(busy_add, _x, _y, _z)
 
-    print pool.map
-    _res1 = pool.map(busy_squared, _x)
+   #print pool.map
+    _res1 = pool.map(busy_squared, _x, _d)
     _res2 = pool.map(busy_add, _x, _y, _d)
     assert _res1 == res1
     assert _res2 == res2
 
-    print pool.imap
-    _res1 = pool.imap(busy_squared, _x)
+   #print pool.imap
+    _res1 = pool.imap(busy_squared, _x, _d)
     _res2 = pool.imap(busy_add, _x, _y, _d)
     assert list(_res1) == res1
     assert list(_res2) == res2
 
    #print pool.uimap
-   #_res1 = pool.uimap(busy_squared, _x)
+   #_res1 = pool.uimap(busy_squared, _x, _d)
    #_res2 = pool.uimap(busy_add, _x, _y, _d)
    #assert sorted(_res1) == sorted(res1)
    #assert sorted(_res2) == sorted(res2)
 
-    print pool.amap
-    _res1 = pool.amap(busy_squared, _x)
+   #print pool.amap
+    _res1 = pool.amap(busy_squared, _x, _d)
     _res2 = pool.amap(busy_add, _x, _y, _d)
     assert _res1.get() == res1
     assert _res2.get() == res2
-    print ""
+   #print ""
 
 
-def test3(pool): # test against a function that should fail in pickle
-    print pool
-    print "x: %s\n" % str(x)
+def test3(pool, verbose=False): # test a function that should fail in pickle
+    if verbose:
+        print pool
+        print "x: %s\n" % str(x)
 
-    print pool.map.__name__
-    start = time.time()
-    res = pool.map(square_plus_one, x)
-    print "time to results:", time.time() - start
-    print "y: %s\n" % str(res)
+        print pool.map.__name__
+   #start = time.time()
+    try:
+        res = pool.map(square_plus_one, x)
+    except:
+        assert False # should use a smarter test here...
+   #end = time.time() - start
+   #    print "time to results:", end
+        print "y: %s\n" % str(res)
+    assert True
 
 
 def test4(pool, maxtries, delay):
@@ -136,20 +161,14 @@ def test4(pool, maxtries, delay):
 
 
 if __name__ == '__main__':
-    import time
-    x = range(18)
-    delay = 0.01
-    items = 20
-    maxtries = 20
-
-    from pathos.multiprocessing import ProcessingPool as Pool; skip = False
-   #from pathos.multiprocessing import ThreadingPool as Pool; skip = False
-   #from pathos.pp import ParallelPythonPool as Pool; skip = True
+    from pathos.multiprocessing import ProcessingPool as Pool
+   #from pathos.multiprocessing import ThreadingPool as Pool
+   #from pathos.pp import ParallelPythonPool as Pool
 
     pool = Pool(nodes=4)
-    test1( pool )
+    test_sanity( pool )
     test2( pool, items, delay )
-    if not skip: test3( pool ) #XXX: fails for pathos.pp
+    test3( pool )
     test4( pool, maxtries, delay )
 
 
