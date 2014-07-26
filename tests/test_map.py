@@ -12,7 +12,7 @@ delay = 0.01
 items = 100
 
 
-def busy_add(x,y, delay):
+def busy_add(x,y, delay=0.01):
     for n in range(x):
        x += n
     for n in range(y):

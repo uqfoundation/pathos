@@ -5,7 +5,7 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
-import time, random
+import time
 
 x = range(18)
 delay = 0.01
@@ -21,10 +21,9 @@ def busy_add(x,y, delay=0.01):
     time.sleep(delay)
     return x + y
 
-def busy_squared(x, delay=True):
-    if delay is True: delay = random.random()
-    if not delay: delay = 0
-    time.sleep(2*delay)
+def busy_squared(x):
+    import random
+    time.sleep(0.01*random.random())
     return x*x
 
 def squared(x):
@@ -86,7 +85,7 @@ def test_sanity(pool, verbose=False):
         print "y: %s\n" % str(res)
 
 
-def test2(pool, items=4, delay=0):
+def test_maps(pool, items=4, delay=0):
     _x = range(-items/2,items/2,2)
     _y = range(len(_x))
     _d = [delay]*len(_x)
@@ -97,32 +96,32 @@ def test2(pool, items=4, delay=0):
     res2 = map(busy_add, _x, _y, _z)
 
    #print pool.map
-    _res1 = pool.map(busy_squared, _x, _d)
+    _res1 = pool.map(squared, _x)
     _res2 = pool.map(busy_add, _x, _y, _d)
     assert _res1 == res1
     assert _res2 == res2
 
    #print pool.imap
-    _res1 = pool.imap(busy_squared, _x, _d)
+    _res1 = pool.imap(squared, _x)
     _res2 = pool.imap(busy_add, _x, _y, _d)
     assert list(_res1) == res1
     assert list(_res2) == res2
 
    #print pool.uimap
-   #_res1 = pool.uimap(busy_squared, _x, _d)
+   #_res1 = pool.uimap(squared, _x)
    #_res2 = pool.uimap(busy_add, _x, _y, _d)
    #assert sorted(_res1) == sorted(res1)
    #assert sorted(_res2) == sorted(res2)
 
    #print pool.amap
-    _res1 = pool.amap(busy_squared, _x, _d)
+    _res1 = pool.amap(squared, _x)
     _res2 = pool.amap(busy_add, _x, _y, _d)
     assert _res1.get() == res1
     assert _res2.get() == res2
    #print ""
 
 
-def test3(pool, verbose=False): # test a function that should fail in pickle
+def test_dill(pool, verbose=False): # test function that should fail in pickle
     if verbose:
         print pool
         print "x: %s\n" % str(x)
@@ -139,10 +138,9 @@ def test3(pool, verbose=False): # test a function that should fail in pickle
     assert True
 
 
-def test4(pool, maxtries, delay):
-    print pool
-   #m = pool.amap(busy_squared, x)
-    m = pool.amap(busy_add, x, x)
+def test_ready(pool, maxtries, delay, verbose=True):
+    if verbose: print pool
+    m = pool.amap(busy_squared, x)# x)
 
   # print m.ready()
   # print m.wait(0) 
@@ -150,26 +148,41 @@ def test4(pool, maxtries, delay):
     while not m.ready():
         time.sleep(delay)
         tries += 1
-        print "TRY: %s" % tries
+        if verbose: print "TRY: %s" % tries
         if tries >= maxtries:
-            print "TIMEOUT"
+            if verbose: print "TIMEOUT"
             break
    #print m.ready()
 #   print m.get(0)
-    print m.get()
-
+    res = m.get()
+    if verbose: print res
+    z = [0]*len(x)
+    assert res == map(squared, x)# x, z)
+    assert tries > 0
+    assert maxtries > tries #should be True, may not be if CPU is SLOW
 
 
 if __name__ == '__main__':
     from pathos.multiprocessing import ProcessingPool as Pool
-   #from pathos.multiprocessing import ThreadingPool as Pool
-   #from pathos.pp import ParallelPythonPool as Pool
-
     pool = Pool(nodes=4)
     test_sanity( pool )
-    test2( pool, items, delay )
-    test3( pool )
-    test4( pool, maxtries, delay )
+    test_maps( pool, items, delay )
+    test_dill( pool )
+    test_ready( pool, maxtries, delay, verbose=False )
+
+    from pathos.multiprocessing import ThreadingPool as Pool
+    pool = Pool(nodes=4)
+    test_sanity( pool )
+    test_maps( pool, items, delay )
+    test_dill( pool )
+    test_ready( pool, maxtries, delay, verbose=False )
+
+    from pathos.pp import ParallelPythonPool as Pool
+    pool = Pool(nodes=4)
+    test_sanity( pool )
+    test_maps( pool, items, delay )
+    test_dill( pool )
+    test_ready( pool, maxtries, delay, verbose=False )
 
 
 # EOF

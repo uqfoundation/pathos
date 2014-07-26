@@ -6,7 +6,7 @@
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
 from dill import source
-def test1(obj):
+def test_source(obj):
     _obj = source._wrap(obj)
     assert _obj(1.57) == obj(1.57)
     src = source.getimportable(obj, alias='_f')
@@ -15,7 +15,7 @@ def test1(obj):
     name = source.getname(obj)
     assert name == obj.__name__ or src.split("=",1)[0].strip()
 
-def test2(obj):
+def test_ppmap(obj):
     from pathos.pp import ParallelPythonPool
     p = ParallelPythonPool(2)
     x = [1,2,3]
@@ -30,7 +30,7 @@ if __name__ == '__main__':
         return x+2
 
     for func in [g, f, abs, sin]:
-        test1(func)
-        test2(func)
+        test_source(func)
+        test_ppmap(func)
 
 # EOF
