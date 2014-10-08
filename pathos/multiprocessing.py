@@ -96,38 +96,58 @@ Mapper that leverages python's multiprocessing.
         self.__nodes = kwds.get('ncpus', cpu_count())
 
         # Create a new server if one isn't already initialized
-        if not __STATE['pool'] or self.__nodes != cpu_count():
-            __STATE['pool'] = Pool(self.__nodes)
+        self._serve()
         return
     __init__.__doc__ = AbstractWorkerPool.__init__.__doc__ + __init__.__doc__
    #def __exit__(self, *args):
-   #    __STATE['pool'] = None
+   #    self._clear()
    #    return
+    def _serve(self, nodes=None): #XXX: should be STATE method; use id
+        """Create a new server if one isn't already initialized"""
+        if nodes is None: nodes = self.__nodes
+        _pool = __STATE['pool']
+        if not _pool or nodes != _pool.__nodes:
+            _pool = Pool(nodes)
+            _pool.__nodes = nodes
+            __STATE['pool'] = _pool
+        return _pool
+    def _clear(self): #XXX: should be STATE method; use id
+        """Remove server with matching state"""
+        _pool = __STATE['pool']
+        if _pool and self.__nodes == _pool.__nodes:
+            __STATE['pool'] = None
+        return #_pool
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
-        return __STATE['pool'].map(star(f), zip(*args)) # chunksize
+        _pool = self._serve()
+        return _pool.map(star(f), zip(*args)) # chunksize
     map.__doc__ = AbstractWorkerPool.map.__doc__
     def imap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
-        return __STATE['pool'].imap(star(f), zip(*args)) # chunksize
+        _pool = self._serve()
+        return _pool.imap(star(f), zip(*args)) # chunksize
     imap.__doc__ = AbstractWorkerPool.imap.__doc__
     def uimap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
-        return __STATE['pool'].imap_unordered(star(f), zip(*args)) # chunksize
+        _pool = self._serve()
+        return _pool.imap_unordered(star(f), zip(*args)) # chunksize
     uimap.__doc__ = AbstractWorkerPool.uimap.__doc__
     def amap(self, f, *args, **kwds): # register a callback ?
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
-        return __STATE['pool'].map_async(star(f), zip(*args)) # chunksize
+        _pool = self._serve()
+        return _pool.map_async(star(f), zip(*args)) # chunksize
     amap.__doc__ = AbstractWorkerPool.amap.__doc__
     ########################################################################
     # PIPES
     def pipe(self, f, *args, **kwds):
        #AbstractWorkerPool._AbstractWorkerPool__pipe(self, f, *args, **kwds)
-        return __STATE['pool'].apply(f, args, kwds)
+        _pool = self._serve()
+        return _pool.apply(f, args, kwds)
     pipe.__doc__ = AbstractWorkerPool.pipe.__doc__
     def apipe(self, f, *args, **kwds): # register a callback ?
        #AbstractWorkerPool._AbstractWorkerPool__apipe(self, f, *args, **kwds)
-        return __STATE['pool'].applyAsync(f, args, kwds)
+        _pool = self._serve()
+        return _pool.applyAsync(f, args, kwds)
     apipe.__doc__ = AbstractWorkerPool.apipe.__doc__
     ########################################################################
     def __repr__(self):
@@ -138,8 +158,7 @@ Mapper that leverages python's multiprocessing.
         return self.__nodes
     def __set_nodes(self, nodes):
         """set the number of nodes used in the map"""
-        if not __STATE['pool'] or self.__nodes != nodes:
-            __STATE['pool'] = Pool(nodes)
+        self._serve(nodes)
         self.__nodes = nodes
         return
     # interface
@@ -169,38 +188,58 @@ Mapper that leverages python's threading.
         self.__nodes = kwds.get('nthreads', cpu_count())
 
         # Create a new server if one isn't already initialized
-        if not __STATE['threads'] or self.__nodes != cpu_count():
-            __STATE['threads'] = ThreadPool(self.__nodes)
+        self._serve()
         return
     __init__.__doc__ = AbstractWorkerPool.__init__.__doc__ + __init__.__doc__
    #def __exit__(self, *args):
-   #    __STATE['threads'] = None
+   #    self._clear()
    #    return
+    def _serve(self, nodes=None): #XXX: should be STATE method; use id
+        """Create a new server if one isn't already initialized"""
+        if nodes is None: nodes = self.__nodes
+        _pool = __STATE['threads']
+        if not _pool or nodes != _pool.__nodes:
+            _pool = ThreadPool(nodes)
+            _pool.__nodes = nodes
+            __STATE['threads'] = _pool
+        return _pool
+    def _clear(self): #XXX: should be STATE method; use id
+        """Remove server with matching state"""
+        _pool = __STATE['threads']
+        if _pool and self.__nodes == _pool.__nodes:
+            __STATE['threads'] = None
+        return #_pool
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
-        return __STATE['threads'].map(star(f), zip(*args)) # chunksize
+        _pool = self._serve()
+        return _pool.map(star(f), zip(*args)) # chunksize
     map.__doc__ = AbstractWorkerPool.map.__doc__
     def imap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
-        return __STATE['threads'].imap(star(f), zip(*args)) # chunksize
+        _pool = self._serve()
+        return _pool.imap(star(f), zip(*args)) # chunksize
     imap.__doc__ = AbstractWorkerPool.imap.__doc__
     def uimap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
-        return __STATE['threads'].imap_unordered(star(f), zip(*args)) # chunksize
+        _pool = self._serve()
+        return _pool.imap_unordered(star(f), zip(*args)) # chunksize
     uimap.__doc__ = AbstractWorkerPool.uimap.__doc__
     def amap(self, f, *args, **kwds): # register a callback ?
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
-        return __STATE['threads'].map_async(star(f), zip(*args)) # chunksize
+        _pool = self._serve()
+        return _pool.map_async(star(f), zip(*args)) # chunksize
     amap.__doc__ = AbstractWorkerPool.amap.__doc__
     ########################################################################
     # PIPES
     def pipe(self, f, *args, **kwds):
        #AbstractWorkerPool._AbstractWorkerPool__pipe(self, f, *args, **kwds)
-        return __STATE['threads'].apply(f, args, kwds)
+        _pool = self._serve()
+        return _pool.apply(f, args, kwds)
    #pipe.__doc__ = AbstractWorkerPool.pipe.__doc__
     def apipe(self, f, *args, **kwds): # register a callback ?
        #AbstractWorkerPool._AbstractWorkerPool__apipe(self, f, *args, **kwds)
-        return __STATE['threads'].applyAsync(f, args, kwds)
+        _pool = self._serve()
+        return _pool.applyAsync(f, args, kwds)
    #apipe.__doc__ = AbstractWorkerPool.apipe.__doc__
     ########################################################################
     def __repr__(self):
@@ -211,8 +250,7 @@ Mapper that leverages python's threading.
         return self.__nodes
     def __set_nodes(self, nodes):
         """set the number of nodes used in the map"""
-        if not __STATE['threads'] or self.__nodes != nodes:
-            __STATE['threads'] = ThreadPool(nodes)
+        self._serve(nodes)
         self.__nodes = nodes
         return
     # interface
