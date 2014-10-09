@@ -86,6 +86,7 @@ __all__ = ['ParallelPythonPool', 'stats']
 
 import __builtin__
 from pathos.helpers import parallelpython as pp
+from pathos.helpers import cpu_count
 
 #FIXME: probably not good enough... should store each instance with a uid
 __STATE = _ParallelPythonPool__STATE = {'server':None}
@@ -134,29 +135,72 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
             kwds['ncpus'] = kwds.pop('nodes')
         elif arglen:
             kwds['ncpus'] = args[0]
-        self.__nodes = ncpus = kwds.get('ncpus', None)
+        self.__nodes = None
+        self.__servers = ()
 
-        self.servers = kwds.get('servers', ()) # only localhost
-       #self.servers = kwds.get('servers', ('*',)) # autodetect
-       #from _ppserver_config import ppservers as self.servers # config file
+        ncpus = kwds.get('ncpus', None)
+       #servers = kwds.get('servers', ('*',)) # autodetect
+        servers = kwds.get('servers', ()) # only localhost
+        if servers is None: servers = ()
+       #from _ppserver_config import ppservers as servers # config file
 
         #XXX: throws 'socket.error' when starting > 1 server with autodetect
         # Create a new server if one isn't already initialized
-        if not __STATE['server']: #XXX: or register a new UID for each instance?
-            __STATE['server'] = pp.Server(ppservers=self.servers)
-
-        # Set the requested level of multi-processing
-        #__STATE['server'].set_ncpus(ncpus or 'autodetect') # no ncpus=0
-        if ncpus == None:
-            __STATE['server'].set_ncpus('autodetect')
-        else:
-            __STATE['server'].set_ncpus(ncpus) # allow ncpus=0
-       #print "configure", __STATE['server'].get_ncpus(), "local workers"
+        # ...and set the requested level of multi-processing
+        _pool = self._serve(nodes=ncpus, servers=servers)
+        #XXX: or register new UID for each instance?
+        #_pool.set_ncpus(ncpus or 'autodetect') # no ncpus=0
+       #print "configure", _pool.get_ncpus(), "local workers"
         return
     __init__.__doc__ = AbstractWorkerPool.__init__.__doc__ + __init__.__doc__
    #def __exit__(self, *args):
-   #    __STATE['server'] = None
+   #    self._clear()
    #    return
+    def _serve(self, nodes=None, servers=None): #XXX: is a STATE method; use id
+        """Create a new server if one isn't already initialized""" 
+        # get nodes and servers in form used by pp.Server
+        if nodes is None: nodes = self.nodes #XXX: autodetect must be explicit
+        if nodes in ['*']: nodes = 'autodetect'
+        if servers is None:
+            servers = tuple(sorted(self.__servers)) # no servers is ()
+        elif servers in ['*', 'autodetect']: servers = ('*',)
+        # if no server, create one
+        _pool = __STATE['server']
+        if not _pool:
+            _pool = pp.Server(ppservers=servers)
+        # convert to form returned by pp.Server, then compare
+        _auto = [('*',)] if _pool.auto_ppservers else []
+        _servers = sorted(_pool.ppservers + _auto)
+        _servers = tuple(':'.join((str(i) for i in tup)) for tup in _servers)
+        if servers != _servers: #XXX: assume servers specifies ports if desired
+            _pool = pp.Server(ppservers=servers)
+        # convert to form returned by pp.Server, then compare
+        _nodes = cpu_count() if nodes=='autodetect' else nodes
+        if _nodes != _pool.get_ncpus():
+            _pool.set_ncpus(nodes) # allows ncpus=0
+        # set (or 'repoint') the server
+        __STATE['server'] = _pool
+        # set the 'self' internals
+        self.__nodes = None if nodes in ['autodetect'] else nodes
+        self.__servers = servers
+        return _pool
+    def _clear(self): #XXX: should be STATE method; use id
+        """Remove server with matching state"""
+        _pool = __STATE['server']
+        if not _pool:
+            return
+        # convert to form returned by pp.Server, then compare
+        _nodes = cpu_count() if self.__nodes is None else self.__nodes
+        if _nodes != _pool.get_ncpus():
+            return
+        _auto = [('*',)] if _pool.auto_ppservers else []
+        _servers = sorted(_pool.ppservers + _auto)
+        _servers = [':'.join((str(i) for i in tup)) for tup in _servers]
+        if sorted(self.__servers) != _servers:
+            return
+        # it's the 'same' (better to check _pool.secret?)
+        __STATE['server'] = None
+        return #_pool
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         return list(self.imap(f, *args))
@@ -165,8 +209,9 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
         def submit(*argz):
             """send a job to the server"""
-           #print "using", __STATE['server'].get_ncpus(), 'local workers'
-            return __STATE['server'].submit(f, argz, globals=globals())
+            _pool = self._serve()
+           #print "using", _pool.get_ncpus(), 'local workers'
+            return _pool.submit(f, argz, globals=globals())
         # submit all jobs, then collect results as they become available
         return (subproc() for subproc in __builtin__.map(submit, *args))
     imap.__doc__ = AbstractWorkerPool.imap.__doc__
@@ -174,8 +219,9 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         def submit(*argz):
             """send a job to the server"""
-           #print "using", __STATE['server'].get_ncpus(), 'local workers'
-            return __STATE['server'].submit(f, argz, globals=globals())
+            _pool = self._serve()
+           #print "using", _pool.get_ncpus(), 'local workers'
+            return _pool.submit(f, argz, globals=globals())
         override = True if kwds.has_key('size') else False
         elem_size = kwds.pop('size', 2)
         args = zip(*args)
@@ -186,7 +232,8 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         length = len(args)
         nodes = self.nodes
         if self.nodes in ['*','autodetect',None]:
-            nodes = __STATE['server'].get_ncpus() #XXX: local workers only?
+            _pool = self._serve()
+            nodes = _pool.get_ncpus() #XXX: local workers only?
         # try to quickly find a small chunksize that gives good results
         maxsize = 2**62 #XXX: HOPEFULLY, this will never be reached...
         chunksize = 1
@@ -206,13 +253,15 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
     def pipe(self, f, *args, **kwds):
        #AbstractWorkerPool._AbstractWorkerPool__pipe(self, f, *args, **kwds)
         # submit a job to the server, and block until results are collected
-        task = __STATE['server'].submit(f, args, globals=globals())
+        _pool = self._serve()
+        task = _pool.submit(f, args, globals=globals())
         return task()
     pipe.__doc__ = AbstractWorkerPool.pipe.__doc__
     def apipe(self, f, *args, **kwds): # register a callback ?
        #AbstractWorkerPool._AbstractWorkerPool__apipe(self, f, *args, **kwds)
         # submit a job, to be collected later with 'get()'
-        task = __STATE['server'].submit(f, args, globals=globals())
+        _pool = self._serve()
+        task = _pool.submit(f, args, globals=globals())
         return ApplyResult(task)
     apipe.__doc__ = AbstractWorkerPool.apipe.__doc__
     ########################################################################
@@ -226,12 +275,8 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         return nodes
     def __set_nodes(self, nodes):
         """set the number of nodes used in the map"""
-        if nodes in ['*', 'autodetect']: nodes = None
-        if nodes == None:
-            __STATE['server'].set_ncpus('autodetect')
-        else:
-            __STATE['server'].set_ncpus(nodes) # allow ncpus=0
-        self.__nodes = nodes
+        if nodes is None: nodes = 'autodetect'
+        self._serve(nodes=nodes)
         return
     def __get_servers(self):
         """get the servers used in the map"""
@@ -241,16 +286,12 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         return servers
     def __set_servers(self, servers):
         """set the servers used in the map"""
-        nodes = self.nodes # get nodes from current server
-        if servers in [None]: servers = ()
-        elif servers in ['*', 'autodetect']: servers = ('*',)
+        if servers is None: servers = ()
+        self._serve(servers=servers)
         #__STATE['server'].ppservers == [(s.split(':')[0],int(s.split(':')[1])) for s in servers]
         # we could check if the above is true... for now we will just be lazy
         # we could also convert lists to tuples... again, we'll be lazy
         # XXX: throws "socket error" when autodiscovery service is enabled
-        __STATE['server'] = pp.Server(ppservers=servers)
-        self.__servers = servers
-        self.nodes = nodes # set nodes for new server
         return
     # interface
     ncpus = property(__get_nodes, __set_nodes)
