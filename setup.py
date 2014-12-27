@@ -194,7 +194,7 @@ Pathos requires::
     - dill, version >= 0.2.2
     - pox, version >= 0.2.1
     - pyre, version == 0.8.2.0-pathos (*)
-    - pp, version >= 1.6.4.1 (*)
+    - pp, version >= 1.6.4.4 (*)
 
 Optional requirements::
 
@@ -320,7 +320,7 @@ setup(name="pathos",
 
 # add dependencies
 pyre_version = '==0.8.2.0-pathos' # NOTE: modified CIG-pyre; includes 'journal'
-pp_version = '>=1.6.4.1'          # NOTE: modified redistribution
+pp_version = '>=1.6.4.4'          # NOTE: modified redistribution
 dill_version = '>=0.2.2'          # NOTE: implicit dependency
 pox_version = '>=0.2.1'
 pyina_version = '>=0.2a1.dev'
@@ -349,7 +349,7 @@ try:
     import pyre
     import pp
     if not hasattr(pp, '__version__'):
-        import ppcommon as pp  # for pp >= 1.6.4.3, __version__ in ppcommon
+        import ppcommon as pp  # for pp == 1.6.4.3, __version__ in ppcommon
     if pp.__version__[:-1] != pp_version[2:-1]:
         raise ImportError
     import dill
