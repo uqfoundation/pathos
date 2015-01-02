@@ -348,9 +348,7 @@ exec setup_code
 try:
     import pyre
     import pp
-    if not hasattr(pp, '__version__'):
-        import ppcommon as pp  # for pp == 1.6.4.3, __version__ in ppcommon
-    if pp.__version__[:-1] != pp_version[2:-1]:
+    if pp.__version__ != pp_version[2:]:
         raise ImportError
     import dill
     import six
