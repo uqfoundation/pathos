@@ -193,7 +193,7 @@ Pathos requires::
     - python, version >= 2.5, version < 3.0
     - dill, version >= 0.2.2
     - pox, version >= 0.2.1
-    - pp, version >= 1.6.4.4 (*)
+    - ppft, version >= 1.6.4.5
     - pyre, version == 0.8.2.0-pathos (*)
     - processing, version == 0.52-pathos (*)
 
@@ -321,7 +321,7 @@ setup(name="pathos",
 
 # add dependencies
 pyre_version = '==0.8.2.0-pathos' # NOTE: modified CIG-pyre; includes 'journal'
-pp_version = '>=1.6.4.4'          # NOTE: modified redistribution
+ppft_version = '>=1.6.4.5'
 dill_version = '>=0.2.2'          # NOTE: implicit dependency
 pox_version = '>=0.2.1'
 pyina_version = '>=0.2a1.dev'
@@ -331,8 +331,8 @@ if has_setuptools:
     setup_code += """
         zip_safe = False,
         dependency_links = ['http://dev.danse.us/packages/'],
-        install_requires = ['pp%s','dill%s','pox%s','pyre%s','processing%s'],
-""" % (pp_version, dill_version, pox_version, pyre_version, processing_version)
+        install_requires = ['ppft%s','dill%s','pox%s','pyre%s','processing%s'],
+""" % (ppft_version, dill_version, pox_version, pyre_version, processing_version)
 
 # add the scripts, and close 'setup' call
 setup_code += """
@@ -347,7 +347,7 @@ exec setup_code
 
 # if dependencies are missing, print a warning
 try:
-    import pp
+    import pp     # NOTE: ppft installs as pp
     import pyre
     import dill
     import pox
@@ -358,7 +358,7 @@ try:
 except ImportError:
     print "\n***********************************************************"
     print "WARNING: One of the following dependencies is unresolved:"
-    print "    pp %s" % pp_version
+    print "    pp(ft) %s" % ppft_version
     print "    pyre %s" % pyre_version
     print "    dill %s" % dill_version
     print "    pox %s" % pox_version
@@ -366,11 +366,11 @@ except ImportError:
     print "***********************************************************\n"
 
     print """
-Pathos relies on modified distributions of '%s', '%s', and '%s'.
+Pathos relies on modified distributions of '%s' and '%s'.
 Please download and install unresolved dependencies here:
   http://dev.danse.us/packages/
 or from the "external" directory included in the pathos source distribution.
-""" % ('processing','pp','pyre')
+""" % ('processing','pyre')
 
 
 if __name__=='__main__':
