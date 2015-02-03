@@ -31,7 +31,7 @@ elif stable_version == target_version:
     this_version = target_version
 else:
     # we are building a distribution
-    this_version = target_version + '.dev'
+    this_version = target_version + '.dev0'
     if is_release:
       from datetime import date
       today = "".join(date.isoformat(date.today()).split('-'))
@@ -200,7 +200,7 @@ Pathos requires::
 Optional requirements::
 
     - setuptools, version >= 0.6
-    - pyina, version >= 0.2a.dev
+    - pyina, version >= 0.2a.dev0
     - rpyc, version >= 3.0.6
 
 
@@ -324,7 +324,7 @@ pyre_version = '==0.8.2.0-pathos' # NOTE: modified CIG-pyre; includes 'journal'
 ppft_version = '>=1.6.4.5'
 dill_version = '>=0.2.2'          # NOTE: implicit dependency
 pox_version = '>=0.2.1'
-pyina_version = '>=0.2a1.dev'
+pyina_version = '>=0.2a1.dev0'
 rpyc_version = '>=3.0.6'
 processing_version = '==0.52-pathos' # NOTE: modified redistribution
 if has_setuptools:
