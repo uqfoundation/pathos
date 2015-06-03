@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+#
+# Author: Mike McKerns (mmckerns @caltech and @uqfoundation)
+# Copyright (c) 1997-2015 California Institute of Technology.
+# License: 3-clause BSD.  The full license text is available at:
+#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
+"""
+demonstrates pickle/source failure cases with decorators/factories and pp
+"""
+
+def __wrap_nested(function, inner_function):
+    def function_wrapper(x):
+        _x = x[:]
+        return function(inner_function(_x))
+    return function_wrapper
+
+def wrap_nested(inner_function):
+    def dec(function):
+        def function_wrapper(x):
+            _x = x[:]
+            return function(inner_function(_x))
+        return function_wrapper
+    return dec
+
+class _wrap_nested(object):
+    def __init__(self, inner_function):
+        self._inner_function = inner_function
+    def __call__(self, function):
+        def function_wrapper(x):
+            _x = x[:]
+            return function(self._inner_function(_x))
+        return function_wrapper
+
+def add(*args):
+    from numpy import sum
+    return sum(args)
+
+'''                               # FAILS to find 'add' (returns [None,None])
+@wrap_nested(add)
+def addabs(x):
+    return abs(x)
+'''
+
+#addabs = __wrap_nested(abs, add) # ok
+wrapadd = wrap_nested(add)        # ok
+#wrapadd = _wrap_nested(add)      # HANGS
+addabs = wrapadd(abs)             # <required for the latter two above>
+#'''
+
+x = [(-1,-2),(3,-4)]
+y = [3, 1]
+
+assert map(addabs, x) == y
+
+from pathos.multiprocessing import ProcessingPool as Pool
+assert Pool().map(addabs, x) == y
+
+from pathos.pp import ParallelPythonPool as Pool
+assert Pool().map(addabs, x) == y
+
