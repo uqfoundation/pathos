@@ -21,6 +21,7 @@ Pipe methods provided:
 Map methods provided:
     map         - blocking and ordered worker pool        [returns: list]
     imap        - non-blocking and ordered worker pool    [returns: iterator]
+    uimap       - non-blocking and unordered worker pool  [returns: iterator]
     amap        - asynchronous worker pool                [returns: object]
 
 
@@ -215,6 +216,26 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         # submit all jobs, then collect results as they become available
         return (subproc() for subproc in __builtin__.map(submit, *args))
     imap.__doc__ = AbstractWorkerPool.imap.__doc__
+    def uimap(self, f, *args, **kwds):
+        AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
+        def submit(*argz):
+            """send a job to the server"""
+            _pool = self._serve()
+           #print "using", _pool.get_ncpus(), 'local workers'
+            return _pool.submit(f, argz, globals=globals())
+        def imap_unordered(it):
+            """build a unordered map iterator"""
+            while len(it):
+                for i,job in enumerate(it):
+                    if job.finished:
+                        yield it.pop(i)()
+                        break
+                # yield it.pop(0).get()  # wait for the first element?
+                # *subprocess*           # alternately, loop in a subprocess
+            raise StopIteration
+        # submit all jobs, then collect results as they become available
+        return imap_unordered(__builtin__.map(submit, *args))
+    uimap.__doc__ = AbstractWorkerPool.uimap.__doc__
     def amap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         def submit(*argz):
