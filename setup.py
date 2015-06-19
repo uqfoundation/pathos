@@ -194,14 +194,15 @@ Pathos requires::
     - dill, version >= 0.2.2
     - pox, version >= 0.2.1
     - ppft, version >= 1.6.4.5
+    - multiprocess, version == 0.70.1
     - pyre, version == 0.8.2.0-pathos (*)
-    - processing, version == 0.52-pathos (*)
 
 Optional requirements::
 
     - setuptools, version >= 0.6
     - pyina, version >= 0.2a.dev0
     - rpyc, version >= 3.0.6
+    - processing, version == 0.52-pathos (*)
 
 
 Usage Notes
@@ -319,6 +320,17 @@ setup(name="pathos",
     package_dir={'pathos':'pathos','pathos.helpers':'pathos/helpers'},
 """ % (target_version, long_description)
 
+# check for 'muliprocess'
+try:
+    from multiprocessing import __version__ as mp_version
+    if mp_version == '0.70.1':
+        mp_version = '=='+mp_version
+        processing_version = ''
+    else: raise AttributeError('multiprocess')
+except Exception:
+    mp_version = '' # 0.70a1 py25-py33, 0.52 on py25, None on py34
+    processing_version = '==0.52-pathos' # NOTE: modified redistribution
+
 # add dependencies
 pyre_version = '==0.8.2.0-pathos' # NOTE: modified CIG-pyre; includes 'journal'
 ppft_version = '>=1.6.4.5'
@@ -326,13 +338,17 @@ dill_version = '>=0.2.2'          # NOTE: implicit dependency
 pox_version = '>=0.2.1'
 pyina_version = '>=0.2a1.dev0'
 rpyc_version = '>=3.0.6'
-processing_version = '==0.52-pathos' # NOTE: modified redistribution
+deps = [ppft_version, dill_version, pox_version, pyre_version]
+if mp_version:
+    deps = tuple(deps + ["],"])
+else:
+    deps = tuple(deps + ["'processing%s']," % processing_version])
 if has_setuptools:
     setup_code += """
         zip_safe = False,
         dependency_links = ['http://dev.danse.us/packages/'],
-        install_requires = ['ppft%s','dill%s','pox%s','pyre%s','processing%s'],
-""" % (ppft_version, dill_version, pox_version, pyre_version, processing_version)
+        install_requires = ['ppft%s','dill%s','pox%s','pyre%s',%s
+""" % deps
 
 # add the scripts, and close 'setup' call
 setup_code += """
@@ -362,7 +378,7 @@ except ImportError:
     print "    pyre %s" % pyre_version
     print "    dill %s" % dill_version
     print "    pox %s" % pox_version
-    print "    processing %s" % processing_version
+    print "    (multi)processing %s" % mp_version or processing_version
     print "***********************************************************\n"
 
     print """

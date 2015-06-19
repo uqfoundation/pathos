@@ -10,6 +10,14 @@ import mp_helper
 import pp as parallelpython
 
 try:
+    import multiprocessing as mp
+    HAS_FORK = mp.__version__ == '0.70.1'
+except ImportError:
+    HAS_FORK = False
+
+try:
+    if HAS_FORK: raise ImportError('multiprocessing')
+
     import processing as mp
     from processing.pool import Pool as ProcessPool  # use pathos/external
     from processing import cpuCount as cpu_count
@@ -44,3 +52,4 @@ except ImportError:  # fall-back to package distributed with python
     from multiprocessing import cpu_count
     from multiprocessing.dummy import Pool as ThreadPool
 
+del HAS_FORK
