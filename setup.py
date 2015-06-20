@@ -194,7 +194,7 @@ Pathos requires::
     - dill, version >= 0.2.2
     - pox, version >= 0.2.1
     - ppft, version >= 1.6.4.5
-    - multiprocess, version == 0.70.1
+    - multiprocess, version >= 0.70.1
     - pyre, version == 0.8.2.0-pathos (*)
 
 Optional requirements::
@@ -320,16 +320,16 @@ setup(name="pathos",
     package_dir={'pathos':'pathos','pathos.helpers':'pathos/helpers'},
 """ % (target_version, long_description)
 
-# check for 'muliprocess'
-try:
-    from multiprocessing import __version__ as mp_version
-    if mp_version == '0.70.1':
-        mp_version = '=='+mp_version
-        processing_version = ''
+# check for 'processing'
+try: #NOTE: odd... if processing is installed, *don't* install multiprocess
+    from processing import __version__ as processing_version
+    if processing_version >= '0.52-pathos': # NOTE: modified redistribution
+        processing_version = '=='+processing_version
+        mp_version = ''
     else: raise AttributeError('multiprocess')
 except Exception:
-    mp_version = '' # 0.70a1 py25-py33, 0.52 on py25, None on py34
-    processing_version = '==0.52-pathos' # NOTE: modified redistribution
+    mp_version = '>=0.70.1' # 0.70a1 py25-py33, 0.52 on py25, None on py34
+    processing_version = ''
 
 # add dependencies
 pyre_version = '==0.8.2.0-pathos' # NOTE: modified CIG-pyre; includes 'journal'
@@ -340,9 +340,9 @@ pyina_version = '>=0.2a1.dev0'
 rpyc_version = '>=3.0.6'
 deps = [ppft_version, dill_version, pox_version, pyre_version]
 if mp_version:
-    deps = tuple(deps + ["],"])
+    deps = tuple(deps + ["'multiprocess%s']," % mp_version])
 else:
-    deps = tuple(deps + ["'processing%s']," % processing_version])
+    deps = tuple(deps + ["],"])
 if has_setuptools:
     setup_code += """
         zip_safe = False,
@@ -371,6 +371,8 @@ try:
         import processing
     except ImportError:
         import multiprocessing
+        if getattr(multiprocessing, '__version__', '0.70a1') == '0.70a1':
+            raise ImportError
 except ImportError:
     print "\n***********************************************************"
     print "WARNING: One of the following dependencies is unresolved:"
@@ -378,15 +380,16 @@ except ImportError:
     print "    pyre %s" % pyre_version
     print "    dill %s" % dill_version
     print "    pox %s" % pox_version
-    print "    (multi)processing %s" % mp_version or processing_version
+    print "    (multi)processing %s" % processing_version or mp_version
     print "***********************************************************\n"
 
     print """
-Pathos relies on modified distributions of '%s' and '%s'.
+Pathos relies on a modified distributions of '%s' and optionally, '%s'.
+If '%s' is installed, '%s' will be treated as if it were not required.
 Please download and install unresolved dependencies here:
   http://dev.danse.us/packages/
 or from the "external" directory included in the pathos source distribution.
-""" % ('processing','pyre')
+""" % ('pyre','processing','processing','multiprocess')
 
 
 if __name__=='__main__':
