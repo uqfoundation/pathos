@@ -45,7 +45,7 @@ import os
 import signal
 import random
 import string
-from pyre.ipc.Selector import Selector
+from Selector import Selector
 from pyre.components.Component import Component
 
 class LauncherException(Exception):
