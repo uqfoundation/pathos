@@ -47,7 +47,6 @@ __all__ = ['XMLRPCServer']
 import os
 import socket
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
-import journal
 from Server import Server #XXX: in pythia-0.6, was pyre.ipc.Server
 from XMLRPCRequestHandler import XMLRPCRequestHandler
 from pathos.util import print_exc_info

@@ -22,6 +22,20 @@ __doc__ = """
 __license__ = """
 """ + __license__
 
+# logger
+def logger(level=None, handler=None, **kwds):
+    import logging
+    name = kwds.get('name', 'pathos')
+    log = logging.getLogger(name)
+    if handler is not None:
+        log.handlers = []
+        log.addHandler(handler)
+    elif not len(log.handlers):
+        log.addHandler(logging.StreamHandler())
+    if level is not None:
+        log.setLevel(level)
+    return log
+
 # high-level interface
 import core
 import hosts

@@ -12,7 +12,6 @@ To run: python simple_tunnel.py
 
 from pathos import SSH_Tunnel
 
-
 if __name__ == '__main__':
     import sys
     rhost = 'localhost'

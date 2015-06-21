@@ -13,7 +13,6 @@ Usage: python pathos_tunnel.py [hostname]
 
 from pathos.core import *
 
-
 if __name__ == '__main__':
 
 ##### CONFIGURATION & INPUT ########################

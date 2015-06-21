@@ -17,15 +17,14 @@ __all__ = ['XMLRPCRequestHandler']
 import os
 import xmlrpclib
 from BaseHTTPServer import BaseHTTPRequestHandler
-import journal
+from pathos import logger
 from pathos.util import print_exc_info, spawn2
 
 class XMLRPCRequestHandler(BaseHTTPRequestHandler):
     ''' create a XML-RPC request handler '''
 
-    _debug = journal.debug('pathos')
-    _error = journal.debug('pathos')
-        
+    _debug = logger(name="pathos.xmlrpc", level=30) # logging.WARN
+
     def do_POST(self):
         """ Access point from HTTP handler """
 
@@ -43,7 +42,7 @@ class XMLRPCRequestHandler(BaseHTTPRequestHandler):
                 toparent.write('done\n')
                 toparent.flush()
             except:
-                journal.debug('pathos').log(print_exc_info())
+                logger(name='pathos.xmlrpc', level=30).error(print_exc_info())
             os._exit(0)
 
         try:
@@ -56,7 +55,7 @@ class XMLRPCRequestHandler(BaseHTTPRequestHandler):
                 self._sendResponse(response)
                 return
         except:
-            self._error.log(print_exc_info())
+            self._debug.error(print_exc_info())
             self.send_response(500)
             self.end_headers()
             return
@@ -65,7 +64,7 @@ class XMLRPCRequestHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         """ Overriding BaseHTTPRequestHandler.log_message() """
 
-        self._debug.log("%s - - [%s] %s\n" %
+        self._debug.info("%s - - [%s] %s\n" %
                         (self.address_string(),
                          self.log_date_time_string(),
                          format%args))

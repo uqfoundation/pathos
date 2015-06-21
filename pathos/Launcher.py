@@ -180,7 +180,7 @@ Additionally, default values are set for 'inventory' class members:
         # handle response from a background process
         def onData(selector, fobj):
             if self.verbose: print("in Launcher.response.onData")
-            self._debug.log('on_remote')
+            self._debug.log('on_remote') #XXX: journal
             self._response = fobj.read()
             selector.state = False
             return

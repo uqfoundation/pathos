@@ -12,8 +12,8 @@ __all__ = ['copy', 'execute', 'kill', 'getpid', 'getppid', 'getchild', \
 
 import os
 import string
-import logging
 import re
+import pathos
 
 # standard pattern for 'ps axj': '... ddddd ddddd ddddd ...'
 _psaxj = re.compile("((\S+\s+)?\d+\s+\d+\s+\d+\s)")
@@ -41,7 +41,7 @@ Inputs:
   else:
     if opt is None: opt = '-r'
     copier(launcher='cp', options=opt, source=source, destination=destination)
-  logging.info('executing {%s}', copier.message)
+  pathos.logger().info('executing {%s}', copier.message)
   copier.launch()
   copier.kill()
   return copier
@@ -70,7 +70,7 @@ Inputs:
     opt = kwds.pop('options', '-q')
     launcher = LauncherSSH(**kwds)
     launcher(options=opt, command=command, host=host, background=bg)
-  logging.info('executing {%s}', launcher.message)
+  pathos.logger().info('executing {%s}', launcher.message)
   launcher.launch()
  #response = launcher.response()
  #launcher.kill()
@@ -256,7 +256,7 @@ Inputs:
   src = src.rstrip('co')
   launcher = LauncherSSH() #XXX: use pox.which / which_python?
   launcher(command='python', host=host, background=False, stdin=open(src))
-  logging.info('executing {python <%s} on %s', src, host)
+  pathos.logger().info('executing {python <%s} on %s', src, host)
   launcher.launch()
   try:
     rport = int(launcher.response())
@@ -301,11 +301,11 @@ Inputs:
   command = "%s -p %s" % (file,port)
   rserver = execute(command, host, bg=True)
   response = rserver.response()
-  logging.info('response = %r', response)
+  pathos.logger().info('response = %r', response)
   if response in ['', None]: #XXX: other responses allowed (?)
     pass
   else: #XXX: not really error checking...
-    logging.error('invalid response = %r', response)
+    pathos.logger().error('invalid response = %r', response)
   from time import sleep
   delay = 2.0
   sleep(delay)

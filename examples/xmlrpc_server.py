@@ -12,7 +12,9 @@ To run: python xmlrpc_server.py
 """
 
 from pathos.XMLRPCServer import XMLRPCServer
-
+from pathos import logger
+logger(level=20, name='pathos.xmlrpc')   # logging.INFO
+logger(level=20, name='pathos.selector') # logging.INFO
 
 if __name__ == '__main__':
     
