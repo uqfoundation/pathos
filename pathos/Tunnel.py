@@ -38,26 +38,19 @@ import os
 import signal
 import random
 import string
-from pyre.components.Component import Component
 from LauncherSSH import LauncherSSH
 
 class TunnelException(Exception):
     '''Exception for failure to establish ssh tunnel'''
     pass
 
-class Tunnel(Component):
+class Tunnel(object):
     """a ssh-tunnel launcher for parallel and distributed computing."""
     #MINPORT = 49152    
     MINPORT = 1024 
     MAXPORT = 65535
     verbose = True
 
-    class Inventory(Component.Inventory):
-        import pyre.inventory
-        
-        launcher = pyre.inventory.facility('launcher',
-                                           default=LauncherSSH('launcher'))
-    
     def connect(self, host, port=None, through=None):
         '''establish a secure shell tunnel between local and remote host
 
@@ -119,11 +112,11 @@ Additional Input:
 Inputs:
     name        -- a unique identifier (string) for the launcher
         '''
-        name = ''.join(random.choice(string.ascii_letters) for i in range(16)) \
+        xyz = string.ascii_letters
+        self.name = ''.join(random.choice(xyz) for i in range(16)) \
                if name is None else name
-       #Component.__init__(self, name, 'sshtunnel')
-        super(Tunnel, self).__init__(name, facility='sshtunnel')
-        self._launcher = self.inventory.launcher
+        self._launcher = LauncherSSH('launcher')
+
         self.__disconnect()
         if kwds: self.connect(**kwds)
         return
@@ -137,7 +130,7 @@ Inputs:
         return "Tunnel('%s')" % msg
 
     def _connect(self, localport, remotehost, remoteport, through=None):
-        options = '-q -N -L%d:%s:%d' % (localport, remotehost, remoteport)
+        options = '-q -N -L %d:%s:%d' % (localport, remotehost, remoteport)
         command = ''
         if through: rhost = through
         else: rhost = remotehost
