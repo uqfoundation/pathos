@@ -48,30 +48,11 @@ Inputs:
     stdin       -- file type object that should be used as a standard input
                    for the remote process.
         '''
-        '''Additional inputs (intended for internal use):
-    fgbg        -- run in foreground/background  [default = 'foreground']
-
-Default values are set for methods inherited from the base class:
-    nodes       -- number of parallel/distributed nodes  [default = 0]
-    nodelist    -- list of parallel/distributed nodes  [default = None]
-        '''
-       #Launcher.__init__(self, name)
-        super(LauncherSSH, self).__init__(name)
-        self.config(**kwds)
+        self.launcher = kwds.pop('launcher', 'ssh')
+        self.options = kwds.pop('options', '')
+        self.host = kwds.pop('host', 'localhost')
+        super(LauncherSSH, self).__init__(name, **kwds)
         return
-
-    class Inventory(Launcher.Inventory):
-        import pyre.inventory
-
-        launcher = pyre.inventory.str('launcher', default='ssh')
-        options = pyre.inventory.str('options', default='')
-        host = pyre.inventory.str('host', default='localhost')
-       #fgbg = pyre.inventory.str('fgbg', default='foreground')
-        pass
-
-   #def _configure(self):
-   #    #FIXME: bypassing this with 'config'
-   #    return
 
     def config(self, **kwds):
         '''configure a remote command using given keywords:
@@ -86,33 +67,41 @@ Default values are set for methods inherited from the base class:
                    for the remote process.
         '''
         if self.message is None:
-            self.inventory.command = 'echo %s' % self.name 
+            self.message = 'echo %s' % self.name #' '?
+        else: # pare back down to 'command' # better, just save _command?
+            if self.launcher:
+                self.message = self.message.split(self.launcher, 1)[-1]
+            if self.options:
+                self.message = self.message.split(self.options, 1)[-1]
+            if self.host:
+                self.message = self.message.split(self.host, 1)[-1].strip()
+            quote = ('"',"'")
+            if self.message.startswith(quote) or self.message.endswith(quote):
+                self.message = self.message[1:-1]
+        if self.stdin is None:
+            import sys
+            self.stdin = sys.stdin
         for key, value in kwds.items():
             if key == 'command':
-                self.inventory.command = value
+                self.message = value
             elif key == 'host':
-                self.inventory.host = value
+                self.host = value
             elif key == 'launcher':
-                self.inventory.launcher = value
+                self.launcher = value
             elif key == 'options':
-                self.inventory.options = value
+                self.options = value
             elif key == 'background':
-                self.inventory.background = value
+                self.background = value
             elif key == 'stdin':
-                self.inventory.stdin = value
-            # backward compatability
-           #elif key == 'fgbg':
-           #    value = True if value in ['bg','background'] else False
-           #    self.inventory.background = value
+                self.stdin = value
 
         self._stdout = None
-        self.message = '%s %s %s "%s"' % (self.inventory.launcher,
-                                          self.inventory.options,
-                                          self.inventory.host,
-                                          self.inventory.command)
-        names = ['command','host','launcher','options','background','stdin']
-        return dict((i,getattr(self.inventory, i)) \
-                for i in self.inventory.propertyNames() if i in names)
+        self.message = '%s %s %s "%s"' % (self.launcher,
+                                          self.options,
+                                          self.host,
+                                          self.message)
+        names = ['message','host','launcher','options','background','stdin']
+        return dict((i,getattr(self, i)) for i in names)
 
     # interface
     __call__ = config

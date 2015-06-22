@@ -172,12 +172,10 @@ download the tarball, unzip, and run the installer::
 You will be warned of any missing dependencies and/or settings after
 you run the "build" step above. Pathos depends on dill and pox,
 each of which are essentially subpackages of pathos that are also
-released independently. Pathos also depends on slightly modified
-versions of `pyre` and `parallel python`; these packages are included
-in the `pathos.external` directory.  The aforementioned pathos
-subpackages are also available on this site, and you must install all of
-the dependencies for pathos to have full functionality for heterogeneous
-computing.
+released independently. Pathos also depends on `multiprocess` and
+`ppft`.  The aforementioned pathos subpackages are also available
+on this site, and you must install all of the dependencies for pathos
+to have full functionality for heterogeneous computing. 
 
 Alternately, pathos can be installed with easy_install::
 
@@ -195,7 +193,6 @@ Pathos requires::
     - pox, version >= 0.2.1
     - ppft, version >= 1.6.4.5
     - multiprocess, version >= 0.70.1
-    - pyre, version == 0.8.2.0-pathos (*)
 
 Optional requirements::
 
@@ -332,13 +329,13 @@ except Exception:
     processing_version = ''
 
 # add dependencies
-pyre_version = '==0.8.2.0-pathos' # NOTE: modified CIG-pyre; includes 'journal'
+pyre_version = '==0.8.2.0-pathos' # NOTE: CIG-pyre; includes 'journal'
 ppft_version = '>=1.6.4.5'
 dill_version = '>=0.2.3'          # NOTE: implicit dependency
 pox_version = '>=0.2.1'
 pyina_version = '>=0.2a1.dev0'
 rpyc_version = '>=3.0.6'
-deps = [ppft_version, dill_version, pox_version, pyre_version]
+deps = [ppft_version, dill_version, pox_version]
 if mp_version:
     deps = tuple(deps + ["'multiprocess%s']," % mp_version])
 else:
@@ -347,7 +344,7 @@ if has_setuptools:
     setup_code += """
         zip_safe = False,
         dependency_links = ['http://dev.danse.us/packages/'],
-        install_requires = ['ppft%s','dill%s','pox%s','pyre%s',%s
+        install_requires = ['ppft%s','dill%s','pox%s',%s
 """ % deps
 
 # add the scripts, and close 'setup' call
@@ -364,7 +361,6 @@ exec setup_code
 # if dependencies are missing, print a warning
 try:
     import pp     # NOTE: ppft installs as pp
-    import pyre
     import dill
     import pox
     try:
@@ -377,19 +373,14 @@ except ImportError:
     print "\n***********************************************************"
     print "WARNING: One of the following dependencies is unresolved:"
     print "    pp(ft) %s" % ppft_version
-    print "    pyre %s" % pyre_version
     print "    dill %s" % dill_version
     print "    pox %s" % pox_version
     print "    (multi)processing %s" % processing_version or mp_version
     print "***********************************************************\n"
 
     print """
-Pathos relies on a modified distributions of '%s' and optionally, '%s'.
-If '%s' is installed, '%s' will be treated as if it were not required.
-Please download and install unresolved dependencies here:
-  http://dev.danse.us/packages/
-or from the "external" directory included in the pathos source distribution.
-""" % ('pyre','processing','processing','multiprocess')
+If '%s' is installed, '%s' will be regarded as optional.
+""" % ('processing','multiprocess')
 
 
 if __name__=='__main__':

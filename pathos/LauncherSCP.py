@@ -54,27 +54,12 @@ Inputs:
     stdin       -- file type object that should be used as a standard input
                    for the remote process.
         '''
-        '''Additional inputs (intended for internal use):
-    fgbg        -- run in foreground/background  [default = 'foreground']
-
-Default values are set for methods inherited from the base class:
-    nodes       -- number of parallel/distributed nodes  [default = 0]
-    nodelist    -- list of parallel/distributed nodes  [default = None]
-        '''
-       #Launcher.__init__(self, name)
-        super(LauncherSCP, self).__init__(name)
-        self.config(**kwds)
+        self.launcher = kwds.pop('launcher', 'scp')
+        self.options = kwds.pop('options', '')
+        self.source = kwds.pop('source', '.')
+        self.destination = kwds.pop('destination', '.')
+        super(LauncherSCP, self).__init__(name, **kwds)
         return
-
-    class Inventory(Launcher.Inventory):
-        import pyre.inventory
-
-        launcher = pyre.inventory.str('launcher', default='scp')
-        options = pyre.inventory.str('options', default='')
-        source = pyre.inventory.str('source', default='.')
-        destination = pyre.inventory.str('destination', default='.')
-       #fgbg = pyre.inventory.str('fgbg', default='foreground')
-        pass
 
     def config(self, **kwds):
         '''configure the copier using given keywords:
@@ -88,35 +73,32 @@ Default values are set for methods inherited from the base class:
     stdin       -- file type object that should be used as a standard input
                    for the remote process.
         '''
+        if self.stdin is None:
+            import sys
+            self.stdin = sys.stdin
         for key, value in kwds.items():
             if key == 'command':
                 raise KeyError('command')
-            elif key == 'source': #note: if quoted, can be multiple sources
-                self.inventory.source = value
+            elif key == 'source': # if quoted, can be multiple sources
+                self.source = value
             elif key == 'destination':
-                self.inventory.destination = value
+                self.destination = value
             elif key == 'launcher':
-                self.inventory.launcher = value
+                self.launcher = value
             elif key == 'options':
-                self.inventory.options = value
+                self.options = value
             elif key == 'background':
-                self.inventory.background = value
+                self.background = value
             elif key == 'stdin':
-                self.inventory.stdin = value
-            # backward compatability
-           #elif key == 'fgbg':
-           #    value = True if value in ['bg','background'] else False
-           #    self.inventory.background = value
+                self.stdin = value
 
         self._stdout = None
-        self.message = '%s %s %s %s' % (self.inventory.launcher,
-                                        self.inventory.options,
-                                        self.inventory.source,
-                                        self.inventory.destination)
-        self.inventory.command = self.message
+        self.message = '%s %s %s %s' % (self.launcher,
+                                        self.options,
+                                        self.source,
+                                        self.destination)
         names=['source','destination','launcher','options','background','stdin']
-        return dict((i,getattr(self.inventory, i)) \
-                for i in self.inventory.propertyNames() if i in names)
+        return dict((i,getattr(self, i)) for i in names)
 
     # interface
     __call__ = config
