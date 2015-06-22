@@ -379,8 +379,12 @@ except ImportError:
     print "***********************************************************\n"
 
     print """
-If '%s' is installed, '%s' will be regarded as optional.
-""" % ('processing','multiprocess')
+If '%s' is installed, '%s' will be regarded as optional, and thus will
+not be installed.  Note that '%s' is not available through a standard
+install, however it may be downloaded from:
+  http://dev.danse.us/packages/
+or found in the "external" directory included in the pathos source distribution.
+""" % ('processing','multiprocess','processing')
 
 
 if __name__=='__main__':
