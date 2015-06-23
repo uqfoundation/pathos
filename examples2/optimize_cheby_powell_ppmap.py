@@ -56,7 +56,7 @@ def powell_chebyshev(x0, *args, **kwds):
     return the_solver(the_model, x0, monitor=False, *args, **kwds)
 
 # get the map functions
-from pathos.pp import ParallelPythonPool as pppool
+from pathos.parallel import ParallelPool as pppool
 
 
 if __name__ == '__main__':

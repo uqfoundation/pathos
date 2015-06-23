@@ -46,28 +46,28 @@ std = timed_pool(BuiltinPool(), items, delay=0, verbose=False)
 
 
 def test_serial():
-    from pathos.python import PythonSerial as PS
+    from pathos.pools import SerialPool as PS
     pool = PS()
     res = timed_pool(pool, items, delay, verbose)
     assert res == std
 
 
 def test_pp():
-    from pathos.pp import ParallelPythonPool as PPP
+    from pathos.pools import ParallelPool as PPP
     pool = PPP(servers=('localhost:5653','localhost:2414'))
     res = timed_pool(pool, items, delay, verbose)
     assert res == std
 
 
 def test_processing():
-    from pathos.multiprocessing import ProcessingPool as MPP
+    from pathos.pools import ProcessPool as MPP
     pool = MPP()
     res = timed_pool(pool, items, delay, verbose)
     assert res == std
 
 
 def test_threading():
-    from pathos.multiprocessing import ThreadingPool as MTP
+    from pathos.pools import ThreadPool as MTP
     pool = MTP()
     res = timed_pool(pool, items, delay, verbose)
     assert res == std

@@ -5,7 +5,7 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
-from pathos.multiprocessing import Pool
+from pathos.pools import _ProcessPool as Pool
 import dill
 import pickle #FIXME: multiprocessing needs cPickle + copy_reg
 pool = Pool()

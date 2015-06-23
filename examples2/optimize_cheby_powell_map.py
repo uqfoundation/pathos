@@ -56,7 +56,7 @@ def powell_chebyshev(x0, *args, **kwds):
     return the_solver(the_model, x0, monitor=True, *args, **kwds)
 
 # get the map functions
-from pathos.python import PythonSerial as serial
+from pathos.serial import SerialPool as serial
 
 
 if __name__ == '__main__':

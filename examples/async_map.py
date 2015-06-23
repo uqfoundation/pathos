@@ -75,9 +75,9 @@ if __name__ == '__main__':
    #f = busy_squared
    #f = squared
 
-   #from pathos.multiprocessing import ProcessingPool as Pool
-   #from pathos.multiprocessing import ThreadingPool as Pool
-    from pathos.pp import ParallelPythonPool as Pool
+   #from pathos.pools import ProcessPool as Pool
+   #from pathos.pools import ThreadPool as Pool
+    from pathos.pools import ParallelPool as Pool
 
     pool = Pool(nodes=4)
     test_ready( pool, f, maxtries, delay )

@@ -48,9 +48,14 @@ from LauncherSCP import LauncherSCP as SCP_Launcher
 from Tunnel import Tunnel as SSH_Tunnel
 
 # worker pools
-import python
+import pools
+import serial
+import parallel
 import multiprocessing
-import pp
+import threading
+# backward compatibility
+python = serial
+pp = parallel
 
 # tools, utilities, etc
 import util

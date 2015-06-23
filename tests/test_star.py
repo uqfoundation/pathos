@@ -163,21 +163,21 @@ def test_ready(pool, maxtries, delay, verbose=True):
 
 
 if __name__ == '__main__':
-    from pathos.multiprocessing import ProcessingPool as Pool
+    from pathos.pools import ProcessPool as Pool
     pool = Pool(nodes=4)
     test_sanity( pool )
     test_maps( pool, items, delay )
     test_dill( pool )
     test_ready( pool, maxtries, delay, verbose=False )
 
-    from pathos.multiprocessing import ThreadingPool as Pool
+    from pathos.pools import ThreadPool as Pool
     pool = Pool(nodes=4)
     test_sanity( pool )
     test_maps( pool, items, delay )
     test_dill( pool )
     test_ready( pool, maxtries, delay, verbose=False )
 
-    from pathos.pp import ParallelPythonPool as Pool
+    from pathos.pools import ParallelPool as Pool
     pool = Pool(nodes=4)
     test_sanity( pool )
     test_maps( pool, items, delay )

@@ -8,22 +8,11 @@
 minimal interface to python's multiprocessing module
 """
 
-'''
-import sys
-if sys.hexversion >= 0x2060000:
-  import multiprocessing as mp
-  from multiprocessing import cpu_count
-  import multiprocessing.dummy as mpdummy
-else:
-  import processing as mp
-  from processing import cpuCount as cpu_count
-  import processing.dummy as mpdummy
-'''
-
-from pathos.multiprocessing import ProcessingPool, ThreadingPool, __STATE
+from pathos.multiprocessing import ProcessPool, __STATE
+from pathos.threading import ThreadPool #XXX: thread __STATE not imported
 from pathos.helpers import cpu_count
-mp = ProcessingPool()
-tp = ThreadingPool()
+mp = ProcessPool()
+tp = ThreadPool()
 
 # backward compatibility
 #FIXME: deprecated... and buggy!  (fails to dill on imap/uimap)

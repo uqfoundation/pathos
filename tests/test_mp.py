@@ -6,8 +6,8 @@
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
 # instantiate and configure the worker pool
-from pathos.multiprocessing import ProcessingPool
-pool = ProcessingPool(nodes=4)
+from pathos.pools import ProcessPool
+pool = ProcessPool(nodes=4)
 
 _result = map(pow, [1,2,3,4], [5,6,7,8]) 
 

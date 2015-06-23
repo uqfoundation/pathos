@@ -10,7 +10,7 @@ example of using the 'raw' distributed parallel mapper
 To run: python pp_map.py
 """
 
-from pathos.pp import ParallelPythonPool as Pool
+from pathos.pools import ParallelPool as Pool
 pool = Pool()
 
 

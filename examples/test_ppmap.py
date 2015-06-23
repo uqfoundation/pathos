@@ -5,8 +5,8 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
-from pathos.pp import stats
-from pathos.pp import ParallelPythonPool as Pool
+from pathos.parallel import stats
+from pathos.parallel import ParallelPool as Pool
 pool = Pool()
 
 def host(id):

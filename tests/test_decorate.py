@@ -52,9 +52,9 @@ y = [3, 1]
 
 assert map(addabs, x) == y
 
-from pathos.multiprocessing import ProcessingPool as Pool
+from pathos.pools import ProcessPool as Pool
 assert Pool().map(addabs, x) == y
 
-from pathos.pp import ParallelPythonPool as Pool
+from pathos.pools import ParallelPool as Pool
 assert Pool().map(addabs, x) == y
 

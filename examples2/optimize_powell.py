@@ -55,9 +55,9 @@ def optimize(solver, mapper, nodes, target='rosen', **kwds):
 from optimize_helper import fmin_powell as the_solver
 
 # get the map functions
-from pathos.python import PythonSerial as serial
-from pathos.pp import ParallelPythonPool as pppool
-from pathos.multiprocessing import ProcessingPool as mppool
+from pathos.serial import SerialPool as serial
+from pathos.parallel import ParallelPool as pppool
+from pathos.multiprocessing import ProcessPool as mppool
 from pyina.launchers import Mpi as mpipool
 
 

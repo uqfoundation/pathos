@@ -5,7 +5,7 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
-from pathos.multiprocessing import ProcessingPool as Pool
+from pathos.pools import ProcessPool as Pool
 pool = Pool()
 
 def host(id):

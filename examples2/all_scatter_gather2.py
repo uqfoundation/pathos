@@ -16,8 +16,8 @@ Run with:
 
 import numpy as np
 from pyina.launchers import Mpi as MpiPool
-from pathos.multiprocessing import ProcessingPool
-from pathos.pp import ParallelPythonPool
+from pathos.pools import ProcessPool
+from pathos.pools import ParallelPool
 nodes = 2; N = 3
 
 # the sin of the difference of two numbers
@@ -46,13 +46,13 @@ print("Output: %s\n" % np.asarray(y))
 
 # map sin_diff to the workers, then print to screen
 print("Running multiprocesing on %d processors..." % nodes)
-y = ProcessingPool(nodes).map(sin_diff, x, xp)
+y = ProcessPool(nodes).map(sin_diff, x, xp)
 print("Output: %s\n" % np.asarray(y))
 
 
 # map sin_diff to the workers, then print to screen
 print("Running parallelpython on %d cpus..." % nodes)
-y = ParallelPythonPool(nodes).map(sin_diff, x, xp)
+y = ParallelPool(nodes).map(sin_diff, x, xp)
 print("Output: %s\n" % np.asarray(y))
 
 # EOF

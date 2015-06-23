@@ -1,6 +1,6 @@
-from pathos.multiprocessing import ProcessingPool, ThreadingPool
-amap = ProcessingPool().amap
-tmap = ThreadingPool().map
+from pathos.pools import ProcessPool, ThreadPool
+amap = ProcessPool().amap
+tmap = ThreadPool().map
 
 def g(x):
   import random

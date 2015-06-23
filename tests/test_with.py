@@ -54,11 +54,11 @@ def test_with_multipool(Pool):
 
 
 if __name__ == '__main__':
-    from pathos.multiprocessing import ProcessingPool
-    test_with_multipool(ProcessingPool)
+    from pathos.pools import ProcessPool
+    test_with_multipool(ProcessPool)
 
-    from pathos.pp import ParallelPythonPool
-    test_with_multipool(ParallelPythonPool)
+    from pathos.pools import ParallelPool
+    test_with_multipool(ParallelPool)
 
 
 # EOF

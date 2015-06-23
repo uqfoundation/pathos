@@ -16,8 +16,8 @@ Run with:
 
 import numpy as np
 from pyina.launchers import Mpi as MpiPool
-from pathos.multiprocessing import ProcessingPool
-from pathos.pp import ParallelPythonPool
+from pathos.pools import ProcessPool
+from pathos.pools import ParallelPool
 nodes = 2; N = 3
 
 # take sin squared of all data
@@ -46,13 +46,13 @@ print("Output: %s\n" % np.asarray(y))
 
 # map sin2 to the workers, then print to screen
 print("Running multiprocesing on %d processors..." % nodes)
-y = ProcessingPool(nodes).map(sin2, x)
+y = ProcessPool(nodes).map(sin2, x)
 print("Output: %s\n" % np.asarray(y))
 
 
 # map sin2 to the workers, then print to screen
 print("Running parallelpython on %d cpus..." % nodes)
-y = ParallelPythonPool(nodes).map(sin2, x)
+y = ParallelPool(nodes).map(sin2, x)
 print("Output: %s\n" % np.asarray(y))
 
 # EOF

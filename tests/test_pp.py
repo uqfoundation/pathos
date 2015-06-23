@@ -16,8 +16,8 @@ def test_source(obj):
     assert name == obj.__name__ or src.split("=",1)[0].strip()
 
 def test_ppmap(obj):
-    from pathos.pp import ParallelPythonPool
-    p = ParallelPythonPool(2)
+    from pathos.pools import ParallelPool
+    p = ParallelPool(2)
     x = [1,2,3]
     assert map(obj, x) == p.map(obj, x)
 

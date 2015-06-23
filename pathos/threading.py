@@ -5,7 +5,7 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 """
-This module contains map and pipe interfaces to python's multiprocessing module.
+This module contains map and pipe interfaces to python's threading module.
 
 Pipe methods provided:
     pipe        - blocking communication pipe             [returns: value]
@@ -21,11 +21,11 @@ Map methods provided:
 Usage
 =====
 
-A typical call to a pathos multiprocessing map will roughly follow this example:
+A typical call to a pathos threading map will roughly follow this example:
 
     >>> # instantiate and configure the worker pool
-    >>> from pathos.multiprocessing import ProcessPool
-    >>> pool = ProcessPool(nodes=4)
+    >>> from pathos.threading import ThreadPool
+    >>> pool = ThreadPool(nodes=4)
     >>>
     >>> # do a blocking map on the chosen function
     >>> print pool.map(pow, [1,2,3,4], [5,6,7,8])
@@ -55,46 +55,43 @@ A typical call to a pathos multiprocessing map will roughly follow this example:
 Notes
 =====
 
-This worker pool leverages the python's multiprocessing module, and thus
+This worker pool leverages the python's multiprocessing.dummy module, and thus
 has many of the limitations associated with that module. The function f and
 the sequences in args must be serializable. The maps in this worker pool
 have full functionality whether run from a script or in the python
 interpreter, and work reliably for both imported and interactively-defined
-functions. Unlike python's multiprocessing module, pathos.multiprocessing maps
+functions. Unlike python's multiprocessing.dummy module, pathos.threading maps
 can directly utilize functions that require multiple arguments.
 
 """
-__all__ = ['ProcessPool','_ProcessPool']
+__all__ = ['ThreadPool','_ThreadPool']
 
 #FIXME: probably not good enough... should store each instance with a uid
-__STATE = _ProcessPool__STATE = {'pool':None}
+__STATE = _ThreadPool__STATE = {'threads':None}
 
 from pathos.abstract_launcher import AbstractWorkerPool
 from pathos.helpers.mp_helper import starargs as star
-from pathos.helpers import cpu_count, ProcessPool as _ProcessPool
+from pathos.helpers import cpu_count, ThreadPool as _ThreadPool
 
-# backward compatibility
-Pool = _ProcessPool
-
-class ProcessPool(AbstractWorkerPool):
+class ThreadPool(AbstractWorkerPool):
     """
-Mapper that leverages python's multiprocessing.
+Mapper that leverages python's threading.
     """
     def __init__(self, *args, **kwds):
         """\nNOTE: if number of nodes is not given, will autodetect processors
         """
         hasnodes = kwds.has_key('nodes'); arglen = len(args)
-        if kwds.has_key('ncpus') and (hasnodes or arglen):
-            msg = "got multiple values for keyword argument 'ncpus'"
+        if kwds.has_key('nthreads') and (hasnodes or arglen):
+            msg = "got multiple values for keyword argument 'nthreads'"
             raise TypeError, msg
         elif hasnodes: #XXX: multiple try/except is faster?
             if arglen:
                 msg = "got multiple values for keyword argument 'nodes'"
                 raise TypeError, msg
-            kwds['ncpus'] = kwds.pop('nodes')
+            kwds['nthreads'] = kwds.pop('nodes')
         elif arglen:
-            kwds['ncpus'] = args[0]
-        self.__nodes = kwds.get('ncpus', cpu_count())
+            kwds['nthreads'] = args[0]
+        self.__nodes = kwds.get('nthreads', cpu_count())
 
         # Create a new server if one isn't already initialized
         self._serve()
@@ -106,17 +103,17 @@ Mapper that leverages python's multiprocessing.
     def _serve(self, nodes=None): #XXX: should be STATE method; use id
         """Create a new server if one isn't already initialized"""
         if nodes is None: nodes = self.__nodes
-        _pool = __STATE['pool']
+        _pool = __STATE['threads']
         if not _pool or nodes != _pool.__nodes:
-            _pool = Pool(nodes)
+            _pool = _ThreadPool(nodes)
             _pool.__nodes = nodes
-            __STATE['pool'] = _pool
+            __STATE['threads'] = _pool
         return _pool
     def _clear(self): #XXX: should be STATE method; use id
         """Remove server with matching state"""
-        _pool = __STATE['pool']
+        _pool = __STATE['threads']
         if _pool and self.__nodes == _pool.__nodes:
-            __STATE['pool'] = None
+            __STATE['threads'] = None
         return #_pool
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
@@ -144,16 +141,16 @@ Mapper that leverages python's multiprocessing.
        #AbstractWorkerPool._AbstractWorkerPool__pipe(self, f, *args, **kwds)
         _pool = self._serve()
         return _pool.apply(f, args, kwds)
-    pipe.__doc__ = AbstractWorkerPool.pipe.__doc__
+   #pipe.__doc__ = AbstractWorkerPool.pipe.__doc__
     def apipe(self, f, *args, **kwds): # register a callback ?
        #AbstractWorkerPool._AbstractWorkerPool__apipe(self, f, *args, **kwds)
         _pool = self._serve()
         return _pool.applyAsync(f, args, kwds)
-    apipe.__doc__ = AbstractWorkerPool.apipe.__doc__
+   #apipe.__doc__ = AbstractWorkerPool.apipe.__doc__
     ########################################################################
     def __repr__(self):
-        mapargs = (self.__class__.__name__, self.ncpus)
-        return "<pool %s(ncpus=%s)>" % mapargs
+        mapargs = (self.__class__.__name__, self.nthreads)
+        return "<pool %s(nthreads=%s)>" % mapargs
     def __get_nodes(self):
         """get the number of nodes used in the map"""
         return self.__nodes
@@ -163,14 +160,9 @@ Mapper that leverages python's multiprocessing.
         self.__nodes = nodes
         return
     # interface
-    ncpus = property(__get_nodes, __set_nodes)
+    nthreads = property(__get_nodes, __set_nodes)
     nodes = property(__get_nodes, __set_nodes)
     pass
 
-
-# backward compatibility
-from pathos.helpers import ThreadPool
-from pathos.threading import ThreadPool as ThreadingPool
-ProcessingPool = ProcessPool
 
 # EOF
