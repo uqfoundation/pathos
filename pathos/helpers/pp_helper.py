@@ -6,6 +6,15 @@
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
 try:
+    from multiprocess import TimeoutError
+    from multiprocess.pool import MapResult as _MapResult
+    from multiprocess.pool import ApplyResult as _ApplyResult
+    HAS_FORK = True
+except ImportError:
+    HAS_FORK = False
+
+try:
+    if HAS_FORK: raise ValueError
     from processing import TimeoutError
     from processing.pool import MapResult as _MapResult
     from processing.pool import ApplyResult as _ApplyResult
@@ -13,6 +22,9 @@ except ImportError:  # fall-back to package distributed with python
     from multiprocessing import TimeoutError
     from multiprocessing.pool import MapResult as _MapResult
     from multiprocessing.pool import ApplyResult as _ApplyResult
+except ValueError: pass
+del HAS_FORK
+
 from pp import _Task
 from pp import Server
 import time

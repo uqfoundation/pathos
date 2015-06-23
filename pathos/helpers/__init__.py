@@ -10,13 +10,16 @@ import mp_helper
 import pp as parallelpython
 
 try:
-    import multiprocessing as mp
-    HAS_FORK = mp.__version__ == '0.70.1'
+    import multiprocess as mp
+    from multiprocess.pool import Pool as ProcessPool
+    from multiprocess import cpu_count
+    from multiprocess.dummy import Pool as ThreadPool
+    HAS_FORK = True
 except ImportError:
     HAS_FORK = False
 
 try:
-    if HAS_FORK: raise ImportError('multiprocessing')
+    if HAS_FORK: raise ValueError('multiprocess')
 
     import processing as mp
     from processing.pool import Pool as ProcessPool  # use pathos/external
@@ -51,5 +54,5 @@ except ImportError:  # fall-back to package distributed with python
     from multiprocessing.pool import Pool as ProcessPool
     from multiprocessing import cpu_count
     from multiprocessing.dummy import Pool as ThreadPool
-
+except ValueError: pass
 del HAS_FORK
