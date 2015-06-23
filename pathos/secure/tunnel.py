@@ -17,7 +17,7 @@ Usage
 A typical call to a pathos 'tunnel' will roughly follow this example:
 
     >>> # instantiate the tunnel, providing it with a unique identifier
-    >>> tunnel = SSH_Tunnel('tunnel')
+    >>> tunnel = Tunnel('tunnel')
     >>>
     >>> # establish a tunnel to the remote host and port
     >>> remotehost = 'remote.host.edu'
@@ -38,7 +38,7 @@ import os
 import signal
 import random
 import string
-from LauncherSSH import LauncherSSH
+from pathos.secure import Pipe
 
 class TunnelException(Exception):
     '''Exception for failure to establish ssh tunnel'''
@@ -115,7 +115,7 @@ Inputs:
         xyz = string.ascii_letters
         self.name = ''.join(random.choice(xyz) for i in range(16)) \
                if name is None else name
-        self._launcher = LauncherSSH('launcher')
+        self._launcher = Pipe('launcher')
 
         self.__disconnect()
         if kwds: self.connect(**kwds)

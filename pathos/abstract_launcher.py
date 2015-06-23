@@ -27,8 +27,8 @@ Usage
 A typical call to a pathos map will roughly follow this example:
 
     >>> # instantiate and configure the worker pool
-    >>> from pathos.multiprocessing import ProcessingPool
-    >>> pool = ProcessingPool(nodes=4)
+    >>> from pathos.pools import ProcessPool
+    >>> pool = ProcessPool(nodes=4)
     >>>
     >>> # do a blocking map on the chosen function
     >>> results = pool.map(pow, [1,2,3,4], [5,6,7,8])

@@ -10,7 +10,7 @@ example of building a simple ssh-tunnel
 To run: python simple_tunnel.py
 """
 
-from pathos import SSH_Tunnel
+from pathos.secure import Tunnel
 
 if __name__ == '__main__':
     import sys
@@ -19,7 +19,7 @@ if __name__ == '__main__':
    #rhost = 'computer.cacr.caltech.edu'
     rport = 23
 
-    t = SSH_Tunnel('Tunnel')
+    t = Tunnel('Tunnel')
     lport = t.connect(rhost, rport)
     print 'SSH Tunnel to:', rhost
     print 'Remote port:', rport

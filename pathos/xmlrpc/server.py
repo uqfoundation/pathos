@@ -5,10 +5,12 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 #
-# adapted from J. Kim's XMLRPC server class
+# adapted from J. Kim's XMLRPC server and request handler classes
 """
 This module contains the base class for pathos XML-RPC servers,
-and derives from python's SimpleXMLRPCServer.
+and derives from python's SimpleXMLRPCServer, and the base class
+for XML-RPC request handlers, which derives from python's base HTTP
+request handler.
 
 
 Usage
@@ -42,14 +44,16 @@ The following is an example of how to make requests to the above server:
     >>> print '3 + 4 =', proxy.add(3, 4)
 
 """
-__all__ = ['XMLRPCServer']
+__all__ = ['XMLRPCServer','XMLRPCRequestHandler']
 
 import os
 import socket
+import xmlrpclib
+from BaseHTTPServer import BaseHTTPRequestHandler
 from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
-from Server import Server #XXX: in pythia-0.6, was pyre.ipc.Server
-from XMLRPCRequestHandler import XMLRPCRequestHandler
-from pathos.util import print_exc_info
+from pathos.server import Server #XXX: pythia-0.6, was pyre.ipc.Server
+from pathos.util import print_exc_info, spawn2
+from pathos import logger
 
 
 class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
@@ -178,6 +182,87 @@ Takes two initial inputs:
 
         self._installSocket(host, port)
         self._activeProcesses = {} #{ fd : pid }
+
+
+class XMLRPCRequestHandler(BaseHTTPRequestHandler):
+    ''' create a XML-RPC request handler '''
+
+    _debug = logger(name="pathos.xmlrpc", level=30) # logging.WARN
+
+    def do_POST(self):
+        """ Access point from HTTP handler """
+
+        
+        def onParent(pid, fromchild, tochild):
+            self._server._registerChild(pid, fromchild)
+            tochild.write('done\n')
+            tochild.flush()
+
+        def onChild(pid, fromparent, toparent):
+            try:
+                response = self._server._marshaled_dispatch(data)
+                self._sendResponse(response)
+                line = fromparent.readline()
+                toparent.write('done\n')
+                toparent.flush()
+            except:
+                logger(name='pathos.xmlrpc', level=30).error(print_exc_info())
+            os._exit(0)
+
+        try:
+            data = self.rfile.read(int(self.headers['content-length']))
+            params, method = xmlrpclib.loads(data)
+            if method == 'run':
+                return spawn2(onParent, onChild)
+            else:
+                response = self._server._marshaled_dispatch(data)
+                self._sendResponse(response)
+                return
+        except:
+            self._debug.error(print_exc_info())
+            self.send_response(500)
+            self.end_headers()
+            return
+
+
+    def log_message(self, format, *args):
+        """ Overriding BaseHTTPRequestHandler.log_message() """
+
+        self._debug.info("%s - - [%s] %s\n" %
+                        (self.address_string(),
+                         self.log_date_time_string(),
+                         format%args))
+
+
+    def _sendResponse(self, response):
+        """ Write the XML-RPC response """
+
+        self.send_response(200)
+        self.send_header("Content-type", "text/xml")
+        self.send_header("Content-length", str(len(response)))
+        self.end_headers()
+        self.wfile.write(response)
+        self.wfile.flush()
+        self.connection.shutdown(1)
+
+
+    def __init__(self, server, socket):
+        """
+Override BaseHTTPRequestHandler.__init__(): we need to be able
+to have (potentially) multiple handler objects at a given time.
+
+Inputs:
+    server  -- server object to handle requests for 
+    socket  -- socket connection 
+        """
+
+        ## Settings required by BaseHTTPRequestHandler
+        self.rfile = socket.makefile('rb', -1)
+        self.wfile = socket.makefile('wb', 0)
+        self.connection = socket
+        self.client_address = (server.host, server.port)
+        
+        self._server = server
 
 
 if __name__ == '__main__':

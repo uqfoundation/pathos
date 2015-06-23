@@ -39,26 +39,26 @@ def logger(level=None, handler=None, **kwds):
 # high-level interface
 import core
 import hosts
-
-# launchers
-from LauncherSSH import LauncherSSH as SSH_Launcher
-from LauncherSCP import LauncherSCP as SCP_Launcher
-
-# tunnels
-from Tunnel import Tunnel as SSH_Tunnel
+import server
+import selector
+import connection
+import pools
 
 # worker pools
-import pools
 import serial
 import parallel
 import multiprocessing
 import threading
-# backward compatibility
-python = serial
-pp = parallel
 
 # tools, utilities, etc
 import util
+
+# backward compatibility
+python = serial
+pp = parallel
+from pathos.secure import Pipe as SSH_Launcher
+from pathos.secure import Copier as SCP_Launcher
+from pathos.secure import Tunnel as SSH_Tunnel
 
 def license():
     """print license"""

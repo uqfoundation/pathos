@@ -313,8 +313,12 @@ setup(name="pathos",
         "Development Status :: 2 - Pre-Alpha",
         "Topic :: Physics Programming"),
 
-    packages=['pathos','pathos.helpers'],
-    package_dir={'pathos':'pathos','pathos.helpers':'pathos/helpers'},
+    packages=['pathos','pathos.helpers','pathos.secure','pathos.xmlrpc'],
+    package_dir={'pathos':'pathos',\
+                 'pathos.helpers':'pathos/helpers', \
+                 'pathos.secure':'pathos/secure', \
+                 'pathos.xmlrpc':'pathos/xmlrpc', \
+                },
 """ % (target_version, long_description)
 
 # check for 'processing'

@@ -17,7 +17,7 @@ Usage
 A typical call to a 'scp launcher' will roughly follow this example:
 
     >>> # instantiate the launcher, providing it with a unique identifier
-    >>> copier = LauncherSCP('copier')
+    >>> copier = Copier('copier')
     >>>
     >>> # configure and launch the copy to the selected destination
     >>> copier(source='~/foo.txt', destination='remote.host.edu:~')
@@ -29,16 +29,16 @@ A typical call to a 'scp launcher' will roughly follow this example:
     >>> print copier.response()
  
 """
-__all__ = ['FileNotFound','LauncherSCP']
+__all__ = ['FileNotFound','Copier']
 
 class FileNotFound(Exception):
     '''Exception for improper source or destination format'''
     pass
 
-from Launcher import Launcher
+from pathos.connection import Pipe as _Pipe
 
 # broke backward compatability: 30/05/14 ==> replace base-class almost entirely
-class LauncherSCP(Launcher):
+class Copier(_Pipe):
     '''a popen-based copier for parallel and distributed computing.'''
 
     def __init__(self, name=None, **kwds):
@@ -58,7 +58,7 @@ Inputs:
         self.options = kwds.pop('options', '')
         self.source = kwds.pop('source', '.')
         self.destination = kwds.pop('destination', '.')
-        super(LauncherSCP, self).__init__(name, **kwds)
+        super(Copier, self).__init__(name, **kwds)
         return
 
     def config(self, **kwds):

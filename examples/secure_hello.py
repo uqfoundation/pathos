@@ -10,11 +10,10 @@ example of using the secure launch interface
 To run: python secure_hello.py
 """
 
-from pathos import SSH_Launcher
+from pathos.secure import Pipe
 
 
 if __name__ == '__main__':
-   #import journal
 
     # test command and remote host
     command1 = 'echo "hello from..."'
@@ -25,8 +24,7 @@ if __name__ == '__main__':
    #rhost = 'computer.cacr.caltech.edu'
    #rhost = 'foobar.danse.us'
 
-    launcher = SSH_Launcher('LauncherSSH')
-   #journal.debug('LauncherSSH').activate()
+    launcher = Pipe('LauncherSSH')
     launcher(command=command1, rhost=rhost, background=False)
     launcher.launch()
     print launcher.response()

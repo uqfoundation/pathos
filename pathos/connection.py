@@ -7,45 +7,45 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 """
-This module contains the base class for popen launchers, and describes
-the popen launcher interface. The 'config' method can be overwritten
-for pipe customization. The launcher's 'launch' method can be overwritten
-with a derived launcher's new execution algorithm. See the following for
+This module contains the base class for popen pipes, and describes
+the popen pipe interface. The 'config' method can be overwritten
+for pipe customization. The pipe's 'launch' method can be overwritten
+with a derived pipe's new execution algorithm. See the following for
 an example of standard use.
 
 
 Usage
 =====
 
-A typical call to a popen 'launcher' will roughly follow this example:
+A typical call to a popen 'pipe' will roughly follow this example:
 
-    >>> # instantiate the launcher
-    >>> launcher = Launcher()
+    >>> # instantiate the pipe
+    >>> pipe = Pipe()
     >>>
-    >>> # configure the launcher to stage the command
-    >>> launcher(command='hostname')
+    >>> # configure the pipe to stage the command
+    >>> pipe(command='hostname')
     >>>
     >>> # execute the launch and retrieve the response
-    >>> launcher.launch()
-    >>> print launcher.response()
+    >>> pipe.launch()
+    >>> print pipe.response()
  
 """
-__all__ = ['Launcher', 'LauncherException']
+__all__ = ['Pipe', 'PipeException']
 
 import os
 import sys
 import signal
 import random
 import string
-from Selector import Selector
+from pathos.selector import Selector
 
-class LauncherException(Exception):
+class PipeException(Exception):
     '''Exception for failure to launch a command'''
     pass
 
 # broke backward compatability: 30/05/14 ==> replace base-class almost entirely
-class Launcher(object):
-    """a popen-based launcher for parallel and distributed computing."""
+class Pipe(object):
+    """a popen-based pipe for parallel and distributed computing."""
 
     verbose = True
     from pathos import logger
@@ -54,10 +54,10 @@ class Launcher(object):
 
 
     def __init__(self, name=None, **kwds):
-        """create a popen-launcher
+        """create a popen-pipe
 
 Inputs:
-    name        -- a unique identifier (string) for the launcher
+    name        -- a unique identifier (string) for the pipe
     command     -- a command to send  [default = 'echo <name>']
     background  -- run in background  [default = False]
     stdin       -- file type object that should be used as a standard input
@@ -76,12 +76,12 @@ Inputs:
         return
 
     def __repr__(self):
-        return "Launcher('%s')" % self.message
+        return "Pipe('%s')" % self.message
 
     def config(self, **kwds):
-        '''configure the launcher using given keywords:
+        '''configure the pipe using given keywords:
 
-(Re)configure the launcher for the following inputs:
+(Re)configure the pipe for the following inputs:
     command     -- a command to send  [default = 'echo <name>']
     background  -- run in background  [default = False]
     stdin       -- file type object that should be used as a standard input
@@ -120,7 +120,7 @@ Inputs:
                           stdin=self.stdin, stdout=PIPE,
                           stderr=STDOUT, close_fds=True)
             except:
-                raise LauncherException('failure to pipe: %s' % self.message)
+                raise PipeException('failure to pipe: %s' % self.message)
             self._pid = p.pid #get fileobject pid
             self._stdout = p.stdout #save fileobject
         else:
@@ -128,7 +128,7 @@ Inputs:
                 p = Popen(self.message, shell=True,
                           stdin=self.stdin, stdout=PIPE)
             except:
-                raise LauncherException('failure to pipe: %s' % self.message)
+                raise PipeException('failure to pipe: %s' % self.message)
             self._stdout = p.stdout
             self._pid = 0 #XXX: MMM --> or -1 ?
         return
@@ -139,7 +139,7 @@ Inputs:
         '''
 
         if self._stdout is None:
-            raise LauncherException("'launch' is required after any reconfiguration")
+            raise PipeException("'launch' is required after any reconfiguration")
         if self._response is not None: return self._response
 
         # when running in foreground _pid is 0 (may change to -1)
@@ -149,7 +149,7 @@ Inputs:
         
         # handle response from a background process
         def onData(selector, fobj):
-            if self.verbose: print("handling launcher response")
+            if self.verbose: print("handling pipe response")
             self._debug.info('on_remote')
             self._response = fobj.read()
             selector.state = False
@@ -168,11 +168,11 @@ Inputs:
         return self._response
 
     def pid(self):
-        '''get launcher pid'''
+        '''get pipe pid'''
         return self._pid
 
     def kill(self):
-        '''terminate the launcher'''
+        '''terminate the pipe'''
         if self._pid > 0:
             if self.verbose: print('Kill pid=%d' % self._pid)
             os.kill(self._pid, signal.SIGTERM)

@@ -10,7 +10,7 @@ example of using the secure copy interface
 To run: python secure_copy.py
 """
 
-from pathos import SCP_Launcher, SSH_Launcher
+from pathos.secure import Copier, Pipe
 
 
 if __name__=='__main__':
@@ -27,9 +27,7 @@ if __name__=='__main__':
     del1 = 'rm '+source1
     del2 = 'rm '+source2
 
-   #import journal
-    copier = SCP_Launcher('LauncherSCP')
-   #journal.debug('LauncherSCP').activate()
+    copier = Copier('LauncherSCP')
     print 'creating %s' % source0
     f = open(source0,'w')
     f.write('Test Successful!\n')
@@ -56,7 +54,7 @@ if __name__=='__main__':
     import os
     os.remove(source0)
 
-    launcher = SSH_Launcher('cleanup')
+    launcher = Pipe('cleanup')
     launcher(command=del1, rhost=cpu1, background=True)
     launcher.launch()
     launcher(command=del2, rhost=cpu2, background=True)

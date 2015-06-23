@@ -14,32 +14,32 @@ See the following for an example.
 Usage
 =====
 
-A typical call to a 'ssh launcher' will roughly follow this example:
+A typical call to a 'ssh pipe' will roughly follow this example:
 
-    >>> # instantiate the launcher, providing it with a unique identifier
-    >>> launcher = LauncherSSH('launcher')
+    >>> # instantiate the pipe, providing it with a unique identifier
+    >>> pipe = Pipe('launcher')
     >>>
-    >>> # configure the launcher to perform the command on the selected host
-    >>> launcher(command='hostname', host='remote.host.edu')
+    >>> # configure the pipe to perform the command on the selected host
+    >>> pipe(command='hostname', host='remote.host.edu')
     >>>
     >>> # execute the launch and retrieve the response
-    >>> launcher.launch()
-    >>> print launcher.response()
+    >>> pipe.launch()
+    >>> print pipe.response()
  
 """
-__all__ = ['LauncherSSH']
+__all__ = ['Pipe']
 
-from Launcher import Launcher
+from pathos.connection import Pipe as _Pipe
 
 # broke backward compatability: 30/05/14 ==> replace base-class almost entirely
-class LauncherSSH(Launcher):
-    '''a popen-based ssh-launcher for parallel and distributed computing.'''
+class Pipe(_Pipe):
+    '''a popen-based ssh-pipe for parallel and distributed computing.'''
 
     def __init__(self, name=None, **kwds):
-        '''create a ssh launcher
+        '''create a ssh pipe
 
 Inputs:
-    name        -- a unique identifier (string) for the launcher
+    name        -- a unique identifier (string) for the pipe
     host        -- hostname to recieve command [user@host is also valid]
     command     -- a command to send  [default = 'echo <name>']
     launcher    -- remote service mechanism (i.e. ssh, rsh)  [default = 'ssh']
@@ -51,7 +51,7 @@ Inputs:
         self.launcher = kwds.pop('launcher', 'ssh')
         self.options = kwds.pop('options', '')
         self.host = kwds.pop('host', 'localhost')
-        super(LauncherSSH, self).__init__(name, **kwds)
+        super(Pipe, self).__init__(name, **kwds)
         return
 
     def config(self, **kwds):
