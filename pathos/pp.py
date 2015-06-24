@@ -7,8 +7,8 @@
 #
 # backward compatibility
 __all__ = ['ParallelPythonPool', 'stats']
-from pathos.parallel import __doc__
-from pathos.parallel import cpu_count, ParallelPool as ParallelPythonPool
-from pathos.parallel import __print_stats, stats
+from pathos.parallel import __doc__, __print_stats, __STATE
+from pathos.parallel import *
+ParallelPythonPool = ParallelPool
 
 # EOF

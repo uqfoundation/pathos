@@ -7,7 +7,8 @@
 #
 # backward compatibility
 __all__ = ['PythonSerial']
-from pathos.serial import __doc__
-from pathos.serial import SerialPool as PythonSerial
+from pathos.serial import __doc__, __STATE
+from pathos.serial import *
+PythonSerial = SerialPool
 
 # EOF

@@ -90,26 +90,40 @@ from pathos.helpers import parallelpython as pp
 from pathos.helpers import cpu_count
 
 #FIXME: probably not good enough... should store each instance with a uid
-__STATE = _ParallelPool__STATE = {'server':None}
+__STATE = _ParallelPool__STATE = {}
 
-def __print_stats():
+def __print_stats(servers=None):
     "print stats from the pp.Server"
-    if __STATE['server']:
-        __STATE['server'].print_stats()
-    else:
-        print "Stats are not available; no active servers.\n"
+    FROM_STATE = True
+    if servers is None: servers = __STATE.values()
+    else: FROM_STATE = False
+    try:
+        servers = tuple(servers)
+    except TypeError:
+        servers = (servers,)
+    if not servers:
+        msg = '; no active' if FROM_STATE else ' for the requested'
+        print "Stats are not available%s servers.\n" % msg
+        return
+    for server in servers: # fails if not pp.Servers
+        #XXX: also print ids? (__STATE.keys())?
+        server.print_stats()
+    return
 
-def stats():  #XXX: better return object(?) to query? | is per run? compound?
-    "return stats print string from the pp.Server"
+#XXX: better return object(?) to query? | is per run? compound?
+def stats(pool=None):
+    "return a string containing stats response from the pp.Server"
+    server = None if pool is None else __STATE.get(pool._id, tuple())
+
     import StringIO, sys
     stdout = sys.stdout
     try:
         sys.stdout = result = StringIO.StringIO()
-        __print_stats()
+        __print_stats(server)
     except:
-        result = None #FIXME: will cause error below
+        result = None #XXX: better throw an error?
     sys.stdout = stdout
-    result = result.getvalue()
+    result = result.getvalue() if result else ''
     return result
 
 
@@ -145,6 +159,9 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         if servers is None: servers = ()
        #from _ppserver_config import ppservers as servers # config file
 
+        # Create an identifier for the pool
+        self._id = 'server'
+
         #XXX: throws 'socket.error' when starting > 1 server with autodetect
         # Create a new server if one isn't already initialized
         # ...and set the requested level of multi-processing
@@ -166,7 +183,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
             servers = tuple(sorted(self.__servers)) # no servers is ()
         elif servers in ['*', 'autodetect']: servers = ('*',)
         # if no server, create one
-        _pool = __STATE['server']
+        _pool = __STATE.get(self._id, None)
         if not _pool:
             _pool = pp.Server(ppservers=servers)
         # convert to form returned by pp.Server, then compare
@@ -180,14 +197,14 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         if _nodes != _pool.get_ncpus():
             _pool.set_ncpus(nodes) # allows ncpus=0
         # set (or 'repoint') the server
-        __STATE['server'] = _pool
+        __STATE[self._id] = _pool
         # set the 'self' internals
         self.__nodes = None if nodes in ['autodetect'] else nodes
         self.__servers = servers
         return _pool
     def _clear(self): #XXX: should be STATE method; use id
         """Remove server with matching state"""
-        _pool = __STATE['server']
+        _pool = __STATE.get(self._id, None)
         if not _pool:
             return
         # convert to form returned by pp.Server, then compare
@@ -200,8 +217,8 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         if sorted(self.__servers) != _servers:
             return
         # it's the 'same' (better to check _pool.secret?)
-        __STATE['server'] = None
-        return #_pool
+        del __STATE[self._id] # pop would be safer
+        return #XXX: return _pool? (i.e. pop)
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         return list(self.imap(f, *args))
@@ -309,7 +326,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         """set the servers used in the map"""
         if servers is None: servers = ()
         self._serve(servers=servers)
-        #__STATE['server'].ppservers == [(s.split(':')[0],int(s.split(':')[1])) for s in servers]
+        #__STATE[self._id].ppservers == [(s.split(':')[0],int(s.split(':')[1])) for s in servers]
         # we could check if the above is true... for now we will just be lazy
         # we could also convert lists to tuples... again, we'll be lazy
         # XXX: throws "socket error" when autodiscovery service is enabled

@@ -55,6 +55,9 @@ __set_nodes__ = AbstractWorkerPool._AbstractWorkerPool__set_nodes
 from itertools import imap as _imap
 from __builtin__ import map as _map, apply as _apply
 
+#XXX: good for interface... or bad idea?
+__STATE = _SerialPool__STATE = {}
+
 class SerialPool(AbstractWorkerPool):
     """
 Mapper that leverages standard (i.e. serial) python maps.

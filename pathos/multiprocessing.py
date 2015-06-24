@@ -67,7 +67,7 @@ can directly utilize functions that require multiple arguments.
 __all__ = ['ProcessPool','_ProcessPool']
 
 #FIXME: probably not good enough... should store each instance with a uid
-__STATE = _ProcessPool__STATE = {'pool':None}
+__STATE = _ProcessPool__STATE = {}
 
 from pathos.abstract_launcher import AbstractWorkerPool
 from pathos.helpers.mp_helper import starargs as star
@@ -96,6 +96,9 @@ Mapper that leverages python's multiprocessing.
             kwds['ncpus'] = args[0]
         self.__nodes = kwds.get('ncpus', cpu_count())
 
+        # Create an identifier for the pool
+        self._id = 'pool'
+
         # Create a new server if one isn't already initialized
         self._serve()
         return
@@ -106,18 +109,18 @@ Mapper that leverages python's multiprocessing.
     def _serve(self, nodes=None): #XXX: should be STATE method; use id
         """Create a new server if one isn't already initialized"""
         if nodes is None: nodes = self.__nodes
-        _pool = __STATE['pool']
+        _pool = __STATE.get(self._id, None)
         if not _pool or nodes != _pool.__nodes:
             _pool = Pool(nodes)
             _pool.__nodes = nodes
-            __STATE['pool'] = _pool
+            __STATE[self._id] = _pool
         return _pool
     def _clear(self): #XXX: should be STATE method; use id
         """Remove server with matching state"""
-        _pool = __STATE['pool']
+        _pool = __STATE.get(self._id, None)
         if _pool and self.__nodes == _pool.__nodes:
-            __STATE['pool'] = None
-        return #_pool
+            del __STATE[self._id] # pop would be safer
+        return #XXX: return _pool? (i.e. pop)
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         _pool = self._serve()

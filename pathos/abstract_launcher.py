@@ -103,6 +103,7 @@ Other class members:
         """
         object.__init__(self)#, *args, **kwds)
         self.__init(*args, **kwds)
+        self._id = None
         return
     def __enter__(self):
         return self
@@ -174,6 +175,15 @@ Other class members:
         except:
             pass
         return
+    def _serve(self, *args, **kwds):
+        """Create a new server if one isn't already initialized"""
+        raise NotImplementedError
+       #_pool = None
+       #return _pool
+    def _clear(self):
+        """Remove server with matching state"""
+        raise NotImplementedError
+       #return #XXX: return _pool? (i.e. pop)
     def map(self, f, *args, **kwds):
         """run a batch of jobs with a blocking and ordered map
 
