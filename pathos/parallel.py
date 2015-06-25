@@ -165,6 +165,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         #XXX: throws 'socket.error' when starting > 1 server with autodetect
         # Create a new server if one isn't already initialized
         # ...and set the requested level of multi-processing
+        self._exiting = False
         _pool = self._serve(nodes=ncpus, servers=servers)
         #XXX: or register new UID for each instance?
         #_pool.set_ncpus(ncpus or 'autodetect') # no ncpus=0
@@ -205,20 +206,13 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
     def _clear(self): #XXX: should be STATE method; use id
         """Remove server with matching state"""
         _pool = __STATE.get(self._id, None)
-        if not _pool:
-            return
-        # convert to form returned by pp.Server, then compare
-        _nodes = cpu_count() if self.__nodes is None else self.__nodes
-        if _nodes != _pool.get_ncpus():
-            return
-        _auto = [('*',)] if _pool.auto_ppservers else []
-        _servers = sorted(_pool.ppservers + _auto)
-        _servers = [':'.join((str(i) for i in tup)) for tup in _servers]
-        if sorted(self.__servers) != _servers:
+        if not self._equals(_pool):
             return
         # it's the 'same' (better to check _pool.secret?)
-        del __STATE[self._id] # pop would be safer
-        return #XXX: return _pool? (i.e. pop)
+        _pool.destroy()
+        __STATE.pop(self._id, None)
+        self._exiting = False
+        return #XXX: return _pool?
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         return list(self.imap(f, *args))
@@ -229,7 +223,10 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
             """send a job to the server"""
             _pool = self._serve()
            #print "using", _pool.get_ncpus(), 'local workers'
-            return _pool.submit(f, argz, globals=globals())
+            try:
+                return _pool.submit(f, argz, globals=globals())
+            except pp.DestroyedServerError:
+                self._is_alive(None)
         # submit all jobs, then collect results as they become available
         return (subproc() for subproc in __builtin__.map(submit, *args))
     imap.__doc__ = AbstractWorkerPool.imap.__doc__
@@ -239,7 +236,10 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
             """send a job to the server"""
             _pool = self._serve()
            #print "using", _pool.get_ncpus(), 'local workers'
-            return _pool.submit(f, argz, globals=globals())
+            try:
+                return _pool.submit(f, argz, globals=globals())
+            except pp.DestroyedServerError:
+                self._is_alive(None)
         def imap_unordered(it):
             """build a unordered map iterator"""
             while len(it):
@@ -259,7 +259,10 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
             """send a job to the server"""
             _pool = self._serve()
            #print "using", _pool.get_ncpus(), 'local workers'
-            return _pool.submit(f, argz, globals=globals())
+            try:
+                return _pool.submit(f, argz, globals=globals())
+            except pp.DestroyedServerError:
+                self._is_alive(None)
         override = True if kwds.has_key('size') else False
         elem_size = kwds.pop('size', 2)
         args = zip(*args)
@@ -292,14 +295,20 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
        #AbstractWorkerPool._AbstractWorkerPool__pipe(self, f, *args, **kwds)
         # submit a job to the server, and block until results are collected
         _pool = self._serve()
-        task = _pool.submit(f, args, globals=globals())
+        try:
+            task = _pool.submit(f, args, globals=globals())
+        except pp.DestroyedServerError:
+            self._is_alive(None)
         return task()
     pipe.__doc__ = AbstractWorkerPool.pipe.__doc__
     def apipe(self, f, *args, **kwds): # register a callback ?
        #AbstractWorkerPool._AbstractWorkerPool__apipe(self, f, *args, **kwds)
         # submit a job, to be collected later with 'get()'
         _pool = self._serve()
-        task = _pool.submit(f, args, globals=globals())
+        try:
+            task = _pool.submit(f, args, globals=globals())
+        except pp.DestroyedServerError:
+            self._is_alive(None)
         return ApplyResult(task)
     apipe.__doc__ = AbstractWorkerPool.apipe.__doc__
     ########################################################################
@@ -330,6 +339,63 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         # we could check if the above is true... for now we will just be lazy
         # we could also convert lists to tuples... again, we'll be lazy
         # XXX: throws "socket error" when autodiscovery service is enabled
+        return
+    ########################################################################
+    def restart(self, force=False):
+        "restart a closed pool"
+        _pool = __STATE.get(self._id, None)
+        if self._equals(_pool):
+            if not force: self._is_alive(_pool, negate=True)
+            # 'clear' and 'serve'
+            if self._exiting: # i.e. is destroyed
+                self._clear()
+            else: # only closed, so just 'reopen'
+                _pool._exiting = False 
+                #NOTE: setting pool._exiting = False *may* hang python!
+            _pool = self._serve()
+        return
+    def _is_alive(self, server=None, negate=False, run=True):
+        RUN,CLOSE,TERMINATE = 0,1,2
+        pool = lambda :None
+        if server is None:
+            pool._state = RUN if negate else CLOSE
+        else:
+            pool._state = server._exiting
+        if negate and run: # throw error if alive (exiting=True)
+            assert pool._state != RUN
+        elif negate: # throw error if alive (exiting=True)
+            assert pool._state in (CLOSE, TERMINATE)
+        else: # throw error if not alive (exiting=False)
+            assert pool._state == RUN
+    def _equals(self, server):
+        "check if the server is compatible"
+        if not server:
+            return False
+        _nodes = cpu_count() if self.__nodes is None else self.__nodes
+        if _nodes != server.get_ncpus():
+            return False
+        _auto = [('*',)] if server.auto_ppservers else []
+        _servers = sorted(server.ppservers + _auto)
+        _servers = [':'.join((str(i) for i in tup)) for tup in _servers]
+        return sorted(self.__servers) == _servers
+    def close(self):
+        "close the pool to any new jobs"
+        _pool = __STATE.get(self._id, None)
+        if self._equals(_pool):
+            _pool._exiting = True
+        return
+    def terminate(self):
+        "a more abrupt close"
+        self.close()
+        self.join()
+        return
+    def join(self):
+        "cleanup the closed worker processes"
+        _pool = __STATE.get(self._id, None)
+        if self._equals(_pool):
+            self._is_alive(_pool, negate=True, run=False)
+            _pool.destroy()
+            self._exiting = True # i.e. is destroyed
         return
     # interface
     ncpus = property(__get_nodes, __set_nodes)

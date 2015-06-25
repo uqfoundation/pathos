@@ -108,6 +108,7 @@ Mapper that leverages python's threading.
         if nodes is None: nodes = self.__nodes
         _pool = __STATE.get(self._id, None)
         if not _pool or nodes != _pool.__nodes:
+            self._clear()
             _pool = _ThreadPool(nodes)
             _pool.__nodes = nodes
             __STATE[self._id] = _pool
@@ -116,8 +117,10 @@ Mapper that leverages python's threading.
         """Remove server with matching state"""
         _pool = __STATE.get(self._id, None)
         if _pool and self.__nodes == _pool.__nodes:
-            del __STATE[self._id] # pop would be safer
-        return #XXX: return _pool? (i.e. pop)
+            _pool.close()
+            _pool.join()
+            __STATE.pop(self._id, None)
+        return #XXX: return _pool?
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         _pool = self._serve()
@@ -161,6 +164,38 @@ Mapper that leverages python's threading.
         """set the number of nodes used in the map"""
         self._serve(nodes)
         self.__nodes = nodes
+        return
+    ########################################################################
+    def restart(self, force=False):
+        "restart a closed pool"
+        _pool = __STATE.get(self._id, None)
+        if _pool and self.__nodes == _pool.__nodes:
+            RUN = 0
+            if not force:
+                assert _pool._state != RUN
+            # essentially, 'clear' and 'serve'
+            self._clear()
+            _pool = _ThreadPool(self.__nodes)
+            _pool.__nodes = self.__nodes
+            __STATE[self._id] = _pool
+        return _pool
+    def close(self):
+        "close the pool to any new jobs"
+        _pool = __STATE.get(self._id, None)
+        if _pool and self.__nodes == _pool.__nodes:
+            _pool.close()
+        return
+    def terminate(self):
+        "a more abrupt close"
+        _pool = __STATE.get(self._id, None)
+        if _pool and self.__nodes == _pool.__nodes:
+            _pool.terminate()
+        return
+    def join(self):
+        "cleanup the closed worker processes"
+        _pool = __STATE.get(self._id, None)
+        if _pool and self.__nodes == _pool.__nodes:
+            _pool.join()
         return
     # interface
     nthreads = property(__get_nodes, __set_nodes)
