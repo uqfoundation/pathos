@@ -180,7 +180,7 @@ Other class members:
         raise NotImplementedError
        #_pool = None
        #return _pool
-    def _clear(self):
+    def clear(self):
         """Remove server with matching state"""
         raise NotImplementedError
        #return #XXX: return _pool? (i.e. pop)

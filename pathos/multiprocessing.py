@@ -124,6 +124,7 @@ Mapper that leverages python's multiprocessing.
             _pool.join()
             __STATE.pop(self._id, None)
         return #XXX: return _pool?
+    clear = _clear
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         _pool = self._serve()

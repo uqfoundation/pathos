@@ -74,7 +74,7 @@ def test_basic(pool, state):
     else:
         raise AssertionError
 
-    pool._clear()
+    pool.clear()
     res = pool.map(squared, range(2))
     assert res == [0, 1]
 
@@ -131,7 +131,7 @@ def test_basic(pool, state):
     assert obj in state.values()
     assert len(state) == 1
     pool.terminate()
-    pool._clear()
+    pool.clear()
     assert len(state) == 0
     return
 
@@ -199,7 +199,7 @@ def test_nodes(pool, state):
         raise AssertionError
 
     assert len(state) == 1
-    pool._clear()
+    pool.clear()
     assert len(state) == 0
     pool = new_pool()
     res = pool.map(squared, range(2))
@@ -207,7 +207,7 @@ def test_nodes(pool, state):
     assert len(state) == 1
     pool.terminate()
     assert len(state) == 1
-    pool._clear()
+    pool.clear()
     assert len(state) == 0
     return
 
@@ -243,7 +243,7 @@ def test_rename(pool, state):
     pool.terminate()
     assert len(state) == 2
     assert 'foobar' in state.keys()
-    pool._clear()
+    pool.clear()
     assert len(state) == 1
     assert 'foobar' not in state.keys()
 
@@ -251,7 +251,7 @@ def test_rename(pool, state):
     res = pool.map(squared, range(2))
     assert res == [0, 1]
     pool.terminate()
-    pool._clear()
+    pool.clear()
     assert len(state) == 0
     return
 

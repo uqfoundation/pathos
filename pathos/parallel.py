@@ -213,6 +213,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         __STATE.pop(self._id, None)
         self._exiting = False
         return #XXX: return _pool?
+    clear = _clear
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         return list(self.imap(f, *args))
