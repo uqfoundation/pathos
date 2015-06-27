@@ -5,25 +5,29 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
-from pathos.pools import ProcessPool as Pool
-pool = Pool()
-
 def host(id):
     import socket
     return "Rank: %d -- %s" % (id, socket.gethostname())
 
 
-print "Evaluate 5 items on 2 proc:"
-pool.ncpus = 2
-res3 = pool.map(host, range(5))
-print pool
-print '\n'.join(res3)
-print ''
+if __name__ == '__main__':
+    from pathos.helpers import freeze_support
+    freeze_support()
 
-print "Evaluate 5 items on 10 proc:"
-pool.ncpus = 10
-res5 = pool.map(host, range(5)) 
-print pool
-print '\n'.join(res5)
+    from pathos.pools import ProcessPool as Pool
+    pool = Pool()
+
+    print "Evaluate 5 items on 2 proc:"
+    pool.ncpus = 2
+    res3 = pool.map(host, range(5))
+    print pool
+    print '\n'.join(res3)
+    print ''
+
+    print "Evaluate 5 items on 10 proc:"
+    pool.ncpus = 10
+    res5 = pool.map(host, range(5)) 
+    print pool
+    print '\n'.join(res5)
 
 # end of file

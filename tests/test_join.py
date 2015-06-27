@@ -257,6 +257,9 @@ def test_rename(pool, state):
 
 
 if __name__ == '__main__':
+    from pathos.helpers import freeze_support
+    freeze_support()
+
     test_basic(ThreadPool(), tstate)
 #   test_basic(ProcessPool(), mstate)
 #   test_basic(ParallelPool(), pstate)

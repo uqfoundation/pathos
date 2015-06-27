@@ -6,8 +6,6 @@
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
 from __future__ import with_statement
-import math
-from time import sleep
 from itertools import izip
 
 
@@ -23,6 +21,7 @@ def is_prime(n):
     if n % 2 == 0:
         return False
 
+    import math
     sqrt_n = int(math.floor(math.sqrt(n)))
     for i in range(3, sqrt_n + 1, 2):
         if n % i == 0:
@@ -30,10 +29,12 @@ def is_prime(n):
     return True
 
 def sleep_add1(x):
+    from time import sleep
     if x < 4: sleep(x/10.0)
     return x+1
 
 def sleep_add2(x):
+    from time import sleep
     if x < 4: sleep(x/10.0)
     return x+2
 
@@ -54,6 +55,9 @@ def test_with_multipool(Pool):
 
 
 if __name__ == '__main__':
+    from pathos.helpers import freeze_support
+    freeze_support()
+
     from pathos.pools import ProcessPool
     test_with_multipool(ProcessPool)
 

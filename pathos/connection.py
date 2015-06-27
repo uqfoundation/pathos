@@ -106,7 +106,7 @@ Inputs:
     def launch(self):
         '''launch a configured command'''
         self._response = None
-        self._execute()
+        self._execute()  # preempt with pox.which(message.split()[0]) ?
         return
 
     def _execute(self):

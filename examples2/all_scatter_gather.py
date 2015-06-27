@@ -15,9 +15,16 @@ Run with:
 """
 
 import numpy as np
-from pyina.launchers import Mpi as MpiPool
+from pathos.helpers import freeze_support
 from pathos.pools import ProcessPool
 from pathos.pools import ParallelPool
+from pathos.pools import ThreadPool
+try:
+    from pyina.launchers import Mpi as MpiPool
+    HAS_PYINA = True
+except ImportError:
+    HAS_PYINA = False
+
 nodes = 2; N = 3
 
 # take sin squared of all data
@@ -27,32 +34,43 @@ def sin2(xi):
     return np.sin(xi)**2
 
 
-# print the input to screen
-x = np.arange(N * nodes, dtype=np.float64)
-print("Input: %s\n" % x)
+if __name__ == '__main__':
+    # ensure properly forks on Windows
+    freeze_support()
+
+    # print the input to screen
+    x = np.arange(N * nodes, dtype=np.float64)
+    print("Input: %s\n" % x)
 
 
-# run sin2 in series, then print to screen
-print("Running serial python ...")
-y = map(sin2, x)
-print("Output: %s\n" % np.asarray(y))
+    # run sin2 in series, then print to screen
+    print("Running serial python ...")
+    y = map(sin2, x)
+    print("Output: %s\n" % np.asarray(y))
 
 
-# map sin2 to the workers, then print to screen
-print("Running mpi4py on %d cores..." % nodes)
-y = MpiPool(nodes).map(sin2, x)
-print("Output: %s\n" % np.asarray(y))
+    if HAS_PYINA:
+        # map sin2 to the workers, then print to screen
+        print("Running mpi4py on %d cores..." % nodes)
+        y = MpiPool(nodes).map(sin2, x)
+        print("Output: %s\n" % np.asarray(y))
 
 
-# map sin2 to the workers, then print to screen
-print("Running multiprocesing on %d processors..." % nodes)
-y = ProcessPool(nodes).map(sin2, x)
-print("Output: %s\n" % np.asarray(y))
+    # map sin2 to the workers, then print to screen
+    print("Running multiprocesing on %d processors..." % nodes)
+    y = ProcessPool(nodes).map(sin2, x)
+    print("Output: %s\n" % np.asarray(y))
 
 
-# map sin2 to the workers, then print to screen
-print("Running parallelpython on %d cpus..." % nodes)
-y = ParallelPool(nodes).map(sin2, x)
-print("Output: %s\n" % np.asarray(y))
+    # map sin2 to the workers, then print to screen
+    print("Running multiprocesing on %d threads..." % nodes)
+    y = ThreadPool(nodes).map(sin2, x)
+    print("Output: %s\n" % np.asarray(y))
+
+
+    # map sin2 to the workers, then print to screen
+    print("Running parallelpython on %d cpus..." % nodes)
+    y = ParallelPool(nodes).map(sin2, x)
+    print("Output: %s\n" % np.asarray(y))
 
 # EOF

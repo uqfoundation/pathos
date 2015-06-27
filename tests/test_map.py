@@ -13,6 +13,7 @@ items = 100
 
 
 def busy_add(x,y, delay=0.01):
+    import time
     for n in range(x):
        x += n
     for n in range(y):
@@ -79,6 +80,8 @@ if __name__ == '__main__':
         print "CONFIG: items = %s" % items
         print ""
 
+    from pathos.helpers import freeze_support
+    freeze_support()
     test_serial()
     test_pp()
     test_processing()

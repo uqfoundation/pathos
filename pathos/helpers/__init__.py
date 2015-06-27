@@ -14,6 +14,7 @@ try:
     from multiprocess.pool import Pool as ProcessPool
     from multiprocess import cpu_count
     from multiprocess.dummy import Pool as ThreadPool
+    from multiprocess import freeze_support
     HAS_FORK = True
 except ImportError:
     HAS_FORK = False
@@ -24,6 +25,7 @@ try:
     import processing as mp
     from processing.pool import Pool as ProcessPool  # use pathos/external
     from processing import cpuCount as cpu_count
+    from processing import freezeSupport as freeze_support
     import Queue
 
     class ThreadPool(ProcessPool):
@@ -54,5 +56,6 @@ except ImportError:  # fall-back to package distributed with python
     from multiprocessing.pool import Pool as ProcessPool
     from multiprocessing import cpu_count
     from multiprocessing.dummy import Pool as ThreadPool
+    from multiprocessing import freeze_support
 except ValueError: pass
 del HAS_FORK

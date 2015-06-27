@@ -6,7 +6,6 @@
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
 import time
-
 x = range(18)
 delay = 0.01
 items = 20
@@ -14,6 +13,7 @@ maxtries = 20
 
 
 def busy_add(x,y, delay=0.01):
+    import time
     for n in range(x):
        x += n
     for n in range(y):
@@ -22,7 +22,7 @@ def busy_add(x,y, delay=0.01):
     return x + y
 
 def busy_squared(x):
-    import random
+    import time, random
     time.sleep(0.01*random.random())
     return x*x
 
@@ -108,10 +108,10 @@ def test_maps(pool, items=4, delay=0):
     assert list(_res2) == res2
 
    #print pool.uimap
-   #_res1 = pool.uimap(squared, _x)
-   #_res2 = pool.uimap(busy_add, _x, _y, _d)
-   #assert sorted(_res1) == sorted(res1)
-   #assert sorted(_res2) == sorted(res2)
+    _res1 = pool.uimap(squared, _x)
+    _res2 = pool.uimap(busy_add, _x, _y, _d)
+    assert sorted(_res1) == sorted(res1)
+    assert sorted(_res2) == sorted(res2)
 
    #print pool.amap
     _res1 = pool.amap(squared, _x)
@@ -163,6 +163,9 @@ def test_ready(pool, maxtries, delay, verbose=True):
 
 
 if __name__ == '__main__':
+    from pathos.helpers import freeze_support
+    freeze_support()
+
     from pathos.pools import ProcessPool as Pool
     pool = Pool(nodes=4)
     test_sanity( pool )

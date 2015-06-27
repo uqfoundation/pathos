@@ -78,6 +78,8 @@ if __name__ == '__main__':
    #from pathos.pools import ProcessPool as Pool
    #from pathos.pools import ThreadPool as Pool
     from pathos.pools import ParallelPool as Pool
+   #from pathos.helpers import freeze_support
+   #freeze_support()
 
     pool = Pool(nodes=4)
     test_ready( pool, f, maxtries, delay )

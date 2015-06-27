@@ -60,6 +60,8 @@ from pathos.multiprocessing import ProcessPool as mppool
 
 
 if __name__ == '__main__':
+    from pathos.helpers import freeze_support
+    freeze_support()
     target = 'cheby'
     print "Function: %s" % target
     print "Solver: %s" % 'fmin_powell'

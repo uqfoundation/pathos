@@ -5,6 +5,9 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
+from pathos.helpers import freeze_support
+freeze_support()
+
 # instantiate and configure the worker pool
 from pathos.pools import ProcessPool
 pool = ProcessPool(nodes=4)
@@ -24,4 +27,3 @@ assert result == _result
 result_queue = pool.amap(pow, [1,2,3,4], [5,6,7,8])
 result = result_queue.get()
 assert result == _result
-

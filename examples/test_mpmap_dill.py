@@ -5,10 +5,8 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
-from pathos.pools import _ProcessPool as Pool
 import dill
 import pickle #FIXME: multiprocessing needs cPickle + copy_reg
-pool = Pool()
 
 # pickle fails for nested functions
 def adder(augend):
@@ -31,20 +29,28 @@ psqu = pickle.dumps(squ)
 p_squ = pickle.loads(psqu)
 assert squ(10) == p_squ(10)
 
-# if pickle works, then multiprocessing should too
-print "Evaluate 10 items on 2 proc:"
-pool.ncpus = 2
-p_res = pool.map(add_me, range(10))
-print pool
-print '%s' % p_res
-print ''
 
-# if pickle works, then multiprocessing should too
-print "Evaluate 10 items on 4 proc:"
-pool.ncpus = 4
-p2res = pool.map(squ, range(10))
-print pool
-print '%s' % p2res
-print ''
+if __name__ == '__main__':
+    from pathos.helpers import freeze_support
+    freeze_support()
+
+    from pathos.pools import _ProcessPool as Pool
+    pool = Pool()
+
+    # if pickle works, then multiprocessing should too
+    print "Evaluate 10 items on 2 proc:"
+    pool.ncpus = 2
+    p_res = pool.map(add_me, range(10))
+    print pool
+    print '%s' % p_res
+    print ''
+
+    # if pickle works, then multiprocessing should too
+    print "Evaluate 10 items on 4 proc:"
+    pool.ncpus = 4
+    p2res = pool.map(squ, range(10))
+    print pool
+    print '%s' % p2res
+    print ''
 
 # end of file
