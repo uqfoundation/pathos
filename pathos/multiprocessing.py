@@ -155,7 +155,7 @@ Mapper that leverages python's multiprocessing.
     def apipe(self, f, *args, **kwds): # register a callback ?
        #AbstractWorkerPool._AbstractWorkerPool__apipe(self, f, *args, **kwds)
         _pool = self._serve()
-        return _pool.applyAsync(f, args, kwds)
+        return _pool.apply_async(f, args, kwds)
     apipe.__doc__ = AbstractWorkerPool.apipe.__doc__
     ########################################################################
     def __repr__(self):
