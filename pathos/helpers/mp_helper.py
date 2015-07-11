@@ -7,6 +7,7 @@
 """
 map helper functions
 """
+# random_state and random_seed copied from mystic.tools
 
 def starargs(f):
     """decorator to convert a many-arg function to a single-arg function"""
@@ -18,4 +19,67 @@ def starargs(f):
     return func
    #from functools import update_wrapper
    #return update_wrapper(func, f)
+
+
+def random_seed(s=None):
+    "sets the seed for calls to 'random()'"
+    import random
+    random.seed(s)
+    try:
+        from numpy import random
+        random.seed(s)
+    except:
+        pass
+    return
+
+
+def random_state(module='random', new=False, seed='!'):
+    """return a (optionally manually seeded) random generator
+
+For a given module, return an object that has random number generation (RNG)
+methods available.  If new=False, use the global copy of the RNG object.
+If seed='!', do not reseed the RNG (using seed=None 'removes' any seeding).
+If seed='*', use a seed that depends on the process id (PID); this is useful
+for building RNGs that are different across multiple threads or processes.
+    """
+    import random
+    if module == 'random':
+        rng = random
+    elif not isinstance(module, type(random)):
+        # convienence for passing in 'numpy'
+        if module == 'numpy': module = 'numpy.random'
+        try:
+            import importlib
+            rng = importlib.import_module(module)
+        except ImportError:
+            rng = __import__(module, fromlist=module.split('.')[-1:])
+    elif module.__name__ == 'numpy': # convienence for passing in numpy
+        from numpy import random as rng
+    else: rng = module
+
+    _rng = getattr(rng, 'RandomState', None) or \
+           getattr(rng, 'Random') # throw error if no rng found
+    if new:
+        rng = _rng()
+
+    if seed == '!': # special case: don't reset the seed
+        return rng
+    if seed == '*': # special case: random seeding for multiprocessing
+        try:
+            try:
+                import multiprocessing as mp
+            except ImportError:
+                import processing as mp
+            try:
+                seed = mp.current_process().pid
+            except AttributeError:
+                seed = mp.currentProcess().getPid()
+        except:
+            seed = 0
+        import time
+        seed += int(time.time()*1e6)
+
+    # set the random seed (or 'reset' with None)
+    rng.seed(seed)
+    return rng
 
