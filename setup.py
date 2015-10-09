@@ -376,10 +376,10 @@ try:
 except ImportError:
     print "\n***********************************************************"
     print "WARNING: One of the following dependencies is unresolved:"
-    print "    pp(ft) %s" % ppft_version
+    print "    ppft %s" % ppft_version
     print "    dill %s" % dill_version
     print "    pox %s" % pox_version
-    print "    (multi)processing %s" % processing_version or mp_version
+    print "    multiprocess %s" % processing_version or mp_version
     print "***********************************************************\n"
 
     print """
