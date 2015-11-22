@@ -64,7 +64,7 @@ if __name__ == '__main__':
 
     # map sin_diff to the workers, then print to screen
     print("Running multiprocesing on %d threads..." % nodes)
-    y = ThreadPool(nodes).map(sins_diff, x, xp)
+    y = ThreadPool(nodes).map(sin_diff, x, xp)
     print("Output: %s\n" % np.asarray(y))
 
 

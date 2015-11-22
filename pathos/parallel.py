@@ -88,6 +88,7 @@ __all__ = ['ParallelPool', 'stats']
 import __builtin__
 from pathos.helpers import parallelpython as pp
 from pathos.helpers import cpu_count
+from itertools import izip as zip
 
 #FIXME: probably not good enough... should store each instance with a uid
 __STATE = _ParallelPool__STATE = {}
@@ -266,12 +267,12 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
                 self._is_alive(None)
         override = True if kwds.has_key('size') else False
         elem_size = kwds.pop('size', 2)
+        length = min(len(task) for task in args)
         args = zip(*args)
         # submit all jobs, to be collected later with 'get()'
         tasks = [submit(*task) for task in args]
         tasks = [ApplyResult(task) for task in tasks]
         # build a correctly sized results object
-        length = len(args)
         nodes = self.nodes
         if self.nodes in ['*','autodetect',None]:
             _pool = self._serve()
