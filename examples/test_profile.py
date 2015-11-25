@@ -19,7 +19,7 @@ from pathos.profile import *
 
 if __name__ == '__main__':
 
-    config = dict(idgen=process_id, pre='id-')
+    config = dict(idgen=process_id)
 
    #@profiled(**config)
     def _work(i):
@@ -33,13 +33,13 @@ if __name__ == '__main__':
     # create a profiling pool
     mpPool = profiling(mp.Pool)
     pool = mpPool(10)
-    #XXX: ALT: pool = mp.Pool(10, activate_profiling)
+    #XXX: ALT: pool = mp.Pool(10, enable_profiling)
 
     for i in pool.imap_unordered(work, range(100)):
         print(i)
     """
 
-    start_profiling()
+    enable_profiling()
     from itertools import imap
     """
     # profile the work (not the map internals) in the main thread
@@ -63,14 +63,14 @@ if __name__ == '__main__':
         print(i)
 
     # deactivate all profiling
-    stop_profiling() # in the main thread
-    tuple(_uimap(stop_profiling, range(10))) # in the workers
+    disable_profiling() # in the main thread
+    tuple(_uimap(disable_profiling, range(10))) # in the workers
     for i in _uimap(work, range(-20,-10)):
         print(i)
     """
 
     # activate profiling, but remove profiling from the worker
-    start_profiling()
+    enable_profiling()
     for i in imap(not_profiled(work), range(-30,-20)):
         print(i)
 
