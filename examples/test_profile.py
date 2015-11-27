@@ -19,7 +19,7 @@ from pathos.profile import *
 
 if __name__ == '__main__':
 
-    config = dict(idgen=process_id)
+    config = dict(gen=process_id)
 
    #@profiled(**config)
     def _work(i):
@@ -73,6 +73,18 @@ if __name__ == '__main__':
     enable_profiling()
     for i in imap(not_profiled(work), range(-30,-20)):
         print(i)
+
+    # print stats for profile of 'import math' in another process
+    def import_ppft(*args):
+        import ppft
+        pass
+
+    import pathos.pools as pp
+    pool = pp.ProcessPool(1)
+    profile('cumtime', pipe=pool.pipe)(import_ppft)
+    pool.close()
+    pool.join()
+    pool.clear()
 
 
 # EOF

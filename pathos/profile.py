@@ -21,12 +21,17 @@ def thread_id():
 
 class profiled(object):
     "decorator for profiling a function (possibly exectued in another thread)"
-    def __init__(self, idgen=None, pre='id-', post='.prof'):
-        "NOTE: y=idgen(), with y an indentifier (e.g. current_process().pid)"
-        self.pre = pre
-        self.post= post
-       #self.pid = lambda : '' if idgen is None else idgen
-        self.pid = process_id if idgen is None else idgen
+    def __init__(self, gen=None, prefix='id-', suffix='.prof'):
+        "NOTE: y=gen(), with y an indentifier (e.g. current_process().pid)"
+        self.prefix = prefix
+        self.suffix= suffix
+        #XXX: tricky: if gen is bool/str then print, else dump with gen=id_gen
+        if type(gen) in (bool, str):
+            self.sort = -1 if type(gen) is bool else gen
+            self.pid = str
+        else:
+            self.sort = -1
+            self.pid = process_id if gen is None else gen
     def __call__(self, f):
         def proactive(*args, **kwds):
             try:
@@ -36,8 +41,9 @@ class profiled(object):
             except NameError: doit = False
             res = f(*args, **kwds)
             if doit:
-                profiler.disable() #XXX: option to print/get instead of dump?
-                profiler.dump_stats('%s%s%s' % (self.pre,self.pid(),self.post))
+                profiler.disable() # XXX: option to not dump?
+                if self.pid is str: profiler.print_stats(self.sort)
+                else: profiler.dump_stats('%s%s%s' % (self.prefix,self.pid(),self.suffix))
             return res
         proactive.__wrapped__ = f #XXX: conflicts with other __wrapped__ ?
         return proactive
@@ -104,19 +110,45 @@ def print_stats(*args, **kwds): #kwds=dict(sort=-1)
     except NameError: pass
     return
 
-def dump_stats(*args, **kwds): # kwds=dict(idgen=None, pre='id-', post='.prof'))
+def dump_stats(*args, **kwds): # kwds=dict(gen=None, prefix='id-', suffix='.prof'))
     "dump all existing profiling results for the current thread"
-    config = dict(idgen=None, pre='id-', post='.prof')
+    config = dict(gen=None, prefix='id-', suffix='.prof')
     config.update(kwds)
-    pre = config['pre']
-    post= config['post']
-    pid = config['idgen']
-    pid = process_id if pid is None else pid
-    file = '%s%s%s' % (pre, pid(), post)
+    prefix = config['prefix']
+    suffix= config['suffix']
+    pid = config['gen']
+    pid = process_id if pid is None else pid  #XXX: default is str??
+    file = '%s%s%s' % (prefix, pid(), suffix)
     try: profiler.dump_stats(file)
     except AttributeError: pass
     except NameError: pass
     return
+
+class profile(object):
+    "decorator for profiling a function (possibly exectued in another thread)"
+    def __init__(self, sort=None, **config):
+        "pipe provided should come from pool built with nodes=1"
+        pipe = config.pop('pipe', None)
+        if type(sort) not in (bool, type(None)):
+            config.update(dict(gen=sort))
+        self.config = dict(gen=False) if not bool(config) else config
+        from pathos.pools import SerialPool
+        if pipe is None:
+            self._pool = SerialPool()
+            self.pipe = self._pool.pipe
+        else:
+            self.pipe = pipe
+            self._pool = getattr(pipe, '__self__', SerialPool())
+        if self._pool.nodes != 1:
+            raise ValueError('pipe must draw from a pool with only one node')
+        return
+    def __call__(self, function, *args, **kwds):
+       #self._pool.nodes, nodes = 1, self._pool.nodes #XXX: skip this?
+        self.pipe(enable_profiling, None)
+        result = self.pipe(profiled(**self.config)(function), *args, **kwds)
+        self.pipe(disable_profiling, None)
+       #self._pool.nodes = nodes #XXX: skip this?
+        return result
 
 """
 def _enable_profiling(f): #FIXME: gradual: only applied to *new* workers
