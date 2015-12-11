@@ -10,7 +10,6 @@ demonstrates use of the pathos profiler
 inspired by: http://stackoverflow.com/a/32522579/4646678
 """
 from pathos.helpers import mp
-import cProfile
 import time
 import random
 

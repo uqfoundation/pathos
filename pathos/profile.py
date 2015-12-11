@@ -5,24 +5,140 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 """
-profile: multi-thread/multi-processing capable profiling
+This module contains functions for profiling in other threads and processes.
 
-inspired by: http://stackoverflow.com/a/32522579/4646678
+Functions for identifying a thread/process:
+    process_id   - get the identifier (process id) for the current process
+    thread_id    - get the identifier for the current thread
+
+Functions for controlling profiling:
+    enable_profiling - initialize a profiler in the current thread/process
+    start_profiling  - begin profiling everything in the current thread/process
+    stop_profiling   - stop profiling everything in the current thread/process
+    disable_profiling - remove the profiler from the current thread/process
+
+Functions that control profile statstics (pstats) output
+    clear_stats  - clear stored pstats from the current thread/process
+    get_stats    - get stored pstats for the current thread/process
+    print_stats  - print stored pstats for the current thread/process
+    dump_stats   - dump stored pstats for the current thread/process
+
+Functions that add/remove profiling:
+    profiled     - decorator to add profiling to a function
+    not_profiled - decorator to remove profiling from a function
+    profile     -  decorator for profiling a function (will enable_profiling)
+
+Usage
+=====
+
+Typical calls to pathos profiling will roughly follow this example:
+
+    >>> import time
+    >>> import random
+    >>> import pathos.profile as pp
+    >>>
+    >>> # build a worker function
+    >>> def _work(i):
+    ...     x = random.random()
+    ...     time.sleep(x)
+    ...     return (i,x)
+    >>>
+    >>> # generate a 'profiled' work function
+    >>> config = dict(gen=pp.process_id)
+    >>> work = pp.profiled(**config)(_work)
+    >>> 
+    >>> # enable profiling
+    >>> pp.enable_profiling()
+    >>> 
+    >>> # profile the work (not the map internals) in the main process
+    >>> from itertools import imap
+    >>> for i in imap(work, range(-10,0)):
+    ...     print(i)
+    ...
+    >>> # profile the map in the main process, and work in the other process
+    >>> from pathos.helpers import mp
+    >>> pool = mp.Pool(10)
+    >>> _uimap = pp.profiled(**config)(pool.imap_unordered)
+    >>> for i in _uimap(work, range(-10,0)):
+    ...     print(i)
+    ...
+    >>> # deactivate all profiling
+    >>> pp.disable_profiling() # in the main process
+    >>> tuple(_uimap(pp.disable_profiling, range(10))) # in the workers
+    >>> for i in _uimap(work, range(-20,-10)):
+    ...     print(i)
+    ...
+    >>> # re-activate profiling
+    >>> pp.enable_profiling()
+    >>> 
+    >>> # print stats for profile of 'import math' in another process
+    >>> def import_ppft(*args):
+    ...    import ppft
+    ...    pass
+    ...
+    >>> import pathos.pools as pp
+    >>> pool = pp.ProcessPool(1)
+    >>> pp.profile('cumtime', pipe=pool.pipe)(import_ppft)
+    >>> pool.close()
+    >>> pool.join()
+    >>> pool.clear()
+
+Notes
+=====
+
+This module leverages the python's cProfile module, and is primarily a
+high-level interface to that module that strives to make profiling in
+a different thread or process easier.  The use of pathos.pools are suggested,
+however are not required (as seen in the example above).
+
+This module was inspired by: http://stackoverflow.com/a/32522579/4646678.
 """
+# module-level handle to the profiler instance for the current thread/process
 profiler = None
 
 def process_id():
+    "get the identifier (process id) for the current process"
     from pathos.helpers import mp
     return mp.current_process().pid
 
 def thread_id():
+    "get the identifier for the current thread"
     import threading as th
     return th.current_thread().ident
 
 class profiled(object):
-    "decorator for profiling a function (possibly exectued in another thread)"
+    "decorator for profiling a function (does not call enable profiling)"
     def __init__(self, gen=None, prefix='id-', suffix='.prof'):
-        "NOTE: y=gen(), with y an indentifier (e.g. current_process().pid)"
+        """y=gen(), with y an indentifier (e.g. current_process().pid)
+
+Important class members:
+    prefix	- string prefix for pstats filename [default: 'id-']
+    suffix      - string suffix for pstats filename [default: '.prof']
+    pid         - function for obtaining id of current process/thread
+    sort        - integer index of column in pstats output for sorting
+
+Example:
+    >>> import time
+    >>> import random
+    >>> import pathos.profile as pp
+    >>>
+    >>> config = dict(gen=pp.process_id)
+    >>> @pp.profiled(**config)
+    ... def work(i):
+    ...     x = random.random()
+    ...     time.sleep(x)
+    ...     return (i,x)
+    ...
+    >>> pp.enable_profiling()
+    >>> from itertools import imap
+    >>> # profile the work (not the map internals); write to file for pstats
+    >>> for i in imap(work, range(-10,0)):
+    ...     print(i)
+    ...
+
+NOTE: If gen is a bool or string, then sort=gen and pid is not used.
+      Otherwise, pid=gen and sort is not used.
+        """
         self.prefix = prefix
         self.suffix= suffix
         #XXX: tricky: if gen is bool/str then print, else dump with gen=id_gen
@@ -49,7 +165,7 @@ class profiled(object):
         return proactive
 
 def not_profiled(f):
-    "decorator to remove profiling from a function"
+    "decorator to remove profiling (due to 'profiled') from a function"
     if getattr(f, '__name__', None) == 'proactive':
         _f = getattr(f, '__wrapped__', f)
     else:
@@ -59,14 +175,14 @@ def not_profiled(f):
     return wrapper
 
 def enable_profiling(*args): #XXX: args ignored (needed for use in map)
-    "initialize (but don't start) profiling in the current thread"
+    "initialize a profiler instance in the current thread/process"
     global profiler #XXX: better profiler[0] or dict?
     import cProfile
     profiler = cProfile.Profile()  #XXX: access at: pathos.profile.profiler
     return
 
 def start_profiling(*args):
-    "begin profiling everything in the current thread"
+    "begin profiling everything in the current thread/process"
     if profiler is None: enable_profiling()
     try: profiler.enable()
     except AttributeError: pass
@@ -74,14 +190,14 @@ def start_profiling(*args):
     return
 
 def stop_profiling(*args):
-    "stop profiling everything in the current thread"
+    "stop profiling everything in the current thread/process"
     try: profiler.disable()
     except AttributeError: pass
     except NameError: pass
     return
 
 def disable_profiling(*args):
-    "disable profiling in the current thread"
+    "remove the profiler instance from the current thread/process"
     if profiler is not None: stop_profiling()
     globals().pop('profiler', None)
     global profiler
@@ -89,21 +205,21 @@ def disable_profiling(*args):
     return
 
 def clear_stats(*args):
-    "clear all exisiting profiling results in the current thread"
+    "clear all stored profiling results from the current thread/process"
     try: profiler.clear()
     except AttributeError: pass
     except NameError: pass
     return
 
 def get_stats(*args):
-    "get all existing profiling results for the current thread"
+    "get all stored profiling results for the current thread/process"
     try: res = profiler.getstats()
     except AttributeError: pass
     except NameError: pass
     return res
 
 def print_stats(*args, **kwds): #kwds=dict(sort=-1)
-    "print all existing profiling results for the current thread"
+    "print all stored profiling results for the current thread/process"
     sort = kwds.get('sort', -1)
     try: profiler.print_stats(sort)
     except AttributeError: pass
@@ -111,7 +227,10 @@ def print_stats(*args, **kwds): #kwds=dict(sort=-1)
     return
 
 def dump_stats(*args, **kwds): # kwds=dict(gen=None, prefix='id-', suffix='.prof'))
-    "dump all existing profiling results for the current thread"
+    """dump all stored profiling results for the current thread/process
+
+NOTE: see pathos.profile.profiled for available settings for *args and **kwds
+    """
     config = dict(gen=None, prefix='id-', suffix='.prof')
     config.update(kwds)
     prefix = config['prefix']
@@ -125,9 +244,31 @@ def dump_stats(*args, **kwds): # kwds=dict(gen=None, prefix='id-', suffix='.prof
     return
 
 class profile(object):
-    "decorator for profiling a function (possibly exectued in another thread)"
+    "decorator for profiling a function (will enable profiling)"
     def __init__(self, sort=None, **config):
-        "pipe provided should come from pool built with nodes=1"
+        """sort is integer index of column in pstats output for sorting
+
+Important class members:
+    pipe        - pipe instance in which profiling is active
+
+Example:
+    >>> import time
+    >>> import random
+    >>> import pathos.profile as pp
+    >>>
+    >>> @pp.profile()
+    ... def work(i):
+    ...     x = random.random()
+    ...     time.sleep(x)
+    ...     return (i,x)
+    ...
+    >>> # profile the work; print pstats info (NOTE: not shown)
+    >>> work(0)
+    (0, 0.4035126603334024)
+
+NOTE: pipe provided should come from pool built with nodes=1.
+Other configuration keywords (config) is passed to 'pp.profiled'.
+        """
         pipe = config.pop('pipe', None)
         if type(sort) not in (bool, type(None)):
             config.update(dict(gen=sort))

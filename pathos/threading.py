@@ -38,7 +38,8 @@ A typical call to a pathos threading map will roughly follow this example:
     >>> # do an asynchronous map, then get the results
     >>> results = pool.amap(pow, [1,2,3,4], [5,6,7,8])
     >>> while not results.ready():
-    >>>     time.sleep(5); print ".",
+    ...     time.sleep(5); print ".",
+    ...
     >>> print results.get()
     >>>
     >>> # do one item at a time, using a pipe
