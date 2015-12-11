@@ -35,7 +35,7 @@ Typical calls to pathos profiling will roughly follow this example:
 
     >>> import time
     >>> import random
-    >>> import pathos.profile as pp
+    >>> import pathos.profile as pr
     >>>
     >>> # build a worker function
     >>> def _work(i):
@@ -44,11 +44,11 @@ Typical calls to pathos profiling will roughly follow this example:
     ...     return (i,x)
     >>>
     >>> # generate a 'profiled' work function
-    >>> config = dict(gen=pp.process_id)
-    >>> work = pp.profiled(**config)(_work)
+    >>> config = dict(gen=pr.process_id)
+    >>> work = pr.profiled(**config)(_work)
     >>> 
     >>> # enable profiling
-    >>> pp.enable_profiling()
+    >>> pr.enable_profiling()
     >>> 
     >>> # profile the work (not the map internals) in the main process
     >>> from itertools import imap
@@ -58,18 +58,18 @@ Typical calls to pathos profiling will roughly follow this example:
     >>> # profile the map in the main process, and work in the other process
     >>> from pathos.helpers import mp
     >>> pool = mp.Pool(10)
-    >>> _uimap = pp.profiled(**config)(pool.imap_unordered)
+    >>> _uimap = pr.profiled(**config)(pool.imap_unordered)
     >>> for i in _uimap(work, range(-10,0)):
     ...     print(i)
     ...
     >>> # deactivate all profiling
-    >>> pp.disable_profiling() # in the main process
-    >>> tuple(_uimap(pp.disable_profiling, range(10))) # in the workers
+    >>> pr.disable_profiling() # in the main process
+    >>> tuple(_uimap(pr.disable_profiling, range(10))) # in the workers
     >>> for i in _uimap(work, range(-20,-10)):
     ...     print(i)
     ...
     >>> # re-activate profiling
-    >>> pp.enable_profiling()
+    >>> pr.enable_profiling()
     >>> 
     >>> # print stats for profile of 'import math' in another process
     >>> def import_ppft(*args):
@@ -78,7 +78,7 @@ Typical calls to pathos profiling will roughly follow this example:
     ...
     >>> import pathos.pools as pp
     >>> pool = pp.ProcessPool(1)
-    >>> pp.profile('cumtime', pipe=pool.pipe)(import_ppft)
+    >>> pr.profile('cumtime', pipe=pool.pipe)(import_ppft)
     >>> pool.close()
     >>> pool.join()
     >>> pool.clear()
@@ -120,16 +120,16 @@ Important class members:
 Example:
     >>> import time
     >>> import random
-    >>> import pathos.profile as pp
+    >>> import pathos.profile as pr
     >>>
-    >>> config = dict(gen=pp.process_id)
-    >>> @pp.profiled(**config)
+    >>> config = dict(gen=pr.process_id)
+    >>> @pr.profiled(**config)
     ... def work(i):
     ...     x = random.random()
     ...     time.sleep(x)
     ...     return (i,x)
     ...
-    >>> pp.enable_profiling()
+    >>> pr.enable_profiling()
     >>> from itertools import imap
     >>> # profile the work (not the map internals); write to file for pstats
     >>> for i in imap(work, range(-10,0)):
@@ -254,9 +254,9 @@ Important class members:
 Example:
     >>> import time
     >>> import random
-    >>> import pathos.profile as pp
+    >>> import pathos.profile as pr
     >>>
-    >>> @pp.profile()
+    >>> @pr.profile()
     ... def work(i):
     ...     x = random.random()
     ...     time.sleep(x)
@@ -267,7 +267,7 @@ Example:
     (0, 0.4035126603334024)
 
 NOTE: pipe provided should come from pool built with nodes=1.
-Other configuration keywords (config) is passed to 'pp.profiled'.
+Other configuration keywords (config) is passed to 'pr.profiled'.
         """
         pipe = config.pop('pipe', None)
         if type(sort) not in (bool, type(None)):
