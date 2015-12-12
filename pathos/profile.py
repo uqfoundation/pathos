@@ -72,15 +72,33 @@ Typical calls to pathos profiling will roughly follow this example:
     >>> pr.enable_profiling()
     >>> 
     >>> # print stats for profile of 'import math' in another process
-    >>> def import_ppft(*args):
-    ...    import ppft
+    >>> def test_import(module):
+    ...    __import__(module)
     ...
     >>> import pathos.pools as pp
     >>> pool = pp.ProcessPool(1)
-    >>> pr.profile('cumtime', pipe=pool.pipe)(import_ppft)
+    >>> pr.profile('cumtime', pipe=pool.pipe)(test_import, 'pox')
+         10 function calls in 0.003 seconds
+
+   Ordered by: cumulative time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.003    0.003 <stdin>:1(test_import)
+        1    0.002    0.002    0.003    0.003 {__import__}
+        1    0.001    0.001    0.001    0.001 __init__.py:8(<module>)
+        1    0.000    0.000    0.000    0.000 shutils.py:11(<module>)
+        1    0.000    0.000    0.000    0.000 _disk.py:15(<module>)
+        1    0.000    0.000    0.000    0.000 {eval}
+        1    0.000    0.000    0.000    0.000 utils.py:11(<module>)
+        1    0.000    0.000    0.000    0.000 <string>:1(<module>)
+        1    0.000    0.000    0.000    0.000 info.py:2(<module>)
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+
+
     >>> pool.close()
     >>> pool.join()
     >>> pool.clear()
+
 
 Notes
 =====
@@ -89,6 +107,11 @@ This module leverages the python's cProfile module, and is primarily a
 high-level interface to that module that strives to make profiling in
 a different thread or process easier.  The use of pathos.pools are suggested,
 however are not required (as seen in the example above).
+
+In many cases, profiling in another thread is not necessary, and either of
+the following can be sufficient/better for timing and profiling:
+    $ python -c "import time; s=time.time(); import pathos; print time.time()-s"
+    $ python -c "import cProfile; p=cProfile.Profile(); p.enable(); import pathos; p.print_stats('cumtime')"
 
 This module was inspired by: http://stackoverflow.com/a/32522579/4646678.
 """
