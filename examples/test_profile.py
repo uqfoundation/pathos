@@ -76,7 +76,6 @@ if __name__ == '__main__':
     # print stats for profile of 'import math' in another process
     def import_ppft(*args):
         import ppft
-        pass
 
     import pathos.pools as pp
     pool = pp.ProcessPool(1)

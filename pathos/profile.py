@@ -74,7 +74,6 @@ Typical calls to pathos profiling will roughly follow this example:
     >>> # print stats for profile of 'import math' in another process
     >>> def import_ppft(*args):
     ...    import ppft
-    ...    pass
     ...
     >>> import pathos.pools as pp
     >>> pool = pp.ProcessPool(1)
@@ -137,7 +136,22 @@ Example:
     ...
 
 NOTE: If gen is a bool or string, then sort=gen and pid is not used.
-      Otherwise, pid=gen and sort is not used.
+      Otherwise, pid=gen and sort is not used. Valid strings for use
+      with gen are given below:
+      'calls'      - call count
+      'cumulative' - cumulative time
+      'cumtime'    - cumulative time
+      'file'       - file name
+      'filename'   - file name
+      'module'     - file name
+      'ncalls'     - call count
+      'pcalls'     - primitive call count
+      'line'       - line number
+      'name'       - function name
+      'nfl'        - name/file/line
+      'stdname'    - standard name
+      'time'       - internal time
+      'tottime'    - internal time
         """
         self.prefix = prefix
         self.suffix= suffix
@@ -256,18 +270,43 @@ Example:
     >>> import random
     >>> import pathos.profile as pr
     >>>
-    >>> @pr.profile()
-    ... def work(i):
+    ... def work():
     ...     x = random.random()
     ...     time.sleep(x)
-    ...     return (i,x)
+    ...     return x
     ...
-    >>> # profile the work; print pstats info (NOTE: not shown)
-    >>> work(0)
-    (0, 0.4035126603334024)
+    >>> # profile the work; print pstats info
+    >>> pr.profile()(work)
+             4 function calls in 0.136 seconds
 
-NOTE: pipe provided should come from pool built with nodes=1.
-Other configuration keywords (config) is passed to 'pr.profiled'.
+       Ordered by: standard name
+
+       ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+            1    0.000    0.000    0.136    0.136 <stdin>:1(work)
+            1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+            1    0.000    0.000    0.000    0.000 {method 'random' of '_random.Random' objects}
+            1    0.136    0.136    0.136    0.136 {time.sleep}
+
+    0.1350568110491419
+    >>>
+
+NOTE: pipe provided should come from pool built with nodes=1. Other
+      configuration keywords (config) are passed to 'pr.profiled'.
+      Valid strings for use with gen are given below:
+      'calls'      - call count
+      'cumulative' - cumulative time
+      'cumtime'    - cumulative time
+      'file'       - file name
+      'filename'   - file name
+      'module'     - file name
+      'ncalls'     - call count
+      'pcalls'     - primitive call count
+      'line'       - line number
+      'name'       - function name
+      'nfl'        - name/file/line
+      'stdname'    - standard name
+      'time'       - internal time
+      'tottime'    - internal time
         """
         pipe = config.pop('pipe', None)
         if type(sort) not in (bool, type(None)):
