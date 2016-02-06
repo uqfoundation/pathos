@@ -189,7 +189,7 @@ Requirements
 Pathos requires::
 
     - python, version >= 2.5, version < 3.0
-    - dill, version >= 0.2.4
+    - dill, version >= 0.2.5
     - pox, version >= 0.2.2
     - ppft, version >= 1.6.4.5
     - multiprocess, version >= 0.70.3
@@ -335,7 +335,7 @@ except Exception:
 # add dependencies
 pyre_version = '==0.8.2.0-pathos' # NOTE: CIG-pyre; includes 'journal'
 ppft_version = '>=1.6.4.5'
-dill_version = '>=0.2.4'          # NOTE: implicit dependency
+dill_version = '>=0.2.5'          # NOTE: implicit dependency
 pox_version = '>=0.2.2'
 pyina_version = '>=0.2a1.dev0'
 rpyc_version = '>=3.0.6'
