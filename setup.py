@@ -192,7 +192,7 @@ Pathos requires::
     - dill, version >= 0.2.5
     - pox, version >= 0.2.2
     - ppft, version >= 1.6.4.5
-    - multiprocess, version >= 0.70.3
+    - multiprocess, version >= 0.70.4
 
 Optional requirements::
 
@@ -329,7 +329,7 @@ try: #NOTE: odd... if processing is installed, *don't* install multiprocess
         mp_version = ''
     else: raise AttributeError('multiprocess')
 except Exception:
-    mp_version = '>=0.70.3' # 0.70a1 py25-py33, 0.52 on py25, None on py34
+    mp_version = '>=0.70.4' # 0.70a1 py25-py33, 0.52 on py25, None on py34
     processing_version = ''
 
 # add dependencies
