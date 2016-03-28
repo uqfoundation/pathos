@@ -1,5 +1,11 @@
-from pathos.multiprocessing import ProcessingPool, ThreadingPool
-import pathos.multiprocessing
+#!/usr/bin/env python
+#
+# Author: Nick Rhinehart (nrhineha @cmu)
+# Copyright (c) 2016 California Institute of Technology.
+# License: 3-clause BSD.  The full license text is available at:
+#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
+
+from pathos.pools import ProcessPool, ThreadPool
 import logging
 log = logging.getLogger(__name__)
 
@@ -12,12 +18,12 @@ class PMPExample(object):
         return self.cache[x]
 
     def threadcompute(self, xs):
-        pool = ThreadingPool(4)
+        pool = ThreadPool(4)
         results = pool.map(self.compute, xs)
         return results
 
     def processcompute(self, xs):
-        pool = ProcessingPool(4)
+        pool = ProcessPool(4)
         results = pool.map(self.compute, xs)
         return results
 
@@ -36,8 +42,8 @@ def parcompute_example():
     assert(len(dc2.cache) == 0)
     assert(r1 == r2)
 
-    r3 = ProcessingPool(4).map(dc3.compute, inp_data)
-    r4 = ThreadingPool(4).map(dc4.compute, inp_data)
+    r3 = ProcessPool(4).map(dc3.compute, inp_data)
+    r4 = ThreadPool(4).map(dc4.compute, inp_data)
     assert(r4 == r3 == r2)
     assert(len(dc3.cache) == 0)
     assert(len(dc4.cache) == n_datapoints)
