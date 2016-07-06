@@ -55,9 +55,9 @@ if __name__=='__main__':
     os.remove(source0)
 
     launcher = Pipe('cleanup')
-    launcher(command=del1, rhost=cpu1, background=True)
+    launcher(command=del1, host=cpu1, background=True)
     launcher.launch()
-    launcher(command=del2, rhost=cpu2, background=True)
+    launcher(command=del2, host=cpu2, background=True)
     launcher.launch()
 
 #   print('cleanup result file...')

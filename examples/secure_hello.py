@@ -25,13 +25,13 @@ if __name__ == '__main__':
    #rhost = 'foobar.danse.us'
 
     launcher = Pipe('LauncherSSH')
-    launcher(command=command1, rhost=rhost, background=False)
+    launcher(command=command1, host=rhost, background=False)
     launcher.launch()
     print(launcher.response())
-    launcher(command=command2, rhost=rhost, background=False)
+    launcher(command=command2, host=rhost, background=False)
     launcher.launch()
     print(launcher.response())
-   #launcher(command=command3, rhost=rhost, background=False)
+   #launcher(command=command3, host=rhost, background=False)
    #launcher.launch()
    #print(launcher.response())
 
