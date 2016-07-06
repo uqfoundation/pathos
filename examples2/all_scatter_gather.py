@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     # run sin2 in series, then print to screen
     print("Running serial python ...")
-    y = map(sin2, x)
+    y = list(map(sin2, x))
     print("Output: %s\n" % np.asarray(y))
 
 

@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     # map sin_diff to the workers, then print to screen
     print("Running serial python ...")
-    y = map(sin_diff, x, xp)
+    y = list(map(sin_diff, x, xp))
     print("Output: %s\n" % np.asarray(y))
 
 

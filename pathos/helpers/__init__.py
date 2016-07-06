@@ -5,8 +5,9 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
-import pp_helper
-import mp_helper
+from __future__ import absolute_import
+from . import pp_helper
+from . import mp_helper
 import pp as parallelpython
 
 try:
@@ -26,7 +27,10 @@ try:
     from processing.pool import Pool as ProcessPool  # use pathos/external
     from processing import cpuCount as cpu_count
     from processing import freezeSupport as freeze_support
-    import Queue
+    try:
+        import queue
+    except ImportError:
+        import Queue as queue
 
     class ThreadPool(ProcessPool):
         from processing.dummy import Process
@@ -34,8 +38,8 @@ try:
             ProcessPool.__init__(self, processes, initializer, initargs)
             return
         def _setup_queues(self):
-            self._inqueue = Queue.Queue()
-            self._outqueue = Queue.Queue()
+            self._inqueue = queue.Queue()
+            self._outqueue = queue.Queue()
             self._quick_put = self._inqueue.put
             self._quick_get = self._outqueue.get
             return

@@ -10,6 +10,7 @@ Run with:
 > $ mpirun -np 2 scatter_gather.py
 """
 
+from __future__ import print_function
 import numpy as np
 
 from mpi4py import MPI
@@ -22,7 +23,7 @@ N = my_N * nodes
 def pprint(str="", end="\n", comm=comm):
     """Print for MPI parallel programs: Only rank 0 prints *str*."""
     if comm.rank == 0:
-        print str+end, 
+        print(str, end=end)
 
 # set up the target arrays
 if comm.rank == 0:
@@ -37,9 +38,9 @@ comm.Scatter( [x, MPI.DOUBLE], [my_x, MPI.DOUBLE] )
 
 # print the input to screen
 pprint("Input:")
-for r in xrange(nodes):
+for r in range(nodes):
     if comm.rank == r:
-        print " [node %d] %s" % (comm.rank, my_x)
+        print(" [node %d] %s" % (comm.rank, my_x))
     comm.Barrier()
 
 # take the sin squared of all data

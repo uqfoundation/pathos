@@ -188,7 +188,7 @@ Requirements
 
 Pathos requires::
 
-    - python, version >= 2.5, version < 3.0
+    - python, version >= 2.6, version < 3.0
     - dill, version >= 0.2.5
     - pox, version >= 0.2.2
     - ppft, version >= 1.6.4.5
@@ -239,7 +239,7 @@ License
 Pathos is distributed under a 3-clause BSD license.
 
     >>> import pathos
-    >>> print pathos.license()
+    >>> print (pathos.license())
 
 
 Citation
@@ -360,7 +360,7 @@ setup_code += """
 """
 
 # exec the 'setup' code
-exec setup_code
+exec(setup_code)
 
 # if dependencies are missing, print a warning
 try:
@@ -374,21 +374,21 @@ try:
         if getattr(multiprocess, '__version__', '0.70a1') == '0.70a1':
             raise ImportError
 except ImportError:
-    print "\n***********************************************************"
-    print "WARNING: One of the following dependencies is unresolved:"
-    print "    ppft %s" % ppft_version
-    print "    dill %s" % dill_version
-    print "    pox %s" % pox_version
-    print "    multiprocess %s" % processing_version or mp_version
-    print "***********************************************************\n"
+    print("\n***********************************************************")
+    print("WARNING: One of the following dependencies is unresolved:")
+    print("    ppft %s" % ppft_version)
+    print("    dill %s" % dill_version)
+    print("    pox %s" % pox_version)
+    print("    multiprocess %s" % processing_version or mp_version)
+    print("***********************************************************\n")
 
-    print """
+    print("""
 If '%s' is installed, '%s' will be regarded as optional, and thus will
 not be installed.  Note that '%s' is not available through a standard
 install, however it may be downloaded from:
   http://dev.danse.us/packages/
 or found in the "external" directory included in the pathos source distribution.
-""" % ('processing','multiprocess','processing')
+""" % ('processing','multiprocess','processing'))
 
 
 if __name__=='__main__':

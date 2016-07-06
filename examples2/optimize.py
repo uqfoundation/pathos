@@ -27,13 +27,13 @@ def optimize(solver, nodes, target='rosen', **kwds):
 
     # number of trials
     N = nodes
-    print "Number of trials: %s" % N
-    print "==============="
+    print("Number of trials: %s" % N)
+    print("===============")
 
     # initial guess
     import random
-    x0 = ([random.uniform(-100,100) for i in xrange(ndim)] for i in xrange(N))
-    model = (the_model for i in xrange(N))
+    x0 = ([random.uniform(-100,100) for i in range(ndim)] for i in range(N))
+    model = (the_model for i in range(N))
 
     # minimize the function
     results = map(the_solver, model, x0)
@@ -42,11 +42,11 @@ def optimize(solver, nodes, target='rosen', **kwds):
     from optimize_helper import best_results
     solution = best_results(results)
 
-    print "==============="
-    print "Actual params:\n %s" % pprint(actual_coeffs)
-    print "Solved params:\n %s" % pprint(solution[0])
-    print "Function value: %s" % solution[1]
-    print "Total function evals: %s" % solution[4]
+    print("===============")
+    print("Actual params:\n %s" % pprint(actual_coeffs))
+    print("Solved params:\n %s" % pprint(solution[0]))
+    print("Function value: %s" % solution[1])
+    print("Total function evals: %s" % solution[4])
     return 
 
 # Powell's Directonal solver
@@ -56,8 +56,8 @@ from optimize_helper import fmin_powell as the_solver
 if __name__ == '__main__':
     target = 'rosen'
    #target = 'cheby'
-    print "Function: %s" % target
-    print "Solver: %s" % 'fmin_powell'
+    print("Function: %s" % target)
+    print("Solver: %s" % 'fmin_powell')
     optimize(the_solver, nodes=3, target=target)
 
  

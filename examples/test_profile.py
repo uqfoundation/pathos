@@ -12,6 +12,10 @@ inspired by: http://stackoverflow.com/a/32522579/4646678
 from pathos.helpers import mp
 import time
 import random
+try:
+    from itertools import imap as map
+except ImportError:
+    pass
 
 from pathos.profile import *
 
@@ -39,10 +43,10 @@ if __name__ == '__main__':
     """
 
     enable_profiling()
-    from itertools import imap
+    
     """
     # profile the work (not the map internals) in the main thread
-    for i in imap(work, range(-10,0)):
+    for i in map(work, range(-10,0)):
         print(i)
     """
 
@@ -70,7 +74,7 @@ if __name__ == '__main__':
 
     # activate profiling, but remove profiling from the worker
     enable_profiling()
-    for i in imap(not_profiled(work), range(-30,-20)):
+    for i in map(not_profiled(work), range(-30,-20)):
         print(i)
 
     # print stats for profile of 'import math' in another process
@@ -79,7 +83,7 @@ if __name__ == '__main__':
 
     import pathos.pools as pp
     pool = pp.ProcessPool(1)
-    profile('cumtime', pipe=pool.pipe)(import_ppft)
+    profile('cumulative', pipe=pool.pipe)(import_ppft)
     pool.close()
     pool.join()
     pool.clear()

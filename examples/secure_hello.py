@@ -27,13 +27,13 @@ if __name__ == '__main__':
     launcher = Pipe('LauncherSSH')
     launcher(command=command1, rhost=rhost, background=False)
     launcher.launch()
-    print launcher.response()
+    print(launcher.response())
     launcher(command=command2, rhost=rhost, background=False)
     launcher.launch()
-    print launcher.response()
+    print(launcher.response())
    #launcher(command=command3, rhost=rhost, background=False)
    #launcher.launch()
-   #print launcher.response()
+   #print(launcher.response())
 
 
 # End of file

@@ -39,13 +39,13 @@ def isprime(n):
 
 def sum_primes(n):
     """Calculates sum of all primes below given integer n"""
-    return sum([x for x in xrange(2, n) if isprime(x)])
+    return sum([x for x in range(2, n) if isprime(x)])
 
 ########################################################################
 
-print """Usage: python sum_primesX.py [tunnelport]
+print("""Usage: python sum_primesX.py [tunnelport]
     [tunnelport] - the port number(s) of the local ssh tunnel connection,
-    if omitted no tunneling will be used."""
+    if omitted no tunneling will be used.""")
 
 ppservers = []
 for i in range(1,len(sys.argv)):
@@ -60,9 +60,9 @@ job_server = pp.Server(ppservers=ppservers)
 if LOCAL_WORKERS != 'autodetect':
     job_server.set_ncpus(LOCAL_WORKERS)
 
-#print "Known servers: [('local',)] %s %s" % (job_server.ppservers,job_server.auto_ppservers)
-print "Known servers: [('local',)] %s" % (job_server.ppservers)
-print "Starting pp with", job_server.get_ncpus(), "local workers"
+#print("Known servers: [('local',)] %s %s" % (job_server.ppservers,job_server.auto_ppservers))
+print("Known servers: [('local',)] %s" % (job_server.ppservers))
+print("Starting pp with %s local workers" % job_server.get_ncpus())
 
 # Submit a job of calulating sum_primes(100) for execution.
 # sum_primes - the function
@@ -79,7 +79,7 @@ print "Starting pp with", job_server.get_ncpus(), "local workers"
 # wait here until result is available
 ###result = job1()
 
-###print "Sum of primes below 100 is", result
+###print("Sum of primes below 100 is %s" % result)
 
 
 # The following submits 8 jobs and then retrieves the results
@@ -88,7 +88,7 @@ jobs = [(input, job_server.submit(sum_primes, (input, ), (isprime, ),
         ("math", ))) for input in inputs]
 
 for input, job in jobs:
-    print "Sum of primes below", input, "is", job()
+    print("Sum of primes below %s is %s" % (input, job()))
 
 job_server.print_stats()
 

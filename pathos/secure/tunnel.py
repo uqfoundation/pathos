@@ -23,7 +23,7 @@ A typical call to a pathos 'tunnel' will roughly follow this example:
     >>> remotehost = 'remote.host.edu'
     >>> remoteport = 12345
     >>> localport = tunnel.connect(remotehost, remoteport)
-    >>> print "Tunnel connected at local port: ", tunnel._lport
+    >>> print("Tunnel connected at local port: %s" % tunnel._lport)
     >>>
     >>> # pause script execution to maintain the tunnel (i.e. do something)
     >>> sys.stdin.readline()
@@ -70,19 +70,19 @@ Additional Input:
         while True:
             localport = pick()
             if localport < 0:
-                raise TunnelException, 'No available local port'
-            #print 'Trying port %d...' % localport
+                raise TunnelException('No available local port')
+            #print('Trying port %d...' % localport)
             
             try:
                 self._connect(localport, host, port, through=through)
-                #print 'SSH tunnel %d:%s:%d' % (localport, host, port)
-            except TunnelException, e:
+                #print('SSH tunnel %d:%s:%d' % (localport, host, port))
+            except TunnelException as e: # breaks 2.5 compatibility
                 if e.args[0] == 'bind':
                     self.disconnect()
                     continue
                 else:
                     self.__disconnect()
-                    raise TunnelException, 'Connection failed'
+                    raise TunnelException('Connection failed')
                 
             self.connected = True
             return localport
@@ -145,10 +145,10 @@ Inputs:
         line = self._launcher.response()
         if line:
             if line.startswith('bind'):
-                raise TunnelException, 'bind'
+                raise TunnelException('bind')
             else:
                 print(line)
-                raise TunnelException, 'failure'
+                raise TunnelException('failure')
         return
 
 if __name__ == '__main__':

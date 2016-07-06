@@ -8,6 +8,7 @@
 demonstrate pathos's spawn2 function
 """
 
+from __future__ import print_function
 from pathos.util import spawn2
 
 
@@ -17,7 +18,7 @@ if __name__ == '__main__':
     
     def onParent(pid, fromchild, tochild):
         s = fromchild.readline()
-        print s,
+        print(s, end='')
         tochild.write('hello son\n')
         tochild.flush()
         os.wait()
@@ -26,7 +27,7 @@ if __name__ == '__main__':
         toparent.write('hello dad\n')
         toparent.flush()
         s = fromparent.readline()
-        print s,
+        print(s, end='')
         os._exit(0)
 
     spawn2(onParent, onChild)

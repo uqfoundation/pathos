@@ -10,7 +10,7 @@ def test_source(obj):
     _obj = source._wrap(obj)
     assert _obj(1.57) == obj(1.57)
     src = source.getimportable(obj, alias='_f')
-    exec src in globals(), locals()
+    exec(src, globals())
     assert _f(1.57) == obj(1.57)
     name = source.getname(obj)
     assert name == obj.__name__ or src.split("=",1)[0].strip()
@@ -19,7 +19,7 @@ def test_ppmap(obj):
     from pathos.pools import ParallelPool
     p = ParallelPool(2)
     x = [1,2,3]
-    assert map(obj, x) == p.map(obj, x)
+    assert list(map(obj, x)) == p.map(obj, x)
 
 
 if __name__ == '__main__':

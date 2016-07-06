@@ -22,7 +22,7 @@ A typical setup for an XML-RPC server will roughly follow this example:
     >>> host = 'localhost'
     >>> port = 1234
     >>> server = XMLRPCServer(host, port)
-    >>> print 'port=%d' % server.port
+    >>> print('port=%d' % server.port)
     >>>
     >>> # register a method the server can handle requests for
     >>> def add(x, y):
@@ -40,17 +40,22 @@ The following is an example of how to make requests to the above server:
     >>> host = 'localhost'
     >>> port = 1234
     >>> proxy = xmlrpclib.ServerProxy('http://%s:%d' % (host, port))
-    >>> print '1 + 2 =', proxy.add(1, 2)
-    >>> print '3 + 4 =', proxy.add(3, 4)
+    >>> print('1 + 2 = %s' % proxy.add(1, 2))
+    >>> print('3 + 4 = %s' % proxy.add(3, 4))
 
 """
 __all__ = ['XMLRPCServer','XMLRPCRequestHandler']
 
 import os
 import socket
-import xmlrpclib
-from BaseHTTPServer import BaseHTTPRequestHandler
-from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
+try:
+    import xmlrpc.client as client
+    from http.server import BaseHTTPRequestHandler
+    from xmlrpc.server import SimpleXMLRPCDispatcher
+except ImportError:
+    import xmlrpclib as client
+    from BaseHTTPServer import BaseHTTPRequestHandler
+    from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from pathos.server import Server #XXX: pythia-0.6, was pyre.ipc.Server
 from pathos.util import print_exc_info, spawn2
 from pathos import logger
@@ -77,10 +82,14 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
     def _marshaled_dispatch(self, data, dispatch_method = None):
         """override SimpleXMLRPCDispatcher._marshaled_dispatch() fault string"""
 
-        import xmlrpclib
-        from xmlrpclib import Fault
+        try:
+            import xmlrpc.client as client
+            from xmlrpc.client import Fault
+        except ImportError:
+            import xmlrpclib as client
+            from xmlrpclib import Fault
 
-        params, method = xmlrpclib.loads(data)
+        params, method = client.loads(data)
 
         # generate response
         try:
@@ -90,14 +99,14 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
                 response = self._dispatch(method, params)
             # wrap response in a singleton tuple
             response = (response,)
-            response = xmlrpclib.dumps(response, methodresponse=1)
-        except Fault, fault:
+            response = client.dumps(response, methodresponse=1)
+        except Fault as fault: # breaks 2.5 compatibility
             fault.faultString = print_exc_info()
-            response = xmlrpclib.dumps(fault)
+            response = client.dumps(fault)
         except:
             # report exception back to server
-            response = xmlrpclib.dumps(
-                xmlrpclib.Fault(1, "\n%s" % print_exc_info())
+            response = client.dumps(
+                client.Fault(1, "\n%s" % print_exc_info())
                 )
 
         return response
@@ -211,7 +220,7 @@ class XMLRPCRequestHandler(BaseHTTPRequestHandler):
 
         try:
             data = self.rfile.read(int(self.headers['content-length']))
-            params, method = xmlrpclib.loads(data)
+            params, method = client.loads(data)
             if method == 'run':
                 return spawn2(onParent, onChild)
             else:

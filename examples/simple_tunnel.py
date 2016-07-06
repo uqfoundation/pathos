@@ -21,9 +21,9 @@ if __name__ == '__main__':
 
     t = Tunnel('Tunnel')
     lport = t.connect(rhost, rport)
-    print 'SSH Tunnel to:', rhost
-    print 'Remote port:', rport
-    print 'Local port:', lport
-    print 'Press <Enter> to disconnect'
+    print('SSH Tunnel to: %s' % rhost)
+    print('Remote port: %s' % rport)
+    print('Local port: %s' % lport)
+    print('Press <Enter> to disconnect')
     sys.stdin.readline()
     t.disconnect()

@@ -48,8 +48,8 @@ def parcompute_example():
     assert(len(dc3.cache) == 0)
     assert(len(dc4.cache) == n_datapoints)
 
-    log.info("Size of threadpooled class caches: {}, {}".format(len(dc.cache), len(dc4.cache)))
-    log.info("Size of processpooled class caches: {}, {}".format(len(dc2.cache), len(dc3.cache)))
+    log.info("Size of threadpooled class caches: {0}, {1}".format(len(dc.cache), len(dc4.cache)))
+    log.info("Size of processpooled class caches: {0}, {1}".format(len(dc2.cache), len(dc3.cache)))
 
 if __name__ == '__main__':
     logging.basicConfig()

@@ -6,7 +6,7 @@
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
 import time
-x = range(18)
+x = list(range(18))
 delay = 0.01
 items = 20
 maxtries = 20
@@ -36,25 +36,25 @@ def quad_factory(a=1, b=1, c=0):
 
 square_plus_one = quad_factory(2,0,1)
 
-x2 = map(squared, x)
+x2 = list(map(squared, x))
 
 
 def test_sanity(pool, verbose=False):
     if verbose:
-        print pool
-        print "x: %s\n" % str(x)
+        print(pool)
+        print("x: %s\n" % str(x))
 
-        print pool.map.__name__
+        print(pool.map.__name__)
     # blocking map
     start = time.time()
     res = pool.map(squared, x)
     end = time.time() - start
     assert res == x2
     if verbose:
-        print "time to results:", end
-        print "y: %s\n" % str(res)
+        print("time to results: %s" % end)
+        print("y: %s\n" % str(res))
 
-        print pool.imap.__name__
+        print(pool.imap.__name__)
     # iterative map
     start = time.time()
     res = pool.imap(squared, x)
@@ -65,11 +65,11 @@ def test_sanity(pool, verbose=False):
     end = time.time() - start
     assert res == x2
     if verbose:
-        print "time to queue:", fin
-        print "time to results:", end
-        print "y: %s\n" % str(res)
+        print("time to queue: %s" % fin)
+        print("time to results: %s" % end)
+        print("y: %s\n" % str(res))
 
-        print pool.amap.__name__
+        print(pool.amap.__name__)
     # asyncronous map
     start = time.time()
     res = pool.amap(squared, x)
@@ -80,84 +80,84 @@ def test_sanity(pool, verbose=False):
     end = time.time() - start
     assert res == x2
     if verbose:
-        print "time to queue:", fin
-        print "time to results:", end
-        print "y: %s\n" % str(res)
+        print("time to queue: %s" % fin)
+        print("time to results: %s" % end)
+        print("y: %s\n" % str(res))
 
 
 def test_maps(pool, items=4, delay=0):
-    _x = range(-items/2,items/2,2)
+    _x = range(-items//2,items//2,2)
     _y = range(len(_x))
     _d = [delay]*len(_x)
     _z = [0]*len(_x)
 
-   #print map
-    res1 = map(squared, _x)
-    res2 = map(busy_add, _x, _y, _z)
+   #print(map)
+    res1 = list(map(squared, _x))
+    res2 = list(map(busy_add, _x, _y, _z))
 
-   #print pool.map
+   #print(pool.map)
     _res1 = pool.map(squared, _x)
     _res2 = pool.map(busy_add, _x, _y, _d)
     assert _res1 == res1
     assert _res2 == res2
 
-   #print pool.imap
+   #print(pool.imap)
     _res1 = pool.imap(squared, _x)
     _res2 = pool.imap(busy_add, _x, _y, _d)
     assert list(_res1) == res1
     assert list(_res2) == res2
 
-   #print pool.uimap
+   #print(pool.uimap)
     _res1 = pool.uimap(squared, _x)
     _res2 = pool.uimap(busy_add, _x, _y, _d)
     assert sorted(_res1) == sorted(res1)
     assert sorted(_res2) == sorted(res2)
 
-   #print pool.amap
+   #print(pool.amap)
     _res1 = pool.amap(squared, _x)
     _res2 = pool.amap(busy_add, _x, _y, _d)
     assert _res1.get() == res1
     assert _res2.get() == res2
-   #print ""
+   #print("")
 
 
 def test_dill(pool, verbose=False): # test function that should fail in pickle
     if verbose:
-        print pool
-        print "x: %s\n" % str(x)
+        print(pool)
+        print("x: %s\n" % str(x))
 
-        print pool.map.__name__
+        print(pool.map.__name__)
    #start = time.time()
     try:
         res = pool.map(square_plus_one, x)
     except:
         assert False # should use a smarter test here...
    #end = time.time() - start
-   #    print "time to results:", end
-        print "y: %s\n" % str(res)
+   #    print("time to results: %s" % end)
+        print("y: %s\n" % str(res))
     assert True
 
 
 def test_ready(pool, maxtries, delay, verbose=True):
-    if verbose: print pool
+    if verbose: print(pool)
     m = pool.amap(busy_squared, x)# x)
 
-  # print m.ready()
-  # print m.wait(0) 
+  # print(m.ready())
+  # print(m.wait(0))
     tries = 0
     while not m.ready():
         time.sleep(delay)
         tries += 1
-        if verbose: print "TRY: %s" % tries
+        if verbose: print("TRY: %s" % tries)
         if tries >= maxtries:
-            if verbose: print "TIMEOUT"
+            if verbose: print("TIMEOUT")
             break
-   #print m.ready()
-#   print m.get(0)
+   #print(m.ready())
+#   print(m.get(0))
     res = m.get()
-    if verbose: print res
+    if verbose: print(res)
     z = [0]*len(x)
-    assert res == map(squared, x)# x, z)
+    assert res == list(map(squared, x))# x, z)
     assert tries > 0
     assert maxtries > tries #should be True, may not be if CPU is SLOW
 

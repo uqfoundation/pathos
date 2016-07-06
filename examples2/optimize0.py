@@ -26,21 +26,21 @@ def optimize(solver, target='rosen', **kwds):
         from mystic.math import poly1d as pprint
 
     # number of trials
-    print "One trial:"
-    print "==============="
+    print("One trial:")
+    print("===============")
 
     # initial guess
     import random
-    x0 = [random.uniform(-100,100) for i in xrange(ndim)]
+    x0 = [random.uniform(-100,100) for i in range(ndim)]
 
     # minimize the function
     results = the_solver(the_model, x0, **kwds)
 
-    print "==============="
-    print "Actual params:\n %s" % pprint(actual_coeffs)
-    print "Solved params:\n %s" % pprint(results[0])
-    print "Function value: %s" % results[1]
-    print "Total function evals: %s" % results[3]
+    print("===============")
+    print("Actual params:\n %s" % pprint(actual_coeffs))
+    print("Solved params:\n %s" % pprint(results[0]))
+    print("Function value: %s" % results[1])
+    print("Total function evals: %s" % results[3])
     return 
 
 # Powell's Directonal solver
@@ -50,8 +50,8 @@ from optimize_helper import fmin_powell as the_solver
 if __name__ == '__main__':
     target = 'rosen'
    #target = 'cheby'
-    print "Function: %s" % target
-    print "Solver: %s" % 'fmin_powell'
+    print("Function: %s" % target)
+    print("Solver: %s" % 'fmin_powell')
     optimize(the_solver, target=target)
    #optimize(the_solver, target=target, monitor=True)
    #optimize(the_solver, target=target, monitor=True, disp=False)

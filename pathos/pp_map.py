@@ -151,20 +151,20 @@ Additional Inputs:
     '''
     procs = None
     servers = ()
-    if kwds.has_key('ncpus'):
+    if 'ncpus' in kwds:
       procs = kwds['ncpus']
       kwds.pop('ncpus')
-    if kwds.has_key('servers'):
+    if 'servers' in kwds:
       servers = kwds['servers']
       kwds.pop('servers')
     # remove all the junk kwds that are added due to poor design!
-    if kwds.has_key('nnodes'): kwds.pop('nnodes')
-    if kwds.has_key('nodes'): kwds.pop('nodes')
-    if kwds.has_key('launcher'): kwds.pop('launcher')
-    if kwds.has_key('mapper'): kwds.pop('mapper')
-    if kwds.has_key('queue'): kwds.pop('queue')
-    if kwds.has_key('timelimit'): kwds.pop('timelimit')
-    if kwds.has_key('scheduler'): kwds.pop('scheduler')
+    if 'nnodes' in kwds: kwds.pop('nnodes')
+    if 'nodes' in kwds: kwds.pop('nodes')
+    if 'launcher' in kwds: kwds.pop('launcher')
+    if 'mapper' in kwds: kwds.pop('mapper')
+    if 'queue' in kwds: kwds.pop('queue')
+    if 'timelimit' in kwds: kwds.pop('timelimit')
+    if 'scheduler' in kwds: kwds.pop('scheduler')
 
 #   return Pool(procs, servers=servers).map(function, sequence, *args, **kwds)
     if not __STATE['server']:

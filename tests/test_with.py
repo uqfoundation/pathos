@@ -6,8 +6,10 @@
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
 from __future__ import with_statement
-from itertools import izip
-
+try:
+    from itertools import izip as zip
+except ImportError:
+    pass
 
 PRIMES = [
     112272535095293,
@@ -46,7 +48,7 @@ def test_with_multipool(Pool):
         res2 = pool2.amap(sleep_add2, inputs)
 
     with Pool() as pool3:
-        for number, prime in izip(PRIMES, pool3.imap(is_prime, PRIMES)):
+        for number, prime in zip(PRIMES, pool3.imap(is_prime, PRIMES)):
             assert prime if number != PRIMES[-1] else not prime
            #print ('%d is prime: %s' % (number, prime))
 

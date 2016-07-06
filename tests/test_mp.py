@@ -12,7 +12,7 @@ freeze_support()
 from pathos.pools import ProcessPool
 pool = ProcessPool(nodes=4)
 
-_result = map(pow, [1,2,3,4], [5,6,7,8]) 
+_result = list(map(pow, [1,2,3,4], [5,6,7,8])) 
 
 # do a blocking map on the chosen function
 result = pool.map(pow, [1,2,3,4], [5,6,7,8])

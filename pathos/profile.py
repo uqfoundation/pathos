@@ -77,7 +77,7 @@ Typical calls to pathos profiling will roughly follow this example:
     ...
     >>> import pathos.pools as pp
     >>> pool = pp.ProcessPool(1)
-    >>> pr.profile('cumtime', pipe=pool.pipe)(test_import, 'pox')
+    >>> pr.profile('cumulative', pipe=pool.pipe)(test_import, 'pox')
          10 function calls in 0.003 seconds
 
    Ordered by: cumulative time
@@ -111,7 +111,7 @@ however are not required (as seen in the example above).
 In many cases, profiling in another thread is not necessary, and either of
 the following can be sufficient/better for timing and profiling:
     $ python -c "import time; s=time.time(); import pathos; print time.time()-s"
-    $ python -c "import cProfile; p=cProfile.Profile(); p.enable(); import pathos; p.print_stats('cumtime')"
+    $ python -c "import cProfile; p=cProfile.Profile(); p.enable(); import pathos; p.print_stats('cumulative')"
 
 This module was inspired by: http://stackoverflow.com/a/32522579/4646678.
 """
@@ -159,8 +159,8 @@ Example:
     ...
 
 NOTE: If gen is a bool or string, then sort=gen and pid is not used.
-      Otherwise, pid=gen and sort is not used. Valid strings for use
-      with gen are given below:
+      Otherwise, pid=gen and sort is not used. Output can be ordered
+      by setting gen to one of the following:
       'calls'      - call count
       'cumulative' - cumulative time
       'cumtime'    - cumulative time
@@ -315,7 +315,7 @@ Example:
 
 NOTE: pipe provided should come from pool built with nodes=1. Other
       configuration keywords (config) are passed to 'pr.profiled'.
-      Valid strings for use with gen are given below:
+      Output can be ordered by setting sort to one of the following:
       'calls'      - call count
       'cumulative' - cumulative time
       'cumtime'    - cumulative time

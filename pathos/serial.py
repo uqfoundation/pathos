@@ -25,16 +25,16 @@ A typical call to a pathos python map will roughly follow this example:
     >>> pool = SerialPool()
     >>>
     >>> # do a blocking map on the chosen function
-    >>> print pool.map(pow, [1,2,3,4], [5,6,7,8])
+    >>> print(pool.map(pow, [1,2,3,4], [5,6,7,8]))
     >>>
     >>> # do a non-blocking map, then extract the results from the iterator
     >>> results = pool.imap(pow, [1,2,3,4], [5,6,7,8])
-    >>> print "..."
-    >>> print list(results)
+    >>> print("...")
+    >>> print(list(results))
     >>>
     >>> # do one item at a time, using a pipe
-    >>> print pool.pipe(pow, 1, 5)
-    >>> print pool.pipe(pow, 2, 6)
+    >>> print(pool.pipe(pow, 1, 5))
+    >>> print(pool.pipe(pow, 2, 6))
 
 
 Notes
@@ -52,12 +52,18 @@ __all__ = ['SerialPool']
 from pathos.abstract_launcher import AbstractWorkerPool
 __get_nodes__ = AbstractWorkerPool._AbstractWorkerPool__get_nodes
 __set_nodes__ = AbstractWorkerPool._AbstractWorkerPool__set_nodes
-from itertools import imap as _imap
-from __builtin__ import map as _map, apply as _apply
+try:
+    from builtins import map as _map
+    _apply = lambda f, args, kwds: f(*args, **kwds)
+    _imap = _map
+except ImportError:
+    from __builtin__ import map as _map, apply as _apply
+    from itertools import imap as _imap
 
 #XXX: good for interface... or bad idea?
 __STATE = _SerialPool__STATE = {}
 
+#FIXME: in python3.x mp.map returns a list, mp.imap an iterator
 class SerialPool(AbstractWorkerPool):
     """
 Mapper that leverages standard (i.e. serial) python maps.

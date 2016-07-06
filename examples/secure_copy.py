@@ -28,29 +28,29 @@ if __name__=='__main__':
     del2 = 'rm '+source2
 
     copier = Copier('LauncherSCP')
-    print 'creating %s' % source0
+    print('creating %s' % source0)
     f = open(source0,'w')
     f.write('Test Successful!\n')
     f.close()
 
     from time import sleep
     sleep(1) #FIXME: needs time to work...
-    print 'executing {scp %s %s:%s}' % (source0,cpu1,dest0)
+    print('executing {scp %s %s:%s}' % (source0,cpu1,dest0))
     copier(source=source0, destination=cpu1+':'+dest0)
     copier.launch()
 
     sleep(1) #FIXME: needs time to work...
-    print 'executing {scp %s:%s %s:%s}' % (cpu1,source1,cpu2,dest1)
+    print('executing {scp %s:%s %s:%s}' % (cpu1,source1,cpu2,dest1))
     copier(source=cpu1+':'+source1, destination=cpu2+':'+dest1)
     copier.launch()
 
     sleep(1) #FIXME: needs time to work...
-    print 'executing {scp %s:%s %s}' % (cpu2,source2,dest2)
+    print('executing {scp %s:%s %s}' % (cpu2,source2,dest2))
     copier(source=cpu2+':'+source2, destination=dest2)
     copier.launch()
 
     sleep(1) #FIXME: needs time to work...
-    print 'cleanup temporary files...'
+    print('cleanup temporary files...')
     import os
     os.remove(source0)
 
@@ -60,7 +60,7 @@ if __name__=='__main__':
     launcher(command=del2, rhost=cpu2, background=True)
     launcher.launch()
 
-#   print 'cleanup result file...'
+#   print('cleanup result file...')
 #   os.remove("."+os.sep+os.path.basename(source2))
 
 # End of file 

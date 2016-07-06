@@ -12,13 +12,16 @@ utilities for distributed computing
 
 import os
 
-
 def print_exc_info():
     """thread-safe return of string from print_exception call"""
 
-    import StringIO, traceback
+    import traceback
+    try:
+        import io
+    except ImportError:
+        import StringIO as io
     
-    sio = StringIO.StringIO()
+    sio = io.StringIO()
     traceback.print_exc(file=sio) #thread-safe print_exception to string
     sio.seek(0, 0)
     

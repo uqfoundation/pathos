@@ -14,25 +14,25 @@ if __name__ == '__main__':
     from pathos.pools import ThreadPool as TPool
     tpool = TPool()
 
-    print "Evaluate 10 items on 1 thread"
+    print("Evaluate 10 items on 1 thread")
     tpool.nthreads = 1
     res3 = tpool.map(host, range(10))
-    print tpool
-    print '\n'.join(res3)
-    print ''
+    print(tpool)
+    print('\n'.join(res3))
+    print('')
 
-    print "Evaluate 10 items on 2 threads"
+    print("Evaluate 10 items on 2 threads")
     tpool.nthreads = 2
     res5 = tpool.map(host, range(10))
-    print tpool
-    print '\n'.join(res5)
-    print ''
+    print(tpool)
+    print('\n'.join(res5))
+    print('')
 
-    print "Evaluate 10 items on ? threads"
+    print("Evaluate 10 items on ? threads")
     tpool.nthreads = None
     res9 = tpool.map(host, range(10)) 
-    print tpool
-    print '\n'.join(res9)
-    print ''
+    print(tpool)
+    print('\n'.join(res9))
+    print('')
 
 # end of file

@@ -37,11 +37,11 @@ if __name__ == '__main__':
  #server = 'classic_server'  #XXX: "classic_server -p %s" % rport
  #server = 'registry_server'  #XXX: "registry_server -p %s" % rport
 
-  print """Usage: python pathos_server.py [hostname] [server] [remoteport] 
+  print("""Usage: python pathos_server.py [hostname] [server] [remoteport] 
     [hostname] - name of the host on which to run the server
     [server] - name of the RPC server (assumed to be already installed)
     [remoteport] - remote port over which the server will communicate
-    defaults are: "%s" "%s" "%s".""" % (rhost, server, rport)
+    defaults are: "%s" "%s" "%s".""" % (rhost, server, rport))
 
   # get remote hostname from user
   import sys
@@ -96,7 +96,7 @@ if __name__ == '__main__':
   rserver = serve(server,rhost,rport, profile=profile)
   response = rserver.response()
   if response:
-    print response
+    print(response)
     raise OSError('Failure to start server')
 
   # get server pid  #FIXME: launcher.pid is not pid(server)
@@ -104,18 +104,18 @@ if __name__ == '__main__':
   try:
     pid = getpid(target, rhost)
   except OSError:
-    print "Cleanup on host may be required..."
+    print("Cleanup on host may be required...")
     raise
 
   # test server
   # XXX: add a simple one-liner...
-  print "\nServer running at port=%s with pid=%s" % (rport,pid)
+  print("\nServer running at port=%s with pid=%s" % (rport,pid))
   import sys
-  print 'Press <Enter> to kill server'
+  print('Press <Enter> to kill server')
   sys.stdin.readline()
 
   # stop server
-  print kill(pid,rhost)
+  print(kill(pid,rhost))
 # del rserver  #XXX: delete should run self.kill (?)
 
 

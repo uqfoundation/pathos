@@ -52,7 +52,7 @@ Selector object for watching and event notification.
             type, value = sys.exc_info()[:2]
 
             # rethrow the exception so the clients can handle it
-            raise type, value
+            raise type(value)
 
         return
 
@@ -112,9 +112,9 @@ Takes no initial input.
         while self.state:
 
             self._debug.debug("constructing list of watchers")
-            iwtd = self._input.keys()
-            owtd = self._output.keys()
-            ewtd = self._exception.keys()
+            iwtd = list(self._input.keys())
+            owtd = list(self._output.keys())
+            ewtd = list(self._exception.keys())
 
             self._debug.debug("input: %s" % iwtd)
             self._debug.debug("output: %s" % owtd)
@@ -128,12 +128,12 @@ Takes no initial input.
             self._debug.debug("calling select")
             try:
                 reads, writes, excepts = select.select(iwtd, owtd, ewtd, self._timeout)
-            except select.error, error:
+            except select.error as error: # breaks 2.5 compatibility
                 # GUESS:
                 # when a signal is delivered to a signal handler registered
                 # by the application, the select call is interrupted and
                 # raises a select.error
-                errno, msg = error
+                errno, msg = error.args
                 self._debug.info("signal received: %d: %s" % (errno, msg))
                 continue
                 

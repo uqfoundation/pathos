@@ -28,29 +28,29 @@ A typical call to a pathos threading map will roughly follow this example:
     >>> pool = ThreadPool(nodes=4)
     >>>
     >>> # do a blocking map on the chosen function
-    >>> print pool.map(pow, [1,2,3,4], [5,6,7,8])
+    >>> print(pool.map(pow, [1,2,3,4], [5,6,7,8]))
     >>>
     >>> # do a non-blocking map, then extract the results from the iterator
     >>> results = pool.imap(pow, [1,2,3,4], [5,6,7,8])
-    >>> print "..."
-    >>> print list(results)
+    >>> print("...")
+    >>> print(list(results))
     >>>
     >>> # do an asynchronous map, then get the results
     >>> results = pool.amap(pow, [1,2,3,4], [5,6,7,8])
     >>> while not results.ready():
-    ...     time.sleep(5); print ".",
+    ...     time.sleep(5); print(".", end=' ')
     ...
-    >>> print results.get()
+    >>> print(results.get())
     >>>
     >>> # do one item at a time, using a pipe
-    >>> print pool.pipe(pow, 1, 5)
-    >>> print pool.pipe(pow, 2, 6)
+    >>> print(pool.pipe(pow, 1, 5))
+    >>> print(pool.pipe(pow, 2, 6))
     >>>
     >>> # do one item at a time, using an asynchronous pipe
     >>> result1 = pool.apipe(pow, 1, 5)
     >>> result2 = pool.apipe(pow, 2, 6)
-    >>> print result1.get()
-    >>> print result2.get()
+    >>> print(result1.get())
+    >>> print(result2.get())
 
 
 Notes
@@ -73,7 +73,10 @@ __STATE = _ThreadPool__STATE = {}
 from pathos.abstract_launcher import AbstractWorkerPool
 from pathos.helpers.mp_helper import starargs as star
 from pathos.helpers import cpu_count, ThreadPool as _ThreadPool
-from itertools import izip as zip
+try:
+    from itertools import izip as zip
+except ImportError:
+    pass
 
 class ThreadPool(AbstractWorkerPool):
     """
@@ -82,14 +85,14 @@ Mapper that leverages python's threading.
     def __init__(self, *args, **kwds):
         """\nNOTE: if number of nodes is not given, will autodetect processors
         """
-        hasnodes = kwds.has_key('nodes'); arglen = len(args)
-        if kwds.has_key('nthreads') and (hasnodes or arglen):
+        hasnodes = 'nodes' in kwds; arglen = len(args)
+        if 'nthreads' in kwds and (hasnodes or arglen):
             msg = "got multiple values for keyword argument 'nthreads'"
-            raise TypeError, msg
+            raise TypeError(msg)
         elif hasnodes: #XXX: multiple try/except is faster?
             if arglen:
                 msg = "got multiple values for keyword argument 'nodes'"
-                raise TypeError, msg
+                raise TypeError(msg)
             kwds['nthreads'] = kwds.pop('nodes')
         elif arglen:
             kwds['nthreads'] = args[0]

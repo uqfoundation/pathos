@@ -37,11 +37,11 @@ if __name__ == '__main__':
   package = 'pp'    #XXX: package name MUST correspond to X in installer-X.sh
   version = '1.5.7' #XXX: also hardwired in installer-X.sh
 
-  print """Usage: python install_pathos_server.py [package] [version] [hostname] 
+  print("""Usage: python install_pathos_server.py [package] [version] [hostname] 
     [package] - name of the package to install
     [version] - version of the package to install
     [hostname] - name of the host on which to install the package
-    defaults are: "%s" "%s" "%s".""" % (package, version, rhost)
+    defaults are: "%s" "%s" "%s".""" % (package, version, rhost))
 
   # get package to install from user
   import sys
@@ -93,16 +93,16 @@ if __name__ == '__main__':
   command = "source %s; python -c 'import %s'" % (profile,package)
   error = execute(command,rhost).response()
   if error in ['', None]:
-    print '%s is already installed on %s' % (package,rhost)
+    print('%s is already installed on %s' % (package,rhost))
 # elif error[:39] == 'This system is available for legitimate use'[:39] \
 #      and rhost[:3] == 'shc-b.cacr.caltech.edu'[:3]:
 ##     and error[-35:-1] == 'an authorized user of this system.'[-35:] \
-#   print '%s is already installed on %s' % (package,rhost)
+#   print('%s is already installed on %s' % (package,rhost))
     #XXX: could parse 'error' for "ImportError" ==> not installed
     #XXX: could use command="python -c 'import X; X.__version__'"
     #XXX  ...returns version# or "AttributeError" ==> non-standard version tag
   else:
-    print error
+    print(error)
     sleep(delay)
 
     # create install directory
@@ -142,6 +142,6 @@ if __name__ == '__main__':
     if error in ['', None]:
       pass # is installed
     else:
-      print error
-#     raise ImportError, "failure to install package"
+      print(error)
+#     raise ImportError("failure to install package")
 

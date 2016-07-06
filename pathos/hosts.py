@@ -23,7 +23,7 @@ For example, to register two 'known' host profiles:
 
 def get_profile(rhost, assume=True):
   '''get the default $PROFILE for a remote host'''
-  if _profiles.has_key(rhost):
+  if rhost in _profiles:
     return _profiles[rhost]
   if assume:
     return default_profile

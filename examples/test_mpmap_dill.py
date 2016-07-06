@@ -7,6 +7,9 @@
 
 import dill
 import pickle #FIXME: multiprocessing needs cPickle + copy_reg
+PY3 = getattr(pickle, '_dumps', None)
+dumps = pickle.dumps if not PY3 else pickle._dumps
+loads = pickle.loads if not PY3 else pickle._loads
 
 # pickle fails for nested functions
 def adder(augend):
@@ -17,16 +20,16 @@ def adder(augend):
 
 # test the pickle-ability of inner function
 add_me = adder(5)
-pinner = pickle.dumps(add_me)
-p_add_me = pickle.loads(pinner)
+pinner = dumps(add_me)
+p_add_me = loads(pinner)
 assert add_me(10) == p_add_me(10)
 
 # pickle fails for lambda functions
 squ = lambda x:x**2
 
 # test the pickle-ability of inner function
-psqu = pickle.dumps(squ)
-p_squ = pickle.loads(psqu)
+psqu = dumps(squ)
+p_squ = loads(psqu)
 assert squ(10) == p_squ(10)
 
 
@@ -38,19 +41,19 @@ if __name__ == '__main__':
     pool = Pool()
 
     # if pickle works, then multiprocessing should too
-    print "Evaluate 10 items on 2 proc:"
+    print("Evaluate 10 items on 2 proc:")
     pool.ncpus = 2
     p_res = pool.map(add_me, range(10))
-    print pool
-    print '%s' % p_res
-    print ''
+    print(pool)
+    print('%s' % p_res)
+    print('')
 
     # if pickle works, then multiprocessing should too
-    print "Evaluate 10 items on 4 proc:"
+    print("Evaluate 10 items on 4 proc:")
     pool.ncpus = 4
     p2res = pool.map(squ, range(10))
-    print pool
-    print '%s' % p2res
-    print ''
+    print(pool)
+    print('%s' % p2res)
+    print('')
 
 # end of file

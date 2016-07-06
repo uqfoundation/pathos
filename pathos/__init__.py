@@ -6,10 +6,12 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
+from __future__ import absolute_import
+
 # get version numbers, license, and long description
 try:
-    from info import this_version as __version__
-    from info import readme as __doc__, license as __license__
+    from .info import this_version as __version__
+    from .info import readme as __doc__, license as __license__
 except ImportError:
     msg = """First run 'python setup.py build' to build pathos."""
     raise ImportError(msg)
@@ -37,21 +39,21 @@ def logger(level=None, handler=None, **kwds):
     return log
 
 # high-level interface
-import core
-import hosts
-import server
-import selector
-import connection
-import pools
+from . import core
+from . import hosts
+from . import server
+from . import selector
+from . import connection
+from . import pools
 
 # worker pools
-import serial
-import parallel
-import multiprocessing
-import threading
+from . import serial
+from . import parallel
+from . import multiprocessing
+from . import threading
 
 # tools, utilities, etc
-import util
+from . import util
 
 # backward compatibility
 python = serial
@@ -60,14 +62,19 @@ from pathos.secure import Pipe as SSH_Launcher
 from pathos.secure import Copier as SCP_Launcher
 from pathos.secure import Tunnel as SSH_Tunnel
 
+# python version
+# import sys
+# PY3 = (sys.hexversion >= 0x30000f0)
+# del sys
+
 def license():
     """print license"""
-    print __license__
+    print(__license__)
     return
 
 def citation():
     """print citation"""
-    print __doc__[-499:-140]
+    print(__doc__[-499:-140])
     return
 
 # end of file

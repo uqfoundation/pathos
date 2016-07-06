@@ -33,10 +33,10 @@ if __name__ == '__main__':
  #server = 'classic_server'  #XXX: "classic_server -p %s" % rport
  #server = 'registry_server'  #XXX: "registry_server -p %s" % rport
 
-  print """Usage: python tunneled_pathos_server.py [hostname] [server] 
+  print("""Usage: python tunneled_pathos_server.py [hostname] [server] 
     [hostname] - name of the host on which to run the server
     [server] - name of the RPC server (assumed to be already installed)
-    defaults are: "%s" "%s".""" % (rhost, server)
+    defaults are: "%s" "%s".""" % (rhost, server))
 
   # get remote hostname from user
   import sys
@@ -78,14 +78,14 @@ if __name__ == '__main__':
 
   # establish ssh tunnel
   tunnel = connect(rhost)
-  print 'executing {ssh -N -L %d:%s:%d}' % (tunnel._lport,rhost,tunnel._rport)
+  print('executing {ssh -N -L %d:%s:%d}' % (tunnel._lport,rhost,tunnel._rport))
 
   # run server
   rserver = serve(server, rhost, tunnel._rport, profile=profile)
   response = rserver.response()
   if response:
     tunnel.disconnect()
-    print response
+    print(response)
     raise OSError('Failure to start server')
 
   # get server pid  #FIXME: launcher.pid is not pid(server)
@@ -93,20 +93,20 @@ if __name__ == '__main__':
   try:
     pid = getpid(target, rhost)
   except OSError:
-    print "Cleanup on host may be required..."
+    print("Cleanup on host may be required...")
     tunnel.disconnect()
     raise
 
   # test server
   # XXX: add a simple one-liner...
-  print "\nServer running at port=%s with pid=%s" % (tunnel._rport, pid)
-  print "Connected to localhost at port=%s" % (tunnel._lport)
+  print("\nServer running at port=%s with pid=%s" % (tunnel._rport, pid))
+  print("Connected to localhost at port=%s" % (tunnel._lport))
   import sys
-  print 'Press <Enter> to kill server'
+  print('Press <Enter> to kill server')
   sys.stdin.readline()
 
   # stop server
-  print kill(pid,rhost)
+  print(kill(pid,rhost))
 # del rserver  #XXX: delete should run self.kill (?)
 
   # disconnect tunnel

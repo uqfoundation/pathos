@@ -26,7 +26,7 @@ A typical call to a 'scp launcher' will roughly follow this example:
     >>> # configure and launch the copied file to a new destination
     >>> copier(source='remote.host.edu:~/foo.txt', destination='.')
     >>> copier.launch()
-    >>> print copier.response()
+    >>> print(copier.response())
  
 """
 __all__ = ['FileNotFound','Copier']

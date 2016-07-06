@@ -21,9 +21,9 @@ if __name__ == '__main__':
  #rhost = 'foobar.danse.us'
  #rhost = 'computer.cacr.caltech.edu'
 
-  print """Usage: python pathos_tunnel.py [hostname] 
+  print("""Usage: python pathos_tunnel.py [hostname] 
     [hostname] - name of the host with which to establish a ssh tunnel,
-    if omitted, tries "%s".""" % rhost
+    if omitted, tries "%s".""" % rhost)
 
   # get remote hostname from user
   import sys
@@ -39,11 +39,11 @@ if __name__ == '__main__':
 
   # establish ssh tunnel
   tunnel = connect(rhost)
-  print 'executing {ssh -N -L %d:%s:%d}' % (tunnel._lport,rhost,tunnel._rport)
+  print('executing {ssh -N -L %d:%s:%d}' % (tunnel._lport,rhost,tunnel._rport))
 
   # do stuff (i.e. wait) while the tunnel is connected
   import sys
-  print 'Press <Enter> to disconnect'
+  print('Press <Enter> to disconnect')
   sys.stdin.readline()
 
   # disconnect tunnel

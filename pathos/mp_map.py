@@ -31,27 +31,27 @@ Additional Inputs:
     processes = cpu_count()
     proctype = 'blocking'
     threads = False
-    if kwds.has_key('nproc'):
+    if 'nproc' in kwds:
         processes = kwds['nproc']
         kwds.pop('nproc')
         # provide a default that is not a function call
         if processes == None: processes = cpu_count()
-    if kwds.has_key('type'):
+    if 'type' in kwds:
         proctype = kwds['type']
         kwds.pop('type')
-    if kwds.has_key('threads'):
+    if 'threads' in kwds:
         threads = kwds['threads']
         kwds.pop('threads')
     # remove all the junk kwds that are added due to poor design!
-    if kwds.has_key('nnodes'): kwds.pop('nnodes')
-    if kwds.has_key('nodes'): kwds.pop('nodes')
-    if kwds.has_key('launcher'): kwds.pop('launcher')
-    if kwds.has_key('mapper'): kwds.pop('mapper')
-    if kwds.has_key('queue'): kwds.pop('queue')
-    if kwds.has_key('timelimit'): kwds.pop('timelimit')
-    if kwds.has_key('scheduler'): kwds.pop('scheduler')
-    if kwds.has_key('ncpus'): kwds.pop('ncpus')
-    if kwds.has_key('servers'): kwds.pop('servers')
+    if 'nnodes' in kwds: kwds.pop('nnodes')
+    if 'nodes' in kwds: kwds.pop('nodes')
+    if 'launcher' in kwds: kwds.pop('launcher')
+    if 'mapper' in kwds: kwds.pop('mapper')
+    if 'queue' in kwds: kwds.pop('queue')
+    if 'timelimit' in kwds: kwds.pop('timelimit')
+    if 'scheduler' in kwds: kwds.pop('scheduler')
+    if 'ncpus' in kwds: kwds.pop('ncpus')
+    if 'servers' in kwds: kwds.pop('servers')
 
     if proctype in ['blocking']:
         if not threads:

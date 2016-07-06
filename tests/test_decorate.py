@@ -55,7 +55,7 @@ if __name__ == '__main__':
     from pathos.helpers import freeze_support
     freeze_support()
 
-    assert map(addabs, x) == y
+    assert list(map(addabs, x)) == y
 
     from pathos.pools import ProcessPool as Pool
     assert Pool().map(addabs, x) == y

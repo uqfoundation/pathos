@@ -17,17 +17,17 @@ if __name__ == '__main__':
     from pathos.pools import ProcessPool as Pool
     pool = Pool()
 
-    print "Evaluate 5 items on 2 proc:"
+    print("Evaluate 5 items on 2 proc:")
     pool.ncpus = 2
     res3 = pool.map(host, range(5))
-    print pool
-    print '\n'.join(res3)
-    print ''
+    print(pool)
+    print('\n'.join(res3))
+    print('')
 
-    print "Evaluate 5 items on 10 proc:"
+    print("Evaluate 5 items on 10 proc:")
     pool.ncpus = 10
     res5 = pool.map(host, range(5)) 
-    print pool
-    print '\n'.join(res5)
+    print(pool)
+    print('\n'.join(res5))
 
 # end of file

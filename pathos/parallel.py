@@ -35,29 +35,29 @@ A typical call to a pathos pp map will roughly follow this example:
     >>> pool = ParallelPool(nodes=4)
     >>>
     >>> # do a blocking map on the chosen function
-    >>> print pool.map(pow, [1,2,3,4], [5,6,7,8])
+    >>> print(pool.map(pow, [1,2,3,4], [5,6,7,8]))
     >>>
     >>> # do a non-blocking map, then extract the results from the iterator
     >>> results = pool.imap(pow, [1,2,3,4], [5,6,7,8])
-    >>> print "..."
-    >>> print list(results)
+    >>> print("...")
+    >>> print(list(results))
     >>>
     >>> # do an asynchronous map, then get the results
     >>> results = pool.amap(pow, [1,2,3,4], [5,6,7,8])
     >>> while not results.ready():
-    ...     time.sleep(5); print ".",
+    ...     time.sleep(5); print(".", end=' ')
     ...
-    >>> print results.get()
+    >>> print(results.get())
     >>>
     >>> # do one item at a time, using a pipe
-    >>> print pool.pipe(pow, 1, 5)
-    >>> print pool.pipe(pow, 2, 6)
+    >>> print(pool.pipe(pow, 1, 5))
+    >>> print(pool.pipe(pow, 2, 6))
     >>>
     >>> # do one item at a time, using an asynchronous pipe
     >>> result1 = pool.apipe(pow, 1, 5)
     >>> result2 = pool.apipe(pow, 2, 6)
-    >>> print result1.get()
-    >>> print result2.get()
+    >>> print(result1.get())
+    >>> print(result2.get())
 
 
 Notes
@@ -86,10 +86,15 @@ find the source code for the target function. For a work-around, try:
 """
 __all__ = ['ParallelPool', 'stats']
 
-import __builtin__
 from pathos.helpers import parallelpython as pp
 from pathos.helpers import cpu_count
-from itertools import izip as zip
+try:
+    import builtins
+    PY3 = True
+except ImportError:
+    from itertools import izip as zip
+    import __builtin__ as builtins
+    PY3 = False
 
 #FIXME: probably not good enough... should store each instance with a uid
 __STATE = _ParallelPool__STATE = {}
@@ -97,7 +102,7 @@ __STATE = _ParallelPool__STATE = {}
 def __print_stats(servers=None):
     "print stats from the pp.Server"
     FROM_STATE = True
-    if servers is None: servers = __STATE.values()
+    if servers is None: servers = list(__STATE.values())
     else: FROM_STATE = False
     try:
         servers = tuple(servers)
@@ -105,7 +110,7 @@ def __print_stats(servers=None):
         servers = (servers,)
     if not servers:
         msg = '; no active' if FROM_STATE else ' for the requested'
-        print "Stats are not available%s servers.\n" % msg
+        print("Stats are not available%s servers.\n" % msg)
         return
     for server in servers: # fails if not pp.Servers
         #XXX: also print ids? (__STATE.keys())?
@@ -117,10 +122,14 @@ def stats(pool=None):
     "return a string containing stats response from the pp.Server"
     server = None if pool is None else __STATE.get(pool._id, tuple())
 
-    import StringIO, sys
+    try:
+        import io
+    except ImportError:
+        import StringIO as io
+    import sys
     stdout = sys.stdout
     try:
-        sys.stdout = result = StringIO.StringIO()
+        sys.stdout = result = io.StringIO()
         __print_stats(server)
     except:
         result = None #XXX: better throw an error?
@@ -141,14 +150,14 @@ Mapper that leverages parallelpython (i.e. pp) maps.
         """\nNOTE: if number of nodes is not given, will autodetect processors
 NOTE: if a tuple of servers is not provided, defaults to localhost only
         """
-        hasnodes = kwds.has_key('nodes'); arglen = len(args)
-        if kwds.has_key('ncpus') and (hasnodes or arglen):
+        hasnodes = 'nodes' in kwds; arglen = len(args)
+        if 'ncpus' in kwds and (hasnodes or arglen):
             msg = "got multiple values for keyword argument 'ncpus'"
-            raise TypeError, msg
+            raise TypeError(msg)
         elif hasnodes: #XXX: multiple try/except is faster?
             if arglen:
                 msg = "got multiple values for keyword argument 'nodes'"
-                raise TypeError, msg
+                raise TypeError(msg)
             kwds['ncpus'] = kwds.pop('nodes')
         elif arglen:
             kwds['ncpus'] = args[0]
@@ -171,7 +180,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         _pool = self._serve(nodes=ncpus, servers=servers)
         #XXX: or register new UID for each instance?
         #_pool.set_ncpus(ncpus or 'autodetect') # no ncpus=0
-       #print "configure", _pool.get_ncpus(), "local workers"
+       #print("configure %s local workers" % _pool.get_ncpus())
         return
     __init__.__doc__ = AbstractWorkerPool.__init__.__doc__ + __init__.__doc__
    #def __exit__(self, *args):
@@ -225,26 +234,27 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         def submit(*argz):
             """send a job to the server"""
             _pool = self._serve()
-           #print "using", _pool.get_ncpus(), 'local workers'
+           #print("using %s local workers" % _pool.get_ncpus())
             try:
                 return _pool.submit(f, argz, globals=globals())
             except pp.DestroyedServerError:
                 self._is_alive(None)
         # submit all jobs, then collect results as they become available
-        return (subproc() for subproc in __builtin__.map(submit, *args))
+        return (subproc() for subproc in builtins.map(submit, *args))
     imap.__doc__ = AbstractWorkerPool.imap.__doc__
     def uimap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
         def submit(*argz):
             """send a job to the server"""
             _pool = self._serve()
-           #print "using", _pool.get_ncpus(), 'local workers'
+           #print("using %s local workers" % _pool.get_ncpus())
             try:
                 return _pool.submit(f, argz, globals=globals())
             except pp.DestroyedServerError:
                 self._is_alive(None)
         def imap_unordered(it):
             """build a unordered map iterator"""
+            it = list(it)
             while len(it):
                 for i,job in enumerate(it):
                     if job.finished:
@@ -254,22 +264,22 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
                 # *subprocess*           # alternately, loop in a subprocess
             raise StopIteration
         # submit all jobs, then collect results as they become available
-        return imap_unordered(__builtin__.map(submit, *args))
+        return imap_unordered(builtins.map(submit, *args))
     uimap.__doc__ = AbstractWorkerPool.uimap.__doc__
     def amap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         def submit(*argz):
             """send a job to the server"""
             _pool = self._serve()
-           #print "using", _pool.get_ncpus(), 'local workers'
+           #print("using %s local workers" % _pool.get_ncpus())
             try:
                 return _pool.submit(f, argz, globals=globals())
             except pp.DestroyedServerError:
                 self._is_alive(None)
-        override = True if kwds.has_key('size') else False
+        override = True if 'size' in kwds else False
         elem_size = kwds.pop('size', 2)
         length = min(len(task) for task in args)
-        args = zip(*args)
+        args = zip(*args)  #XXX: zip iterator ok? or should be list?
         # submit all jobs, to be collected later with 'get()'
         tasks = [submit(*task) for task in args]
         tasks = [ApplyResult(task) for task in tasks]
@@ -368,7 +378,9 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
             assert pool._state != RUN
         elif negate: # throw error if alive (exiting=True)
             assert pool._state in (CLOSE, TERMINATE)
-        else: # throw error if not alive (exiting=False)
+        elif PY3: # throw error if not alive (exiting=False)
+            raise ValueError("Pool not running")
+        else:     # throw error if not alive (exiting=False)
             assert pool._state == RUN
     def _equals(self, server):
         "check if the server is compatible"

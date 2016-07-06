@@ -16,6 +16,10 @@ from pathos.threading import __STATE as tstate
 
 from pathos.helpers import cpu_count
 
+import sys
+PY3 = (sys.hexversion >= 0x30000f0)
+PoolClosedError = ValueError if PY3 else AssertionError
+
 def squared(x):
   return x**2
 
@@ -37,18 +41,18 @@ def test_basic(pool, state):
     # map fails when closed
     try:
         pool.map(squared, range(2))
-    except AssertionError:
+    except PoolClosedError:
         pass
     else:
         raise AssertionError
 
     obj = pool._serve()
-    assert obj in state.values()
+    assert obj in list(state.values())
 
     # serve has no effect on closed
     try:
         pool.map(squared, range(2))
-    except AssertionError:
+    except PoolClosedError:
         pass
     else:
         raise AssertionError
@@ -68,7 +72,7 @@ def test_basic(pool, state):
     pool._serve()
     try:
         pool.map(squared, range(2))
-    except AssertionError:
+    except PoolClosedError:
         pass
     else:
         raise AssertionError
@@ -76,7 +80,7 @@ def test_basic(pool, state):
     pool.join()
     try:
         pool.map(squared, range(2))
-    except AssertionError:
+    except PoolClosedError:
         pass
     else:
         raise AssertionError
@@ -96,7 +100,7 @@ def test_basic(pool, state):
     pool.join()
     try:
         pool.map(squared, range(2))
-    except AssertionError:
+    except PoolClosedError:
         pass
     else:
         raise AssertionError
@@ -107,7 +111,7 @@ def test_basic(pool, state):
     pool.join()
     try:
         pool.map(squared, range(2))
-    except AssertionError:
+    except PoolClosedError:
         pass
     else:
         raise AssertionError
@@ -115,7 +119,7 @@ def test_basic(pool, state):
     pool._serve()
     try:
         pool.map(squared, range(2))
-    except AssertionError:
+    except PoolClosedError:
         pass
     else:
         raise AssertionError
@@ -126,7 +130,7 @@ def test_basic(pool, state):
     pool.close()
     try:
         pool.map(squared, range(2))
-    except AssertionError:
+    except PoolClosedError:
         pass
     else:
         raise AssertionError
@@ -135,15 +139,11 @@ def test_basic(pool, state):
     res = pool.map(squared, range(2))
     assert res == [0, 1]
     obj = pool._serve()
-    assert obj in state.values()
+    assert obj in list(state.values())
     assert len(state) == 1
     pool.terminate()
     pool.clear()
     assert len(state) == 0
-    return
-
-
-def test_rename(pool, state):
     return
 
 
@@ -152,7 +152,7 @@ def test_nodes(pool, state):
 
     nodes = cpu_count()
     if nodes < 2: return
-    half = nodes/2
+    half = nodes//2
 
     res = pool.map(squared, range(2))
     assert res == [0, 1]
@@ -162,7 +162,7 @@ def test_nodes(pool, state):
     pool = new_pool()
     try:
         pool.map(squared, range(2))
-    except AssertionError:
+    except PoolClosedError:
         pass
     else:
         raise AssertionError
@@ -174,7 +174,7 @@ def test_nodes(pool, state):
     pool = new_pool(nodes=half)
     new_nodes = nnodes(pool)
     if isinstance(pool, ParallelPool):
-        print 'SKIPPING: new_pool check for ParallelPool' #FIXME
+        print('SKIPPING: new_pool check for ParallelPool')#FIXME
     else:
         res = pool.map(squared, range(2))
         assert res == [0, 1]
@@ -183,7 +183,7 @@ def test_nodes(pool, state):
     pool.close()
     try:
         pool.map(squared, range(2))
-    except AssertionError:
+    except PoolClosedError:
         pass
     else:
         raise AssertionError
@@ -191,7 +191,7 @@ def test_nodes(pool, state):
     # creates a new pool (nodes are different)
     pool = new_pool()
     if isinstance(pool, ParallelPool):
-        print 'SKIPPING: new_pool check for ParallelPool' #FIXME
+        print('SKIPPING: new_pool check for ParallelPool')#FIXME
     else:
         res = pool.map(squared, range(2))
         assert res == [0, 1]
@@ -200,7 +200,7 @@ def test_nodes(pool, state):
     pool = new_pool()
     try:
         pool.map(squared, range(2))
-    except AssertionError:
+    except PoolClosedError:
         pass
     else:
         raise AssertionError
@@ -231,28 +231,28 @@ def test_rename(pool, state):
     res = pool.map(squared, range(2))
     assert res == [0, 1]
     assert len(state) == 1
-    assert 'foobar' not in state.keys()
+    assert 'foobar' not in list(state.keys())
 
     # change the 'id', but don't re-init
     pool._id = 'foobar'
     res = pool.map(squared, range(2))
     assert res == [0, 1]
     assert len(state) == 2
-    assert 'foobar' in state.keys()
+    assert 'foobar' in list(state.keys())
 
     pool.close()     
     try:
         pool.map(squared, range(2))
-    except AssertionError:
+    except PoolClosedError:
         pass
     else:
         raise AssertionError
     pool.terminate()
     assert len(state) == 2
-    assert 'foobar' in state.keys()
+    assert 'foobar' in list(state.keys())
     pool.clear()
     assert len(state) == 1
-    assert 'foobar' not in state.keys()
+    assert 'foobar' not in list(state.keys())
 
     pool._id = old_id
     res = pool.map(squared, range(2))

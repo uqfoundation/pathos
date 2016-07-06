@@ -27,7 +27,7 @@ A typical call to a popen 'pipe' will roughly follow this example:
     >>>
     >>> # execute the launch and retrieve the response
     >>> pipe.launch()
-    >>> print pipe.response()
+    >>> print(pipe.response())
  
 """
 __all__ = ['Pipe', 'PipeException']

@@ -18,10 +18,14 @@ logger(level=20, name='pathos.selector') # logging.INFO
 
 if __name__ == '__main__':
     
-    import os, time, xmlrpclib
+    import os, time
+    try:
+        import xmlrpc.client as client
+    except ImportError:
+        import xmlrpclib as client
 
     s = XMLRPCServer('', 0)
-    print 'port=%d' % s.port
+    print('port=%d' % s.port)
     port = s.port
 
     pid = os.fork()
@@ -33,8 +37,8 @@ if __name__ == '__main__':
         s.serve()
     else: #child
         time.sleep(1)
-        s = xmlrpclib.ServerProxy('http://localhost:%d' % port)
-        print '1 + 2 =', s.add(1, 2)
-        print '3 + 4 =', s.add(3, 4)
+        s = client.ServerProxy('http://localhost:%d' % port)
+        print('1 + 2 = %s' % s.add(1, 2))
+        print('3 + 4 = %s' % s.add(3, 4))
 
 # End of file

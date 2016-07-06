@@ -5,6 +5,7 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
+from __future__ import print_function
 import time
 import sys
 
@@ -33,13 +34,13 @@ square_plus_one = quad_factory(2,0,1)
 
  
 def test_ready(pool, f, maxtries, delay):
-    print pool
-    print "y = %s(x1,x2)" % f.__name__
-    print "x1 = %s" % str(x[:10])
-    print "x2 = %s" % str(x[:10])
-    print "I'm sleepy..."
-    args = f.func_code.co_argcount
-    kwds = f.func_defaults
+    print(pool)
+    print("y = %s(x1,x2)" % f.__name__)
+    print("x1 = %s" % str(x[:10]))
+    print("x2 = %s" % str(x[:10]))
+    print("I'm sleepy...")
+    args = (getattr(f,'__code__',None) or getattr(f,'func_code')).co_argcount
+    kwds = getattr(f,'__defaults__',None) or getattr(f,'func_defaults')
     args = args - len(kwds) if kwds else args
     if args == 1:
         m = pool.amap(f, x)
@@ -51,24 +52,24 @@ def test_ready(pool, f, maxtries, delay):
 
     tries = 0
     while not m.ready():
-        if not tries: print "Z",
+        if not tries: print("Z", end='')
         time.sleep(delay)
         tries += 1
         if (tries % (len(x)*0.01)) == 0:
-            print 'z',
+            print('z', end='')
             sys.stdout.flush()
         if tries >= maxtries:
-            print "TIMEOUT"
+            print("TIMEOUT")
             break
-    print ""
+    print("")
     y = m.get()
-    print "I'm awake"
-    print "y = %s" % str(y[:10])
+    print("I'm awake")
+    print("y = %s" % str(y[:10]))
 
 
 
 if __name__ == '__main__':
-    x = range(500)
+    x = list(range(500))
     delay = 0.01
     maxtries = 200
     f = busy_add

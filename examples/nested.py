@@ -27,15 +27,15 @@ if __name__ == '__main__':
     amap = ProcessPool().amap
     tmap = ThreadPool().map
 
-    print amap(f, [h(x),h(x),h(x),h(x),h(x)], y).get()
+    print(amap(f, [h(x),h(x),h(x),h(x),h(x)], y).get())
 
     def _f(m, g, x, y):
       return sum(m(g,x))*y
 
-    print amap(_f, [tmap]*len(y), [g]*len(y), [x]*len(y), y).get()
+    print(amap(_f, [tmap]*len(y), [g]*len(y), [x]*len(y), y).get())
 
     from math import sin, cos
 
-    print amap(tmap, [sin,cos], [range(10),range(10)]).get()
+    print(amap(tmap, [sin,cos], [x,x]).get())
 
 
