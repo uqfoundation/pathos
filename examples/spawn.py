@@ -9,7 +9,7 @@ demonstrate pathos's spawn2 function
 """
 
 from __future__ import print_function
-from pathos.util import spawn2
+from pathos.util import spawn2, _b, _str
 
 
 if __name__ == '__main__':
@@ -17,16 +17,16 @@ if __name__ == '__main__':
     import os
     
     def onParent(pid, fromchild, tochild):
-        s = fromchild.readline()
+        s = _str(fromchild.readline())
         print(s, end='')
-        tochild.write('hello son\n')
+        tochild.write(_b('hello son\n'))
         tochild.flush()
         os.wait()
 
     def onChild(pid, fromparent, toparent):
-        toparent.write('hello dad\n')
+        toparent.write(_b('hello dad\n'))
         toparent.flush()
-        s = fromparent.readline()
+        s = _str(fromparent.readline())
         print(s, end='')
         os._exit(0)
 
