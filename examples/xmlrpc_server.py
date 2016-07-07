@@ -9,6 +9,7 @@ example of building a simple xmlrpc server and proxy,
 and then demonstrate the handling of a few basic requests
 
 To run: python xmlrpc_server.py
+To stop: < Ctrl+C >
 """
 
 from pathos.xmlrpc import XMLRPCServer

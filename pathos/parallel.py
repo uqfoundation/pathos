@@ -91,10 +91,13 @@ from pathos.helpers import cpu_count
 try:
     import builtins
     PY3 = True
+    import sys
+    P33 = (hex(sys.hexversion) >= '0x30300f0')
 except ImportError:
     from itertools import izip as zip
     import __builtin__ as builtins
     PY3 = False
+    P33 = False
 
 #FIXME: probably not good enough... should store each instance with a uid
 __STATE = _ParallelPool__STATE = {}
@@ -378,7 +381,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
             assert pool._state != RUN
         elif negate: # throw error if alive (exiting=True)
             assert pool._state in (CLOSE, TERMINATE)
-        elif PY3: # throw error if not alive (exiting=False)
+        elif P33: # throw error if not alive (exiting=False)
             raise ValueError("Pool not running")
         else:     # throw error if not alive (exiting=False)
             assert pool._state == RUN

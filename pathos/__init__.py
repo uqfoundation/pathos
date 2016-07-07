@@ -62,10 +62,6 @@ from pathos.secure import Pipe as SSH_Launcher
 from pathos.secure import Copier as SCP_Launcher
 from pathos.secure import Tunnel as SSH_Tunnel
 
-# python version
-# import sys
-# PY3 = (sys.hexversion >= 0x30000f0)
-# del sys
 
 def license():
     """print license"""

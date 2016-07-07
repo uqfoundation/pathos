@@ -56,9 +56,14 @@ try:
     from builtins import map as _map
     _apply = lambda f, args, kwds: f(*args, **kwds)
     _imap = _map
+    PY3 = True
+    import sys
+    P33 = (hex(sys.hexversion) >= '0x30300f0')
 except ImportError:
     from __builtin__ import map as _map, apply as _apply
     from itertools import imap as _imap
+    PY3 = False
+    P33 = False
 
 #XXX: good for interface... or bad idea?
 __STATE = _SerialPool__STATE = {}
@@ -105,7 +110,9 @@ Mapper that leverages standard (i.e. serial) python maps.
             assert pool._state != RUN
         elif negate: # throw error if alive (exiting=True)
             assert pool._state in (CLOSE, TERMINATE)
-        else: # throw error if not alive (exiting=False)
+        elif P33: # throw error if not alive (exiting=False)
+            raise ValueError("Pool not running")
+        else:     # throw error if not alive (exiting=False)
             assert pool._state == RUN
     def close(self):
         "close the pool to any new jobs"

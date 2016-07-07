@@ -17,8 +17,8 @@ from pathos.threading import __STATE as tstate
 from pathos.helpers import cpu_count
 
 import sys
-PY3 = (sys.hexversion >= 0x30000f0)
-PoolClosedError = ValueError if PY3 else AssertionError
+P33 = (sys.hexversion >= 0x30300f0)
+PoolClosedError = ValueError if P33 else AssertionError
 
 def squared(x):
   return x**2

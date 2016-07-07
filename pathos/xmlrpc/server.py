@@ -57,7 +57,7 @@ except ImportError:
     from BaseHTTPServer import BaseHTTPRequestHandler
     from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 from pathos.server import Server #XXX: pythia-0.6, was pyre.ipc.Server
-from pathos.util import print_exc_info, spawn2
+from pathos.util import print_exc_info, spawn2, _str, _b
 from pathos import logger
 
 
@@ -79,7 +79,7 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
         Server.serve(self, 5)
 
 
-    def _marshaled_dispatch(self, data, dispatch_method = None):
+    def _marshaled_dispatch(self, data, dispatch_method=None):
         """override SimpleXMLRPCDispatcher._marshaled_dispatch() fault string"""
 
         try:
@@ -109,7 +109,7 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
                 client.Fault(1, "\n%s" % print_exc_info())
                 )
 
-        return response
+        return _b(response)
 
 
     def _registerChild(self, pid, fromchild):
@@ -129,7 +129,7 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
     def _handleMessageFromChild(self, selector, fd):
         """handler for message from a child process"""
         
-        line = fd.readline()
+        line = _str(fd.readline())
         if line[:4] == 'done':
             pid = self._activeProcesses[fd]
             os.waitpid(pid, 0)
@@ -204,15 +204,15 @@ class XMLRPCRequestHandler(BaseHTTPRequestHandler):
         
         def onParent(pid, fromchild, tochild):
             self._server._registerChild(pid, fromchild)
-            tochild.write('done\n')
+            tochild.write(_b('done\n'))
             tochild.flush()
 
         def onChild(pid, fromparent, toparent):
             try:
                 response = self._server._marshaled_dispatch(data)
                 self._sendResponse(response)
-                line = fromparent.readline()
-                toparent.write('done\n')
+                line = _str(fromparent.readline())
+                toparent.write(_b('done\n'))
                 toparent.flush()
             except:
                 logger(name='pathos.xmlrpc', level=30).error(print_exc_info())
@@ -221,7 +221,7 @@ class XMLRPCRequestHandler(BaseHTTPRequestHandler):
         try:
             data = self.rfile.read(int(self.headers['content-length']))
             params, method = client.loads(data)
-            if method == 'run':
+            if method == 'run': #XXX: _str?
                 return spawn2(onParent, onChild)
             else:
                 response = self._server._marshaled_dispatch(data)
@@ -246,6 +246,7 @@ class XMLRPCRequestHandler(BaseHTTPRequestHandler):
     def _sendResponse(self, response):
         """ Write the XML-RPC response """
 
+        response = _b(response)
         self.send_response(200)
         self.send_header("Content-type", "text/xml")
         self.send_header("Content-length", str(len(response)))
