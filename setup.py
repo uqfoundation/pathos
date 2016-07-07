@@ -188,7 +188,7 @@ Requirements
 
 Pathos requires::
 
-    - python, version >= 2.6, version < 3.0
+    - python2, version >= 2.6  *or*  python3, version >= 3.3
     - dill, version >= 0.2.5
     - pox, version >= 0.2.2
     - ppft, version >= 1.6.4.5
