@@ -123,9 +123,9 @@ def stats(pool=None):
     server = None if pool is None else __STATE.get(pool._id, tuple())
 
     try:
-        import io
-    except ImportError:
         import StringIO as io
+    except ImportError:
+        import io
     import sys
     stdout = sys.stdout
     try:
