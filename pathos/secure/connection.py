@@ -45,6 +45,7 @@ Inputs:
     launcher    -- remote service mechanism (i.e. ssh, rsh)  [default = 'ssh']
     options     -- remote service options (i.e. -v, -N, -L)  [default = '']
     background  -- run in background  [default = False]
+    decode      -- ensure response is 'ascii'  [default = True]
     stdin       -- file type object that should be used as a standard input
                    for the remote process.
         '''
@@ -63,6 +64,7 @@ Inputs:
     launcher    -- remote service mechanism (i.e. ssh, rsh)  [default = 'ssh']
     options     -- remote service options (i.e. -v, -N, -L)  [default = '']
     background  -- run in background  [default = False]
+    decode      -- ensure response is 'ascii'  [default = True]
     stdin       -- file type object that should be used as a standard input
                    for the remote process.
         '''
@@ -92,6 +94,8 @@ Inputs:
                 self.options = value
             elif key == 'background':
                 self.background = value
+            elif key == 'decode':
+                self.codec = value
             elif key == 'stdin':
                 self.stdin = value
 
@@ -100,7 +104,7 @@ Inputs:
                                           self.options,
                                           self.host,
                                           self.message)
-        names = ['message','host','launcher','options','background','stdin']
+        names=['message','host','launcher','options','background','stdin','codec']
         return dict((i,getattr(self, i)) for i in names)
 
     # interface

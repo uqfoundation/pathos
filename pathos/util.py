@@ -12,6 +12,13 @@ utilities for distributed computing
 
 import os
 
+def _str(byte, codec=None):
+    """convert bytes to string using the given codec (default is 'ascii')"""
+    if codec is False or not hasattr(byte, 'decode'): return byte
+    return byte.decode(codec or 'ascii')
+   #except UnicodeDecodeError
+
+
 def print_exc_info():
     """thread-safe return of string from print_exception call"""
 

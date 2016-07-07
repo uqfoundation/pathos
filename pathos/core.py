@@ -186,7 +186,7 @@ Inputs:
   # analyze header for correct pattern and indx
   head = (line for line in response.split('\n') if 'PPID' in line)
   try:
-    head = head.next().split()
+    head = next(head).split()
   except StopIteration:
     raise OSError('Failure to recover process id')
   parent = 'PGID' if group else 'PPID'
@@ -222,7 +222,7 @@ Inputs:
     raise OSError('[Errno 3] No such process')
   # analyze header for correct pattern and indx
   head = (line for line in response.split('\n') if 'PPID' in line)
-  try: head = head.next().split()
+  try: head = next(head).split()
   except StopIteration:
     raise OSError('Failure to recover process id')
   parent = 'PGID' if group else 'PPID'

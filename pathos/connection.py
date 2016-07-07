@@ -38,6 +38,7 @@ import signal
 import random
 import string
 from pathos.selector import Selector
+from pathos.util import _str
 
 class PipeException(Exception):
     '''Exception for failure to launch a command'''
@@ -60,6 +61,7 @@ Inputs:
     name        -- a unique identifier (string) for the pipe
     command     -- a command to send  [default = 'echo <name>']
     background  -- run in background  [default = False]
+    decode      -- ensure response is 'ascii'  [default = True]
     stdin       -- file type object that should be used as a standard input
                    for the remote process.
         """
@@ -69,6 +71,7 @@ Inputs:
 
         self.background = kwds.pop('background', False)
         self.stdin = kwds.pop('stdin', sys.stdin)
+        self.codec = kwds.pop('decode', 'ascii')
         self.message = kwds.pop('command', 'echo %s' % self.name) #' '?
         self._response = None
         self._pid = 0
@@ -84,6 +87,7 @@ Inputs:
 (Re)configure the pipe for the following inputs:
     command     -- a command to send  [default = 'echo <name>']
     background  -- run in background  [default = False]
+    decode      -- ensure response is 'ascii'  [default = True]
     stdin       -- file type object that should be used as a standard input
                    for the remote process.
         '''
@@ -91,16 +95,20 @@ Inputs:
             self.message = 'echo %s' % self.name  #' '?
         if self.stdin is None:
             self.stdin = sys.stdin
+        if self.codec is None:
+            self.codec = 'ascii'
         for key, value in kwds.items():
             if key == 'command':
                 self.message = value
             elif key == 'background':
                 self.background = value
+            elif key == 'decode':
+                self.codec = value
             elif key == 'stdin':
                 self.stdin = value
 
         self._stdout = None
-        names=['message','background','stdin']
+        names=['message','background','stdin','codec']
         return dict((i,getattr(self, i)) for i in names)
 
     def launch(self):
@@ -136,16 +144,20 @@ Inputs:
     def response(self):
         '''Return the response from the launched process.
         Return None if no response was received yet from a background process.
-        '''
+        ''' #XXX: if PY3, return bytes, decode to ascii, take encoding, or ??? 
 
         if self._stdout is None:
             raise PipeException("'launch' is required after any reconfiguration")
-        if self._response is not None: return self._response
+        if self.codec is True: codec = 'ascii'
+        elif self.codec is False: codec = False
+        elif self.codec is None: codec = False
+        else: codec = self.codec
+        if self._response is not None: return _str(self._response, codec)
 
         # when running in foreground _pid is 0 (may change to -1)
         if self._pid <= 0:
             self._response = self._stdout.read()
-            return self._response
+            return _str(self._response, codec)
         
         # handle response from a background process
         def onData(selector, fobj):
@@ -165,7 +177,7 @@ Inputs:
         sel.watch(2.0)
         # reset _response to None to allow capture of a next response
         # from a background process
-        return self._response
+        return _str(self._response, codec)
 
     def pid(self):
         '''get pipe pid'''
