@@ -6,10 +6,40 @@
 #  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
 
 import dill
-import pickle #FIXME: multiprocessing needs cPickle + copy_reg
-PY3 = getattr(pickle, '_dumps', None)
-dumps = pickle.dumps if not PY3 else pickle._dumps
-loads = pickle.loads if not PY3 else pickle._loads
+import pickle #XXX: multiprocessing needs cPickle + copy_reg
+PY3 = getattr(pickle, '_Pickler', None)
+HAS_DUMPS = getattr(pickle, '_dumps', None)
+
+#HACK: kludge-in _dumps and _loads when not supplied in older 3.x pickle
+if PY3 and not HAS_DUMPS:
+    _Pickler = pickle._Pickler
+    _Unpickler = pickle._Unpickler
+    import io
+    bytes_types = (bytes, bytearray)
+
+    def _dump(obj, file, protocol=None, *, fix_imports=True):
+        _Pickler(file, protocol, fix_imports=fix_imports).dump(obj)
+
+    def _dumps(obj, protocol=None, *, fix_imports=True):
+        f = io.BytesIO()
+        _Pickler(f, protocol, fix_imports=fix_imports).dump(obj)
+        res = f.getvalue()
+        assert isinstance(res, bytes_types)
+        return res
+
+    def _load(file, *, fix_imports=True, encoding="ASCII", errors="strict"):
+        return _Unpickler(file, fix_imports=fix_imports,
+                         encoding=encoding, errors=errors).load()
+
+    def _loads(s, *, fix_imports=True, encoding="ASCII", errors="strict"):
+        if isinstance(s, str):
+            raise TypeError("Can't load pickle from unicode string")
+        file = io.BytesIO(s)
+        return _Unpickler(file, fix_imports=fix_imports,
+                          encoding=encoding, errors=errors).load()
+
+dumps = pickle.dumps if not PY3 else getattr(pickle, '_dumps', _dumps)
+loads = pickle.loads if not PY3 else getattr(pickle, '_loads', _loads)
 
 # pickle fails for nested functions
 def adder(augend):
