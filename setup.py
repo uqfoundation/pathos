@@ -10,7 +10,7 @@ import os
 
 # set version numbers
 stable_version = '0.1a1'
-target_version = '0.2a1'
+target_version = '0.2.0'
 is_release = False
 
 # check if easy_install is available
@@ -25,7 +25,11 @@ except ImportError:
 # generate version number
 if os.path.exists('pathos/info.py'):
     # is a source distribution, so use existing version
-    from pathos.info import this_version
+    os.chdir('pathos')
+    with open('info.py','r') as f:
+        f.readline() # header
+        this_version = f.readline().split()[-1].strip("'")
+    os.chdir('..')
 elif stable_version == target_version:
     # we are building a stable release
     this_version = target_version
@@ -43,97 +47,110 @@ with open('LICENSE') as file:
 
 # generate the readme text
 long_description = \
-"""-----------------------------------------------
-pathos: a framework for heterogeneous computing
------------------------------------------------
+"""--------------------------------------------------------------------------
+pathos: parallel graph management and execution in heterogeneous computing
+--------------------------------------------------------------------------
 
-Pathos is a framework for heterogenous computing. It primarily provides
-the communication mechanisms for configuring and launching parallel
-computations across heterogenous resources. Pathos provides configurable
-launchers for parallel and distributed computing, where each launcher
-contains the syntactic logic to configure and launch jobs in an execution
-environment.  Some examples of included launchers are: a queue-less
-MPI-based launcher, a ssh-based launcher, and a multiprocessing launcher.
-Pathos also provides a map-reduce algorithm for each of the available
-launchers, thus greatly lowering the barrier for users to extend their
-code to parallel and distributed resources.  Pathos provides the ability
-to interact with batch schedulers and queuing systems, thus allowing large
-computations to be easily launched on high-performance computing resources.
-One of the most powerful features of pathos is  "tunnel", which enables a
-user to automatically wrap any distributed service calls within a ssh-tunnel.
+About the Pathos Framework
+==========================
 
-Pathos is divided into four subpackages::
+`pathos` is a framework for heterogenous computing. It provides a consistent
+high-level interface for configuring and launching parallel computations
+across heterogenous resources. `pathos` provides configurable launchers for
+parallel and distributed computing, where each launcher contains the
+syntactic logic to configure and launch jobs in an execution environment.
+Examples of launchers that plug into `pathos` are: a queue-less MPI-based
+launcher (in `pyina`), a ssh-based launcher (in `pathos`), and a multi-process
+launcher (in `multiprocess`).
 
-    - dill: a utility for serialization of python objects
+`pathos` provides a consistent interface for parallel and/or distributed
+versions of `map` and `apply` for each launcher, thus lowering the barrier
+for users to extend their code to parallel and/or distributed resources.
+The guiding design principle behind `pathos` is that `map` and `apply`
+should be drop-in replacements in otherwise serial code, and thus switching
+to one or more of the `pathos` launchers is all that is needed to enable
+code to leverage the selected parallel or distributed computing resource.
+This not only greatly reduces the time to convert a code to parallel, but it
+also enables a single code-base to be maintained instead of requiring
+parallel, serial, and distributed versions of a code. `pathos` maps can be
+nested, thus hierarchical heterogenous computing is possible by merely
+selecting the desired hierarchy of `map` and `pipe` (`apply`) objects.
+
+The `pathos` framework is composed of several interoperating packages::
+
+    - dill: a utility to serialize all of python
     - pox: utilities for filesystem exploration and automated builds
-    - pyina: a MPI-based parallel mapper and launcher
-    - pathos: distributed parallel map-reduce and ssh communication
+    - klepto: persistent caching to memory, disk, or database
+    - multiprocess: better multiprocessing and multithreading in python
+    - ppft: distributed and parallel python
+    - pyina: MPI parallel `map` and cluster scheduling
+    - pathos: graph management and execution in heterogenous computing
 
 
-Pathos Subpackage 
-=================
+About Pathos
+============
 
-The pathos subpackage provides a few basic tools to make distributed
-computing more accessable to the end user. The goal of pathos is to
-allow the user to extend their own code to distributed computing with
-minimal refactoring.
+The `pathos` package provides a few basic tools to make parallel and
+distributed computing more accessable to the end user. The goal of `pathos`
+is to allow the user to extend their own code to parallel and distributed
+computing with minimal refactoring.
 
-Pathos provides methods for configuring, launching, monitoring, and
+`pathos` provides methods for configuring, launching, monitoring, and
 controlling a service on a remote host. One of the most basic features
-of pathos is the ability to configure and launch a RPC-based service
-on a remote host. Pathos seeds the remote host with a small `portpicker`
+of `pathos` is the ability to configure and launch a RPC-based service
+on a remote host. `pathos` seeds the remote host with a small `portpicker`
 script, which allows the remote host to inform the localhost of a port
 that is available for communication.
 
 Beyond the ability to establish a RPC service, and then post requests,
 is the ability to launch code in parallel. Unlike parallel computing
-performed at the node level (typically with MPI), pathos enables the
+performed at the node level (typically with MPI), `pathos` enables the
 user to launch jobs in parallel across heterogeneous distributed resources.
-Pathos provides a distributed map-reduce algorithm, where a mix of
-local processors and distributed RPC services can be selected.  Pathos
+`pathos` provides distributed `map` and `pipe` algorithms, where a mix of
+local processors and distributed workers can be selected.  `pathos`
 also provides a very basic automated load balancing service, as well as
 the ability for the user to directly select the resources.
 
-The high-level "pool.map" interface, yields a map-reduce implementation that
-hides the RPC internals from the user. With pool.map, the user can launch
+The high-level `pool.map` interface, yields a `map` implementation that
+hides the RPC internals from the user. With `pool.map`, the user can launch
 their code in parallel, and as a distributed service, using standard python
 and without writing a line of server or parallel batch code.
 
 RPC servers and communication in general is known to be insecure.  However,
-instead of attempting to make the RPC communication itself secure, pathos
+instead of attempting to make the RPC communication itself secure, `pathos`
 provides the ability to automatically wrap any distributes service or
 communication in a ssh-tunnel. Ssh is a universally trusted method.
-Using ssh-tunnels, pathos has launched several distributed calculations
+Using ssh-tunnels, `pathos` has launched several distributed calculations
 on national lab clusters, and to date has performed test calculations
-that utilize node-to-node communication between two national lab clusters
-and a user's laptop.  Pathos allows the user to configure and launch
+that utilize node-to-node communication between several national lab clusters
+and a user's laptop.  `pathos` allows the user to configure and launch
 at a very atomistic level, through raw access to ssh and scp. 
 
-Pathos is in the early development stages, and any user feedback is
-highly appreciated. Contact Mike McKerns [mmckerns at caltech dot edu]
-with comments, suggestions, and any bugs you may find. A list of known
-issues is maintained at http://dev.danse.us/trac/pathos/query.
+`pathos` is the core of a python framework for heterogeneous computing.
+`pathos` is in active development, so any user feedback, bug reports, comments,
+or suggestions are highly appreciated.  A list of known issues is maintained
+at http://trac.mystic.cacr.caltech.edu/project/pathos/query, with a public
+ticket list at https://github.com/uqfoundation/pathos/issues.
 
 
 Major Features
 ==============
 
-Pathos provides a configurable distributed parallel-map reduce interface
+`pathos` provides a configurable distributed parallel `map` interface
 to launching RPC service calls, with::
 
-    - a map-reduce interface that extends the python 'map' standard
+    - a `map` interface that meets and extends the python `map` standard
     - the ability to submit service requests to a selection of servers
     - the ability to tunnel server communications with ssh
-    - automated load-balancing between multiprocessing and RPC servers
 
-The pathos core is built on low-level communication to remote hosts using
+The `pathos` core is built on low-level communication to remote hosts using
 ssh. The interface to ssh, scp, and ssh-tunneled connections can::
 
     - configure and launch remote processes with ssh
     - configure and copy file objects with scp
     - establish an tear-down a ssh-tunnel
 
-To get up and running quickly, pathos also provides infrastructure to::
+To get up and running quickly, `pathos` also provides infrastructure to::
 
     - easily establish a ssh-tunneled connection to a RPC server
 
@@ -141,26 +158,32 @@ To get up and running quickly, pathos also provides infrastructure to::
 Current Release
 ===============
 
-The latest stable release version is pathos-%(relver)s. You can download it here.
-The latest stable version of pathos is always available at:
+This version is `pathos-%(relver)s`.
 
-    http://dev.danse.us/trac/pathos
+The latest released version of `pathos` is available from::
+
+    http://trac.mystic.cacr.caltech.edu/project/pathos
+
+`pathos` is distributed under a 3-clause BSD license.
+
+    >>> import pathos
+    >>> print (pathos.license())
 
 
-Development Release
+Development Version
 ===================
 
-If you like living on the edge, and don't mind the promise
-of a little instability, you can get the latest development
-release with all the shiny new features at:
+You can get the latest development version with all the shiny new features at::
 
-    http://dev.danse.us/packages.
+    https://github.com/uqfoundation
+
+If you have a new contribution, please submit a pull request.
 
 
 Installation
 ============
 
-Pathos is packaged to install from source, so you must
+`pathos` is packaged to install from source, so you must
 download the tarball, unzip, and run the installer::
 
     [download]
@@ -169,15 +192,14 @@ download the tarball, unzip, and run the installer::
     $ python setup py build
     $ python setup py install
 
-You will be warned of any missing dependencies and/or settings after
-you run the "build" step above. Pathos depends on dill and pox,
-each of which are essentially subpackages of pathos that are also
-released independently. Pathos also depends on `multiprocess` and
-`ppft`.  The aforementioned pathos subpackages are also available
-on this site, and you must install all of the dependencies for pathos
-to have full functionality for heterogeneous computing. 
+You will be warned of any missing dependencies and/or settings
+after you run the "build" step above.  `pathos` depends on `dill` and
+`pox`, each of which are essentially subpackages of `pathos` but are
+released independently. `pathos` also depends on `multiprocess` and
+`ppft`.  You must install all of the `pathos` framework packages for
+`pathos` to provide the full functionality for heterogeneous computing. 
 
-Alternately, pathos can be installed with easy_install::
+Alternately, `pathos` can be installed with `pip` or `easy_install`::
 
     [download]
     $ easy_install -f . pathos
@@ -186,7 +208,7 @@ Alternately, pathos can be installed with easy_install::
 Requirements
 ============
 
-Pathos requires::
+`pathos` requires::
 
     - python2, version >= 2.6  *or*  python3, version >= 3.1
     - dill, version >= 0.2.5
@@ -199,55 +221,62 @@ Optional requirements::
     - setuptools, version >= 0.6
     - pyina, version >= 0.2a.dev0
     - rpyc, version >= 3.0.6
-    - processing, version == 0.52-pathos (*)
 
 
-Usage Notes
-===========
+More Information
+================
 
-Probably the best way to get started is to look at a few of the
-examples provided within pathos. See `pathos.examples` for a
-set of scripts that demonstrate the configuration and launching of
-communications with ssh and scp.
+Probably the best way to get started is to look at the tests and
+examples provided within `pathos`. See `pathos.examples` and `pathos.tests`
+for a set of scripts that demonstrate the configuration and launching of
+communications with ssh and scp, and demonstrate the configuration and
+execution of jobs in a hierarchical parallel workflow. The source code is
+also generally well documented, so further questions may be resolved by
+inspecting the code itself.  Please also feel free to submit a ticket on
+github, or ask a question on stackoverflow (@Mike McKerns).
+
+`pathos` is an active research tool. There are a growing number of publications
+and presentations that discuss real-world examples and new features of `pathos`
+in greater detail than presented in the user's guide.  If you would like to
+share how you use `pathos` in your work, please post a link or send an email
+(to mmckerns at uqfoundation dot org).
 
 Important classes and functions are found here::
 
-    - pathos.pathos.abstract_launcher [the worker pool API definition]
-    - pathos.pathos.python            [the serial python worker pool ]
-    - pathos.pathos.multiprocessing   [the multiprocessing worker pool]
-    - pathos.pathos.pp                [the parallelpython worker pool]
-    - pathos.pathos.core              [the high-level command interface] 
-    - pathos.pathos.hosts             [the hostname registry interface] 
-    - pathos.pathos.Launcher          [the launcher base class]
-    - pathos.pathos.Tunnel            [the tunnel base class]
+    - `pathos.abstract_launcher`           [the worker pool API definition]
+    - `pathos.pools`                       [all of the pathos worker pools]
+    - `pathos.core`                        [the high-level command interface] 
+    - `pathos.hosts`                       [the hostname registry interface] 
+    - `pathos.serial.SerialPool`           [the serial python worker pool]
+    - `pathos.parallel.ParallelPool`       [the parallelpython worker pool]
+    - `pathos.multiprocessing.ProcessPool` [the multiprocessing worker pool]
+    - `pathos.threading.ThreadPool`        [the multithreading worker pool]
+    - `pathos.connection.Pipe`             [the launcher base class]
+    - `pathos.secure.Pipe`                 [the secure launcher base class]
+    - `pathos.secure.Copier`               [the secure copier  base class]
+    - `pathos.secure.Tunnel`               [the secure tunnel base class]
+    - `pathos.selector.Selector`           [the selector base class]
+    - `pathos.server.Server`               [the server base class]
+    - `pathos.profile`                     [profiling in threads and processes]
 
-Pathos also provides three convience scripts that are used to establish
+`pathos` also provides four convience scripts that are used to establish
 secure distributed connections. These scripts are installed to a directory
 on the user's $PATH, and thus can be run from anywhere::
 
-    - pathos_tunnel.py                [establish a ssh-tunnel connection]
-    - pathos_server.py                [launch a remote RPC server]
-    - tunneled_pathos_server.py       [launch a tunneled remote RPC server]
+    - `portpicker.py`                      [get the portnumber of an open port]
+    - `pathos_tunnel.py`                   [establish a ssh-tunnel connection]
+    - `pathos_server.py`                   [launch a remote RPC server]
+    - `tunneled_pathos_server.py`          [launch a tunneled remote RPC server]
 
 Typing `--help` as an argument to any of the above three scripts will print
 out an instructive help message.
 
 
-License
-=======
-
-Pathos is distributed under a 3-clause BSD license.
-
-    >>> import pathos
-    >>> print (pathos.license())
-
-
 Citation
 ========
 
-If you use pathos to do research that leads to publication,
-we ask that you acknowledge use of pathos by citing the
-following in your publication::
+If you use `pathos` to do research that leads to publication, we ask that you
+acknowledge use of `pathos` by citing the following in your publication::
 
     M.M. McKerns, L. Strand, T. Sullivan, A. Fang, M.A.G. Aivazis,
     "Building a framework for predictive science", Proceedings of
@@ -256,13 +285,10 @@ following in your publication::
 
     Michael McKerns and Michael Aivazis,
     "pathos: a framework for heterogeneous computing", 2010- ;
-    http://dev.danse.us/trac/pathos
+    http://trac.mystic.cacr.caltech.edu/project/pathos
 
-
-More Information
-================
-
-Please see http://dev.danse.us/trac/pathos or http://arxiv.org/pdf/1202.1056 for further information.
+Please see http://trac.mystic.cacr.caltech.edu/project/pathos or
+http://arxiv.org/pdf/1202.1056 for further information.
 
 """ % {'relver' : stable_version, 'thisver' : this_version}
 
@@ -289,7 +315,7 @@ license = '''%(license_text)s'''
 write_info_py()
 
 # platform-specific instructions
-from sys import platform
+from sys import platform, version_info
 if platform[:3] == 'win':
     pass
 else: #platform = linux or mac
@@ -301,16 +327,17 @@ else: #platform = linux or mac
 setup_code = """
 setup(name="pathos",
     version='%s',
-    maintainer="Mike McKerns",
-    maintainer_email="mmckerns@caltech.edu",
-    license="BSD",
-    platforms=["any"],
     description="a framework for heterogeneous computing",
     long_description = '''%s''',
+    author="Mike McKerns",
+    maintainer="Mike McKerns",
+    maintainer_email="mmckerns@uqfoundation.org",
+    license="BSD",
+    platforms=["any"],
+    url = 'http://www.cacr.caltech.edu/~mmckerns',
     classifiers=(
         "Intended Audience :: Developers",
         "Programming Language :: Python",
-        "Development Status :: 2 - Pre-Alpha",
         "Topic :: Physics Programming"),
 
     packages=['pathos','pathos.helpers','pathos.secure','pathos.xmlrpc'],
@@ -321,6 +348,7 @@ setup(name="pathos",
                 },
 """ % (target_version, long_description)
 
+'''
 # check for 'processing'
 try: #NOTE: odd... if processing is installed, *don't* install multiprocess
     from processing import __version__ as processing_version
@@ -331,12 +359,13 @@ try: #NOTE: odd... if processing is installed, *don't* install multiprocess
 except Exception:
     mp_version = '>=0.70.4' # 0.70a1 py25-py33, 0.52 on py25, None on py34
     processing_version = ''
+'''
 
 # add dependencies
-pyre_version = '==0.8.2.0-pathos' # NOTE: CIG-pyre; includes 'journal'
 ppft_version = '>=1.6.4.5'
-dill_version = '>=0.2.5'          # NOTE: implicit dependency
+dill_version = '>=0.2.5'
 pox_version = '>=0.2.2'
+mp_version = '>=0.70.4' if version_info >= (2,6) else '>=0.52.0'
 pyina_version = '>=0.2a1.dev0'
 rpyc_version = '>=3.0.6'
 deps = [ppft_version, dill_version, pox_version]
@@ -364,31 +393,35 @@ exec(setup_code)
 
 # if dependencies are missing, print a warning
 try:
-    import pp     # NOTE: ppft installs as pp
+    import ppft
     import dill
     import pox
-    try:
-        import processing
-    except ImportError:
+    if version_info >= (2,6):
         import multiprocess
-        if getattr(multiprocess, '__version__', '0.70a1') == '0.70a1':
-            raise ImportError
+    else:
+        import processing
+   #try:
+   #    import processing
+   #except ImportError:
+   #    import multiprocess
+   #    if getattr(multiprocess, '__version__', '0.70a1') == '0.70a1':
+   #        raise ImportError
 except ImportError:
     print("\n***********************************************************")
     print("WARNING: One of the following dependencies is unresolved:")
     print("    ppft %s" % ppft_version)
     print("    dill %s" % dill_version)
     print("    pox %s" % pox_version)
-    print("    multiprocess %s" % processing_version or mp_version)
+    print("    multiprocess %s" % mp_version)
     print("***********************************************************\n")
 
-    print("""
-If '%s' is installed, '%s' will be regarded as optional, and thus will
-not be installed.  Note that '%s' is not available through a standard
-install, however it may be downloaded from:
-  http://dev.danse.us/packages/
-or found in the "external" directory included in the pathos source distribution.
-""" % ('processing','multiprocess','processing'))
+#    print("""
+#If '%s' is installed, '%s' will be regarded as optional, and thus will
+#not be installed.  Note that '%s' is not available through a standard
+#install, however it may be downloaded from:
+#  http://dev.danse.us/packages/
+#or found in the "external" directory included in the pathos source distribution
+#""" % ('processing','multiprocess','processing'))
 
 
 if __name__=='__main__':
