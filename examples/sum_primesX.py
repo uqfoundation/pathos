@@ -17,7 +17,7 @@ To establish a ssh-tunneled server, please see
 
 import math
 import sys
-import pp
+import ppft
 
 LOCAL_WORKERS = 'autodetect' #XXX: 'autodetect' or 0,1,2,...
 
@@ -54,7 +54,7 @@ for i in range(1,len(sys.argv)):
 ppservers = tuple(ppservers)
 
 # Creates jobserver with automatically detected number of workers
-job_server = pp.Server(ppservers=ppservers)
+job_server = ppft.Server(ppservers=ppservers)
 
 # Allow running without local workers
 if LOCAL_WORKERS != 'autodetect':
@@ -62,7 +62,7 @@ if LOCAL_WORKERS != 'autodetect':
 
 #print("Known servers: [('local',)] %s %s" % (job_server.ppservers,job_server.auto_ppservers))
 print("Known servers: [('local',)] %s" % (job_server.ppservers))
-print("Starting pp with %s local workers" % job_server.get_ncpus())
+print("Starting ppft with %s local workers" % job_server.get_ncpus())
 
 # Submit a job of calulating sum_primes(100) for execution.
 # sum_primes - the function

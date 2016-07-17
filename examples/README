@@ -1,0 +1,4 @@
+Notes:
+------
+test_mpmap_dill: has patch to enable dill override of pickle in python3 
+

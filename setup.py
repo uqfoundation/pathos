@@ -11,7 +11,7 @@ import os
 # set version numbers
 stable_version = '0.1a1'
 target_version = '0.2.0'
-is_release = False
+is_release = stable_version == target_version
 
 # check if easy_install is available
 try:

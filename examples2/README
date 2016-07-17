@@ -1,0 +1,26 @@
+Notes:
+-----
+Contains two "extended" examples:
+1) scatter-gather, with different parallel backends
+2) optimization, with different parallel backends
+
+"scatter-gather" demonstrates scatter-gather from mpi4py,
+and requires numpy and mpi4py. "all_scatter_gather*"
+demonstrates the pathos versions of scatter-gather,
+using a Pool and map. "all_scatter-gather*" will leverage
+pyina (if pyina is available).
+
+"optimize" demonstrates using pathos to extend optimization
+to leverage parallel computing. "optimize*" requires the
+mystic optimization framework. "optimize0" demonstrates
+an example optimiztion with mystic, and "optimize" converts
+"optimize0" to use a map function. "optimize_powell" 
+demonstrates the common API for the different parallel
+backends in pathos (and pyina). "optimize_XXX_YYY_ZZZ"
+shows different specific combinations of objective function
+XXX={rosen, cheby}, optimization algorithm YYY={powell, diffev},
+and map function ZZZ={map (serial), mpmap (multi-process),
+ppmap (parallel python), mpimap (MPI)}. Note that "optimize_powell"
+and "optimize_cheby_powell_mpimap" both require pyina to be
+installed.
+
