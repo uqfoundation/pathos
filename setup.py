@@ -10,7 +10,7 @@ import os
 
 # set version numbers
 stable_version = '0.2.0'
-target_version = '0.2.0'
+target_version = '0.2.1'
 is_release = stable_version == target_version
 
 # check if easy_install is available
@@ -92,7 +92,7 @@ About Pathos
 
 The `pathos` package provides a few basic tools to make parallel and
 distributed computing more accessable to the end user. The goal of `pathos`
-is to allow the user to extend their own code to parallel and distributed
+is to enable the user to extend their own code to parallel and distributed
 computing with minimal refactoring.
 
 `pathos` provides methods for configuring, launching, monitoring, and
@@ -201,8 +201,7 @@ released independently. `pathos` also depends on `multiprocess` and
 
 Alternately, `pathos` can be installed with `pip` or `easy_install`::
 
-    [download]
-    $ easy_install -f . pathos
+    $ pip install pathos
 
 
 Requirements
@@ -259,7 +258,7 @@ Important classes and functions are found here::
     - `pathos.server.Server`               [the server base class]
     - `pathos.profile`                     [profiling in threads and processes]
 
-`pathos` also provides four convience scripts that are used to establish
+`pathos` also provides four convenience scripts that are used to establish
 secure distributed connections. These scripts are installed to a directory
 on the user's $PATH, and thus can be run from anywhere::
 
