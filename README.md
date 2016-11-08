@@ -163,8 +163,8 @@ on the user's $PATH, and thus can be run from anywhere::
 * `pathos_server.py`                   [launch a remote RPC server]
 * `tunneled_pathos_server.py`          [launch a tunneled remote RPC server]
 
-Typing `--help` as an argument to any of the above three scripts will print
-out an instructive help message.
+Typing `--help` as an argument to any of the above scripts will print out an
+instructive help message.
 
 
 Citation
