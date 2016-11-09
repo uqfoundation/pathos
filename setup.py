@@ -218,7 +218,7 @@ Requirements
 Optional requirements::
 
     - setuptools, version >= 0.6
-    - pyina, version >= 0.2a.dev0
+    - pyina, version >= 0.2.0.dev0
     - rpyc, version >= 3.0.6
 
 
@@ -365,7 +365,7 @@ ppft_version = '>=1.6.4.5'
 dill_version = '>=0.2.5'
 pox_version = '>=0.2.2'
 mp_version = '>=0.70.4' if version_info >= (2,6) else '>=0.52.0'
-pyina_version = '>=0.2a1.dev0'
+pyina_version = '>=0.2.0.dev0'
 rpyc_version = '>=3.0.6'
 deps = [ppft_version, dill_version, pox_version]
 if mp_version:
