@@ -32,8 +32,8 @@ class _wrap_nested(object):
         return function_wrapper
 
 def add(*args):
-    from numpy import sum
-    return sum(args)
+    #from numpy import sum
+    return sum(*args)
 
 '''                               # FAILS to find 'add' (returns [None,None])
 @wrap_nested(add)
