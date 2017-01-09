@@ -41,7 +41,7 @@ def sleep_add2(x):
     if x < 4: sleep(x/10.0)
     return x+2
 
-def test_with_multipool(Pool):
+def run_with_multipool(Pool):
     inputs = range(10)
     with Pool() as pool1:
         res1 = pool1.amap(sleep_add1, inputs)
@@ -57,15 +57,17 @@ def test_with_multipool(Pool):
     assert res2.get() == [i+2 for i in inputs]
 
 
+def test_with_pp():
+    from pathos.pools import ParallelPool
+    run_with_multipool(ParallelPool)
+
+def test_with_mp():
+    from pathos.pools import ProcessPool
+    run_with_multipool(ProcessPool)
+
+
 if __name__ == '__main__':
     from pathos.helpers import freeze_support
     freeze_support()
-
-    from pathos.pools import ProcessPool
-    test_with_multipool(ProcessPool)
-
-    from pathos.pools import ParallelPool
-    test_with_multipool(ParallelPool)
-
-
-# EOF
+    test_with_mp()
+    test_with_pp()

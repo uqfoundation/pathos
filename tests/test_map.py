@@ -87,6 +87,3 @@ if __name__ == '__main__':
     test_pp()
     test_processing()
     test_threading()
-
-
-# EOF

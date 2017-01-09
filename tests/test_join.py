@@ -24,7 +24,7 @@ PoolClosedError = ValueError if P33 else AssertionError
 def squared(x):
   return x**2
 
-def test_basic(pool, state):
+def check_basic(pool, state):
     res = pool.map(squared, range(2))
     assert res == [0, 1]
     res = pool.map(squared, range(2))
@@ -148,7 +148,7 @@ def test_basic(pool, state):
     return
 
 
-def test_nodes(pool, state):
+def check_nodes(pool, state):
     new_pool = type(pool)
 
     nodes = cpu_count()
@@ -220,7 +220,7 @@ def test_nodes(pool, state):
     return
 
 
-def test_rename(pool, state):
+def check_rename(pool, state):
     new_pool = type(pool)
     res = pool.map(squared, range(2))
     assert res == [0, 1]
@@ -263,22 +263,25 @@ def test_rename(pool, state):
     assert len(state) == 0
     return
 
+def test_basic():
+    check_basic(ThreadPool(), tstate)
+#   check_basic(ProcessPool(), mstate)
+#   check_basic(ParallelPool(), pstate)
+
+def test_rename():
+    check_rename(ThreadPool(), tstate)
+    check_rename(ProcessPool(), mstate)
+    check_rename(ParallelPool(), pstate)
+
+def test_nodes():
+    check_nodes(ThreadPool(), tstate)
+    check_nodes(ProcessPool(), mstate)
+    check_nodes(ParallelPool(), pstate)
+
 
 if __name__ == '__main__':
     from pathos.helpers import freeze_support
     freeze_support()
-
-    test_basic(ThreadPool(), tstate)
-#   test_basic(ProcessPool(), mstate)
-#   test_basic(ParallelPool(), pstate)
-
-    test_rename(ThreadPool(), tstate)
-    test_rename(ProcessPool(), mstate)
-    test_rename(ParallelPool(), pstate)
-
-    test_nodes(ThreadPool(), tstate)
-    test_nodes(ProcessPool(), mstate)
-    test_nodes(ParallelPool(), pstate)
-
-
-# EOF
+    test_basic()
+    test_rename()
+    test_nodes()

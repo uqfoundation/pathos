@@ -48,14 +48,10 @@ wrapadd = wrap_nested(add)        # ok
 addabs = wrapadd(abs)             # <required for the latter two above>
 #'''
 
-x = [(-1,-2),(3,-4)]
-y = [3, 1]
 
-
-if __name__ == '__main__':
-    from pathos.helpers import freeze_support
-    freeze_support()
-
+def test_wrap():
+    x = [(-1,-2),(3,-4)]
+    y = [3, 1]
     assert list(map(addabs, x)) == y
 
     from pathos.pools import ProcessPool as Pool
@@ -64,3 +60,8 @@ if __name__ == '__main__':
     from pathos.pools import ParallelPool as Pool
     assert Pool().map(addabs, x) == y
 
+
+if __name__ == '__main__':
+    from pathos.helpers import freeze_support
+    freeze_support()
+    test_wrap()

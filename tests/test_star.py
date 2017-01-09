@@ -40,7 +40,7 @@ square_plus_one = quad_factory(2,0,1)
 x2 = list(map(squared, x))
 
 
-def test_sanity(pool, verbose=False):
+def check_sanity(pool, verbose=False):
     if verbose:
         print(pool)
         print("x: %s\n" % str(x))
@@ -86,7 +86,7 @@ def test_sanity(pool, verbose=False):
         print("y: %s\n" % str(res))
 
 
-def test_maps(pool, items=4, delay=0):
+def check_maps(pool, items=4, delay=0):
     _x = range(-items//2,items//2,2)
     _y = range(len(_x))
     _d = [delay]*len(_x)
@@ -122,7 +122,7 @@ def test_maps(pool, items=4, delay=0):
    #print("")
 
 
-def test_dill(pool, verbose=False): # test function that should fail in pickle
+def check_dill(pool, verbose=False): # test function that should fail in pickle
     if verbose:
         print(pool)
         print("x: %s\n" % str(x))
@@ -139,7 +139,7 @@ def test_dill(pool, verbose=False): # test function that should fail in pickle
     assert True
 
 
-def test_ready(pool, maxtries, delay, verbose=True):
+def check_ready(pool, maxtries, delay, verbose=True):
     if verbose: print(pool)
     m = pool.amap(busy_squared, x)# x)
 
@@ -162,31 +162,34 @@ def test_ready(pool, maxtries, delay, verbose=True):
     assert tries > 0
     assert maxtries > tries #should be True, may not be if CPU is SLOW
 
+def test_mp():
+    from pathos.pools import ProcessPool as Pool
+    pool = Pool(nodes=4)
+    check_sanity( pool )
+    check_maps( pool, items, delay )
+    check_dill( pool )
+    check_ready( pool, maxtries, delay, verbose=False )
+
+def test_tp():
+    from pathos.pools import ThreadPool as Pool
+    pool = Pool(nodes=4)
+    check_sanity( pool )
+    check_maps( pool, items, delay )
+    check_dill( pool )
+    check_ready( pool, maxtries, delay, verbose=False )
+
+def test_pp():
+    from pathos.pools import ParallelPool as Pool
+    pool = Pool(nodes=4)
+    check_sanity( pool )
+    check_maps( pool, items, delay )
+    check_dill( pool )
+    check_ready( pool, maxtries, delay, verbose=False )
+
 
 if __name__ == '__main__':
     from pathos.helpers import freeze_support
     freeze_support()
-
-    from pathos.pools import ProcessPool as Pool
-    pool = Pool(nodes=4)
-    test_sanity( pool )
-    test_maps( pool, items, delay )
-    test_dill( pool )
-    test_ready( pool, maxtries, delay, verbose=False )
-
-    from pathos.pools import ThreadPool as Pool
-    pool = Pool(nodes=4)
-    test_sanity( pool )
-    test_maps( pool, items, delay )
-    test_dill( pool )
-    test_ready( pool, maxtries, delay, verbose=False )
-
-    from pathos.pools import ParallelPool as Pool
-    pool = Pool(nodes=4)
-    test_sanity( pool )
-    test_maps( pool, items, delay )
-    test_dill( pool )
-    test_ready( pool, maxtries, delay, verbose=False )
-
-
-# EOF
+    test_mp()
+    test_tp()
+    test_pp()
