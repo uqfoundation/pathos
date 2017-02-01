@@ -214,7 +214,7 @@ Requirements
     - dill, version >= 0.2.6
     - pox, version >= 0.2.3
     - ppft, version >= 1.6.4.5
-    - multiprocess, version >= 0.70.4
+    - multiprocess, version >= 0.70.5
 
 Optional requirements::
 
@@ -363,7 +363,7 @@ try: #NOTE: odd... if processing is installed, *don't* install multiprocess
         mp_version = ''
     else: raise AttributeError('multiprocess')
 except Exception:
-    mp_version = '>=0.70.4' # 0.70a1 py25-py33, 0.52 on py25, None on py34
+    mp_version = '>=0.70.5' # 0.70a1 py25-py33, 0.52 on py25, None on py34
     processing_version = ''
 '''
 
@@ -371,7 +371,7 @@ except Exception:
 ppft_version = '>=1.6.4.5'
 dill_version = '>=0.2.6'
 pox_version = '>=0.2.3'
-mp_version = '>=0.70.4' if version_info >= (2,6) else '>=0.52.0'
+mp_version = '>=0.70.5' if version_info >= (2,6) else '>=0.52.0'
 pyina_version = '>=0.2.0.dev0'
 rpyc_version = '>=3.0.6'
 deps = [ppft_version, dill_version, pox_version]
