@@ -236,9 +236,9 @@ def stop_profiling(*args):
 
 def disable_profiling(*args):
     "remove the profiler instance from the current thread/process"
+    global profiler
     if profiler is not None: stop_profiling()
     globals().pop('profiler', None)
-    global profiler
     profiler = None
     return
 
