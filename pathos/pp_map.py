@@ -76,7 +76,7 @@ def ppmap(processes, function, sequence, *sequences):
     #from _ppserver_config import ppservers # read from a config file
 
     # Create a new server if one isn't already initialized
-    if not __STATE['server']:
+    if not __STATE.get('server', None):
         __STATE['server'] = ppServer(ppservers=ppservers)
     
    #class dill_wrapper(object):
@@ -168,7 +168,7 @@ Additional Inputs:
     if 'scheduler' in kwds: kwds.pop('scheduler')
 
 #   return Pool(procs, servers=servers).map(function, sequence, *args, **kwds)
-    if not __STATE['server']:
+    if not __STATE.get('server',None):
         __STATE['server'] = job_server = ppServer(ppservers=servers)
     return list(ppmap(procs,function,sequence,*args))
 
