@@ -40,7 +40,7 @@ The `pathos` framework is composed of several interoperating packages::
 About Pathos
 ------------
 The `pathos` package provides a few basic tools to make parallel and
-distributed computing more accessable to the end user. The goal of `pathos`
+distributed computing more accessible to the end user. The goal of `pathos`
 is to enable the user to extend their own code to parallel and distributed
 computing with minimal refactoring.
 
