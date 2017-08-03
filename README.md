@@ -78,7 +78,7 @@ at a very atomistic level, through raw access to ssh and scp.
 `pathos` is the core of a python framework for heterogeneous computing.
 `pathos` is in active development, so any user feedback, bug reports, comments,
 or suggestions are highly appreciated.  A list of known issues is maintained
-at http://trac.mystic.cacr.caltech.edu/project/pathos/query, with a public
+at http://trac.mystic.cacr.caltech.edu/project/pathos/query.html, with a public
 ticket list at https://github.com/uqfoundation/pathos/issues.
 
 
@@ -106,7 +106,7 @@ To get up and running quickly, `pathos` also provides infrastructure to::
 Current Release
 ---------------
 The latest released version of `pathos` is available from::
-    http://trac.mystic.cacr.caltech.edu/project/pathos
+    https://pypi.org/project/pathos
 
 `pathos` is distributed under a 3-clause BSD license.
 

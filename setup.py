@@ -4,7 +4,7 @@
 # Copyright (c) 1997-2016 California Institute of Technology.
 # Copyright (c) 2016-2017 The Uncertainty Quantification Foundation.
 # License: 3-clause BSD.  The full license text is available at:
-#  - http://trac.mystic.cacr.caltech.edu/project/pathos/browser/pathos/LICENSE
+#  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 
 from __future__ import with_statement
 import os
@@ -130,7 +130,7 @@ at a very atomistic level, through raw access to ssh and scp.
 `pathos` is the core of a python framework for heterogeneous computing.
 `pathos` is in active development, so any user feedback, bug reports, comments,
 or suggestions are highly appreciated.  A list of known issues is maintained
-at http://trac.mystic.cacr.caltech.edu/project/pathos/query, with a public
+at http://trac.mystic.cacr.caltech.edu/project/pathos/query.html, with a public
 ticket list at https://github.com/uqfoundation/pathos/issues.
 
 
@@ -163,7 +163,7 @@ This version is `pathos-%(relver)s`.
 
 The latest released version of `pathos` is available from::
 
-    http://trac.mystic.cacr.caltech.edu/project/pathos
+    https://pypi.org/project/pathos
 
 `pathos` is distributed under a 3-clause BSD license.
 
@@ -333,8 +333,8 @@ setup(name="pathos",
     maintainer = 'Mike McKerns',
     license = '3-clause BSD',
     platforms = ['Linux', 'Windows', 'Mac'],
-    url = 'http://www.cacr.caltech.edu/~mmckerns/pathos.htm',
-    download_url = 'http://dev.danse.us/packages',
+    url = 'https://pypi.org/project/pathos',
+    download_url = 'https://github.com/uqfoundation/pathos/releases/download/pathos-%s/pathos-%s.tar.gz',
     classifiers = ('Development Status :: 5 - Production/Stable',
                    'Intended Audience :: Developers',
                    'Intended Audience :: Science/Research',
@@ -350,7 +350,7 @@ setup(name="pathos",
                  'pathos.secure':'pathos/secure', \
                  'pathos.xmlrpc':'pathos/xmlrpc', \
                 },
-""" % (target_version, long_description)
+""" % (target_version, long_description, stable_version, stable_version)
 
 '''
 # check for 'processing'
@@ -380,7 +380,6 @@ else:
 if has_setuptools:
     setup_code += """
         zip_safe = False,
-        dependency_links = ['http://dev.danse.us/packages/'],
         install_requires = ['ppft%s','dill%s','pox%s',%s
 """ % deps
 
