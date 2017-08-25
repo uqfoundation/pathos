@@ -6,12 +6,24 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 """
-start remote server for selected package
+start a remote server for the selected package
 
-Usage: python pathos_server.py [hostname] [server] [remoteport] 
-    [hostname] - name of the host on which to run the server
-    [server] - name of the RPC server (assumed to be already installed)
-    [remoteport] - remote port over which the server will communicate
+Note:
+    Usage: python pathos_server.py [hostname] [server] [remoteport] 
+      - [hostname] - name of the host on which to run the server
+      - [server] - name of the RPC server (assumed to be already installed)
+      - [remoteport] - remote port over which the server will communicate
+
+Examples::
+
+    $ pathos_server.py computer.caltech.edu ppserver 15058
+    Usage: python pathos_server.py [hostname] [server] [remoteport]
+        [hostname] - name of the host on which to run the server
+        [server] - name of the RPC server (assumed to be already installed)
+        [remoteport] - remote port over which the server will communicate
+        defaults are: "localhost" "ppserver" "98909".
+    Server running at port=15058 with pid=4110
+    Press <Enter> to kill server
 """
 
 from pathos.core import *

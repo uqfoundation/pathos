@@ -6,10 +6,20 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 """
-establish a tunnel to first available remote port using pathos.util.portnumber
+tunnel to the first available remote port using ``pathos.util.portnumber``
 
-Usage: python pathos_tunnel.py [hostname] 
-    [hostname] - name of the host with which to establish a ssh tunnel
+Note:
+    Usage: python pathos_tunnel.py [hostname] 
+      - [hostname] - name of the host with which to establish a ssh tunnel
+
+Examples::
+
+    $ pathos_tunnel.py computer.caltech.edu
+    Usage: python pathos_tunnel.py [hostname] 
+        [hostname] - name of the host with which to establish a ssh tunnel,
+        if omitted, tries "localhost".
+    executing {ssh -N -L 7429:computer.caltech.edu:17781}
+    Press <Enter> to disconnect
 """
 
 from pathos.core import *

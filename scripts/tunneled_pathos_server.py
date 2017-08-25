@@ -8,9 +8,23 @@
 """
 start tunneled remote server for selected package
 
-Usage: python tunneled_pathos_server.py [hostname] [server] 
-    [hostname] - name of the host on which to run the server
-    [server] - name of the RPC server (assumed to be already installed)
+Note:
+    Usage: python tunneled_pathos_server.py [hostname] [server] 
+      - [hostname] - name of the host on which to run the server
+      - [server] - name of the RPC server (assumed to be already installed)
+
+Examples::
+
+    $ tunneled_pathos_server.py computer.caltech.edu ppserver
+    Usage: python tunneled_pathos_server.py [hostname] [server] 
+        [hostname] - name of the host on which to run the server
+        [server] - name of the RPC server (assumed to be already installed)
+        defaults are: "localhost" "ppserver".
+    executing {ssh -N -L 22921:computer.caltech.edu:15058}'
+
+    Server running at port=15058 with pid=4110
+    Connected to localhost at port=22921
+    Press <Enter> to kill server
 """
 
 from pathos.core import *

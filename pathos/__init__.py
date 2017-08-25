@@ -27,6 +27,15 @@ __license__ = """
 
 # logger
 def logger(level=None, handler=None, **kwds):
+    """generate a logger instance for pathos
+
+    Args:
+        level (int, default=None): the logging level.
+        handler (object, default=None): a ``logging`` handler instance.
+        name (str, default='pathos'): name of the logger instance.
+    Returns:
+        configured logger instance.
+    """
     import logging
     name = kwds.get('name', 'pathos')
     log = logging.getLogger(name)
