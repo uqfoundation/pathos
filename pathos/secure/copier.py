@@ -46,15 +46,14 @@ class Copier(_Pipe):
         '''create a copier
 
 Inputs:
-    name        -- a unique identifier (string) for the launcher
-    source      -- hostname:path of original  [user@host:path is also valid]
-    destination -- hostname:path for copy  [user@host:path is also valid]
-    launcher    -- remote service mechanism (i.e. scp, cp)  [default = 'scp']
-    options     -- remote service options (i.e. -v, -P)  [default = '']
-    background  -- run in background  [default = False]
-    decode      -- ensure response is 'ascii'  [default = True]
-    stdin       -- file type object that should be used as a standard input
-                   for the remote process.
+    name: a unique identifier (string) for the launcher
+    source: hostname:path of original  [user@host:path is also valid]
+    destination: hostname:path for copy  [user@host:path is also valid]
+    launcher: remote service mechanism (i.e. scp, cp)  [default = 'scp']
+    options: remote service options (i.e. -v, -P)  [default = '']
+    background: run in background  [default = False]
+    decode: ensure response is 'ascii'  [default = True]
+    stdin: file-like object to serve as standard input for the remote process
         '''
         self.launcher = kwds.pop('launcher', 'scp')
         self.options = kwds.pop('options', '')
@@ -67,14 +66,13 @@ Inputs:
         '''configure the copier using given keywords:
 
 (Re)configure the copier for the following inputs:
-    source      -- hostname:path of original  [user@host:path is also valid]
-    destination -- hostname:path for copy  [user@host:path is also valid]
-    launcher    -- remote service mechanism (i.e. scp, cp)  [default = 'scp']
-    options     -- remote service options (i.e. -v, -P)  [default = '']
-    background  -- run in background  [default = False]
-    decode      -- ensure response is 'ascii'  [default = True]
-    stdin       -- file type object that should be used as a standard input
-                   for the remote process.
+    source: hostname:path of original  [user@host:path is also valid]
+    destination: hostname:path for copy  [user@host:path is also valid]
+    launcher: remote service mechanism (i.e. scp, cp)  [default = 'scp']
+    options: remote service options (i.e. -v, -P)  [default = '']
+    background: run in background  [default = False]
+    decode: ensure response is 'ascii'  [default = True]
+    stdin: file-like object to serve as standard input for the remote process
         '''
         if self.stdin is None:
             import sys

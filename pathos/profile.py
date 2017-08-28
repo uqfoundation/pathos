@@ -32,7 +32,7 @@ Functions that add/remove profiling:
 Usage
 =====
 
-Typical calls to pathos profiling will roughly follow this example:
+Typical calls to pathos profiling will roughly follow this example::
 
     >>> import time
     >>> import random
@@ -110,7 +110,8 @@ a different thread or process easier.  The use of pathos.pools are suggested,
 however are not required (as seen in the example above).
 
 In many cases, profiling in another thread is not necessary, and either of
-the following can be sufficient/better for timing and profiling:
+the following can be sufficient/better for timing and profiling::
+
     $ python -c "import time; s=time.time(); import pathos; print time.time()-s"
     $ python -c "import cProfile; p=cProfile.Profile(); p.enable(); import pathos; p.print_stats('cumulative')"
 
@@ -267,7 +268,8 @@ def print_stats(*args, **kwds): #kwds=dict(sort=-1)
 def dump_stats(*args, **kwds): # kwds=dict(gen=None, prefix='id-', suffix='.prof'))
     """dump all stored profiling results for the current thread/process
 
-NOTE: see pathos.profile.profiled for available settings for *args and **kwds
+Note:
+    see ``pathos.profile.profiled`` for settings for ``*args`` and ``**kwds``
     """
     config = dict(gen=None, prefix='id-', suffix='.prof')
     config.update(kwds)

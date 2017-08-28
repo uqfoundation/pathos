@@ -287,11 +287,10 @@ def serve(server, host=None, port=None, profile='.bash_profile'):
   '''begin serving RPC requests
 
 Inputs:
-    server  -- name of RPC server  (i.e. 'ppserver')
-    host    -- hostname on which a server should be launched
-    port    -- port number (on host) that server will accept request at
-    profile -- file on remote host that instantiates the user's environment
-        [default = '.bash_profile']
+    server: name of RPC server  (i.e. 'ppserver')
+    host: hostname on which a server should be launched
+    port: port number (on host) that server will accept request at
+    profile: file to configure the user's environment [default='.bash_profile']
   '''
   if host is None: #XXX: and...?
     profile = ''

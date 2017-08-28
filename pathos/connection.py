@@ -47,24 +47,21 @@ class PipeException(Exception):
 
 # broke backward compatability: 30/05/14 ==> replace base-class almost entirely
 class Pipe(object):
-    """a popen-based pipe for parallel and distributed computing."""
-
+    """a popen-based pipe for parallel and distributed computing"""
     verbose = True
     from pathos import logger
     _debug = logger(level=30) # logging.WARN
     del logger
 
-
     def __init__(self, name=None, **kwds):
         """create a popen-pipe
 
 Inputs:
-    name        -- a unique identifier (string) for the pipe
-    command     -- a command to send  [default = 'echo <name>']
-    background  -- run in background  [default = False]
-    decode      -- ensure response is 'ascii'  [default = True]
-    stdin       -- file type object that should be used as a standard input
-                   for the remote process.
+    name: a unique identifier (string) for the pipe
+    command: a command to send  [default = 'echo <name>']
+    background: run in background  [default = False]
+    decode: ensure response is 'ascii'  [default = True]
+    stdin: file-like object to serve as standard input for the remote process
         """
         xyz = string.ascii_letters
         self.name = ''.join(random.choice(xyz) for i in range(16)) \
@@ -83,14 +80,13 @@ Inputs:
         return "Pipe('%s')" % self.message
 
     def config(self, **kwds):
-        '''configure the pipe using given keywords:
+        '''configure the pipe using given keywords
 
 (Re)configure the pipe for the following inputs:
-    command     -- a command to send  [default = 'echo <name>']
-    background  -- run in background  [default = False]
-    decode      -- ensure response is 'ascii'  [default = True]
-    stdin       -- file type object that should be used as a standard input
-                   for the remote process.
+    command: a command to send  [default = 'echo <name>']
+    background: run in background  [default = False]
+    decode: ensure response is 'ascii'  [default = True]
+    stdin: file-like object to serve as standard input for the remote process
         '''
         if self.message is None:
             self.message = 'echo %s' % self.name  #' '?
