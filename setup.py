@@ -210,7 +210,7 @@ Requirements
 
 ``pathos`` requires:
 
-    - ``python``, **version >= 2.6** or **version >= 3.1**
+    - ``python``, **version >= 2.6** or **version >= 3.1**, or ``pypy``
     - ``dill``, **version >= 0.2.7.1**
     - ``pox``, **version >= 0.2.3**
     - ``ppft``, **version >= 1.6.4.7**
