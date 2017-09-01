@@ -8,7 +8,7 @@
 """
 tunnel to the first available remote port using ``pathos.util.portnumber``
 
-Note:
+Notes:
     Usage: python pathos_tunnel.py [hostname] 
       - [hostname] - name of the host with which to establish a ssh tunnel
 

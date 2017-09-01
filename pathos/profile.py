@@ -268,7 +268,7 @@ def print_stats(*args, **kwds): #kwds=dict(sort=-1)
 def dump_stats(*args, **kwds): # kwds=dict(gen=None, prefix='id-', suffix='.prof'))
     """dump all stored profiling results for the current thread/process
 
-Note:
+Notes:
     see ``pathos.profile.profiled`` for settings for ``*args`` and ``**kwds``
     """
     config = dict(gen=None, prefix='id-', suffix='.prof')

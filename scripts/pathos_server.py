@@ -8,7 +8,7 @@
 """
 start a remote server for the selected package
 
-Note:
+Notes:
     Usage: python pathos_server.py [hostname] [server] [remoteport] 
       - [hostname] - name of the host on which to run the server
       - [server] - name of the RPC server (assumed to be already installed)

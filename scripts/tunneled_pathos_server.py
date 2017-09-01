@@ -8,7 +8,7 @@
 """
 start tunneled remote server for selected package
 
-Note:
+Notes:
     Usage: python tunneled_pathos_server.py [hostname] [server] 
       - [hostname] - name of the host on which to run the server
       - [server] - name of the RPC server (assumed to be already installed)
