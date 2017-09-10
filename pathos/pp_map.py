@@ -41,12 +41,15 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 """
-Very basic parallel processing support
+minimal interface to python's ``pp`` (parallel python)  module
 
-Implements a work-alike of the builtin map() function that distributes
-work across many processes.  As it uses Parallel Python to do the
-actual multi-processing, code using this must conform to the usual PP
-restrictions (arguments must be serializable, etc.)
+Implements a work-alike of the builtin ``map`` function that distributes
+work across many processes.  As it uses ``ppft`` to do the
+actual parallel processing, code using this must conform to the usual
+``ppft`` restrictions (arguments must be serializable, etc).
+
+Notes:
+    This module has been deprecated in favor of ``pathos.pools``.
 """
 
 from pathos.pp import __STATE, stats, __print_stats as print_stats

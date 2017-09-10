@@ -7,6 +7,9 @@
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 """
 minimal interface to python's multiprocessing module
+
+Notes:
+    This module has been deprecated in favor of ``pathos.pools``.
 """
 
 from pathos.multiprocessing import ProcessPool, __STATE
@@ -14,6 +17,8 @@ from pathos.threading import ThreadPool #XXX: thread __STATE not imported
 from pathos.helpers import cpu_count
 mp = ProcessPool()
 tp = ThreadPool()
+
+__all__ = ['mp_map']
 
 # backward compatibility
 #FIXME: deprecated... and buggy!  (fails to dill on imap/uimap)
