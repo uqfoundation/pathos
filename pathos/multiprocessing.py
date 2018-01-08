@@ -71,6 +71,7 @@ __all__ = ['ProcessPool','_ProcessPool']
 #FIXME: probably not good enough... should store each instance with a uid
 __STATE = _ProcessPool__STATE = {}
 
+from datetime import datetime
 from pathos.abstract_launcher import AbstractWorkerPool
 from pathos.helpers.mp_helper import starargs as star
 from pathos.helpers import cpu_count, freeze_support, ProcessPool as Pool
@@ -103,7 +104,7 @@ Mapper that leverages python's multiprocessing.
         self.__nodes = kwds.get('ncpus', cpu_count())
 
         # Create an identifier for the pool
-        self._id = 'pool'
+        self._id = 'pool_' + str(datetime.now())
 
         # Create a new server if one isn't already initialized
         self._serve()
