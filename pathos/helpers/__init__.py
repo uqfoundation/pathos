@@ -6,7 +6,6 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 
-from __future__ import absolute_import
 from . import pp_helper
 from . import mp_helper
 import pp as parallelpython
