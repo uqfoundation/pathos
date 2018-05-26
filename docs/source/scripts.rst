@@ -1,20 +1,14 @@
 pathos scripts documentation
 ============================
 
-pathos_server script
---------------------
+pathos_connect script
+---------------------
 
-.. automodule:: pathos_server
+.. automodule:: _pathos_connect
     :members:
 
-pathos_tunnel script
---------------------
+portpicker script
+-----------------
 
-.. automodule:: pathos_tunnel
-    :members:
-
-tunneled_pathos_server script
------------------------------
-
-.. automodule:: tunneled_pathos_server
+.. automodule:: _portpicker
     :members:

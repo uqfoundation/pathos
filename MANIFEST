@@ -5,6 +5,7 @@ README.md
 setup.cfg
 setup.py
 pathos/__init__.py
+pathos/__main__.py
 pathos/_ppserver_config.py
 pathos/abstract_launcher.py
 pathos/connection.py
@@ -32,6 +33,7 @@ pathos.egg-info/not-zip-safe
 pathos.egg-info/requires.txt
 pathos.egg-info/top_level.txt
 pathos/helpers/__init__.py
+pathos/helpers/__main__.py
 pathos/helpers/mp_helper.py
 pathos/helpers/pp_helper.py
 pathos/secure/__init__.py
@@ -40,9 +42,9 @@ pathos/secure/copier.py
 pathos/secure/tunnel.py
 pathos/xmlrpc/__init__.py
 pathos/xmlrpc/server.py
-scripts/pathos_server.py
-scripts/pathos_tunnel.py
-scripts/tunneled_pathos_server.py
+scripts/__init__.py
+scripts/portpicker
+scripts/pathos_connect
 examples/README
 examples/async_map.py
 examples/mp_class_example.py
@@ -77,6 +79,8 @@ examples2/optimize_powell.py
 examples2/optimize_rosen_powell_map.py
 examples2/poly.py
 examples2/scatter_gather.py
+tests/__init__.py
+tests/__main__.py
 tests/test_decorate.py
 tests/test_join.py
 tests/test_map.py

@@ -4,20 +4,12 @@
 # Copyright (c) 2018 The Uncertainty Quantification Foundation.
 # License: 3-clause BSD.  The full license text is available at:
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
-"""
-to run this test suite, first build and install `pathos`.
 
-  $ python setup.py build
-  $ python setup.py install
+from pathos.portpicker import portnumber, __doc__
 
 
-then run the tests with:
+if __name__ == '__main__':
 
-  $ python -m pathos.tests
+    pick = portnumber(min=1024,max=65535)
+    print( pick() )
 
-
-or, if `nose` is installed:
-
-  $ nosetests  
-
-"""

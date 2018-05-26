@@ -6,7 +6,6 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 
-from __future__ import with_statement
 import os
 
 # set version numbers
@@ -99,7 +98,7 @@ computing with minimal refactoring.
 ``pathos`` provides methods for configuring, launching, monitoring, and
 controlling a service on a remote host. One of the most basic features
 of ``pathos`` is the ability to configure and launch a RPC-based service
-on a remote host. ``pathos`` seeds the remote host with a small ``portpicker``
+on a remote host. ``pathos`` seeds the remote host with the  ``portpicker``
 script, which allows the remote host to inform the localhost of a port
 that is available for communication.
 
@@ -159,7 +158,7 @@ To get up and running quickly, ``pathos`` also provides infrastructure to:
 Current Release
 ===============
 
-This version is ``pathos-%(relver)s``.
+This documentation is for version ``pathos-%(thisver)s``.
 
 The latest released version of ``pathos`` is available from:
 
@@ -188,8 +187,8 @@ Installation
 download the tarball, unzip, and run the installer::
 
     [download]
-    $ tar -xvzf pathos-%(thisver)s.tar.gz
-    $ cd pathos-%(thisver)s
+    $ tar -xvzf pathos-%(relver)s.tar.gz
+    $ cd pathos-%(relver)s
     $ python setup py build
     $ python setup py install
 
@@ -226,14 +225,19 @@ Optional requirements:
 More Information
 ================
 
-Probably the best way to get started is to look at the tests and
-examples provided within ``pathos``. See ``pathos.examples`` and ``pathos.tests``
+Probably the best way to get started is to look at the documentation at
+http://pathos.rtfd.io. Also see ``pathos.tests`` and ``pathos.examples``
 for a set of scripts that demonstrate the configuration and launching of
 communications with ssh and scp, and demonstrate the configuration and
-execution of jobs in a hierarchical parallel workflow. The source code is
-also generally well documented, so further questions may be resolved by
-inspecting the code itself.  Please also feel free to submit a ticket on
-github, or ask a question on stackoverflow (**@Mike McKerns**).
+execution of jobs in a hierarchical parallel workflow. You can run the test
+suite with ``python -m pathos.tests``. Tunnels and other connections to
+remote servers can be established with the ``pathos_connect`` script (or with
+``python -m pathos``). See ``pathos_connect --help`` for more information.
+``pathos`` also provides a ``portpicker`` script to select an open port
+(also available with ``python -m pathos.portpicker``). The source code is 
+generally well documented, so further questions may be resolved by inspecting
+the code itself.  Please feel free to submit a ticket on github, or ask a
+question on stackoverflow (**@Mike McKerns**).
 If you would like to share how you use ``pathos`` in your work, please send
 an email (to **mmckerns at uqfoundation dot org**).
 
@@ -255,14 +259,12 @@ Important classes and functions are found here:
     - ``pathos.server.Server``               [the server base class]
     - ``pathos.profile``                     [profiling in threads and processes]
 
-``pathos`` also provides four convenience scripts that are used to establish
+``pathos`` also provides two convenience scripts that are used to establish
 secure distributed connections. These scripts are installed to a directory
 on the user's ``$PATH``, and thus can be run from anywhere:
 
-    - ``portpicker.py``                      [get the portnumber of an open port]
-    - ``pathos_tunnel.py``                   [establish a ssh-tunnel connection]
-    - ``pathos_server.py``                   [launch a remote RPC server]
-    - ``tunneled_pathos_server.py``          [launch a tunneled remote RPC server]
+    - ``portpicker``                         [get the portnumber of an open port]
+    - ``pathos_connect``                     [establish tunnel and/or RPC server]
 
 Typing ``--help`` as an argument to any of the above scripts will print out an
 instructive help message.
@@ -340,8 +342,9 @@ setup(name="pathos",
                    'Topic :: Scientific/Engineering',
                    'Topic :: Software Development'),
 
-    packages=['pathos','pathos.helpers','pathos.secure','pathos.xmlrpc'],
-    package_dir={'pathos':'pathos',\
+    packages=['pathos','pathos.tests',\
+              'pathos.helpers','pathos.secure','pathos.xmlrpc'],
+    package_dir={'pathos':'pathos', 'pathos.tests':'tests', \
                  'pathos.helpers':'pathos/helpers', \
                  'pathos.secure':'pathos/secure', \
                  'pathos.xmlrpc':'pathos/xmlrpc', \
@@ -381,10 +384,8 @@ if has_setuptools:
 
 # add the scripts, and close 'setup' call
 setup_code += """
-    scripts=['scripts/pathos_server.py',
-             'scripts/pathos_tunnel.py',
-             'scripts/tunneled_pathos_server.py',
-             'pathos/portpicker.py'])
+    scripts=['scripts/pathos_connect',
+             'scripts/portpicker'])
 """
 
 # exec the 'setup' code
