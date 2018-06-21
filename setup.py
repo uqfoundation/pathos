@@ -211,7 +211,7 @@ Requirements
 
     - ``python``, **version >= 2.6** or **version >= 3.1**, or ``pypy``
     - ``dill``, **version >= 0.2.7.1**
-    - ``pox``, **version >= 0.2.3**
+    - ``pox``, **version >= 0.2.4**
     - ``ppft``, **version >= 1.6.4.7**
     - ``multiprocess``, **version >= 0.70.5**
 
@@ -367,7 +367,7 @@ except Exception:
 # add dependencies
 ppft_version = '>=1.6.4.7'
 dill_version = '>=0.2.7.1'
-pox_version = '>=0.2.3'
+pox_version = '>=0.2.4'
 mp_version = '>=0.70.5' if version_info >= (2,6) else '>=0.52.0'
 pyina_version = '>=0.2.0.dev0'
 rpyc_version = '>=3.0.6'
