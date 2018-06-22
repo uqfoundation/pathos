@@ -218,7 +218,7 @@ Requirements
 Optional requirements:
 
     - ``setuptools``, **version >= 0.6**
-    - ``pyina``, **version >= 0.2.0.dev0**
+    - ``pyina``, **version >= 0.2.0**
     - ``rpyc``, **version >= 3.0.6**
 
 
