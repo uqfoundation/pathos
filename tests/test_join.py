@@ -19,7 +19,9 @@ from pathos.helpers import cpu_count
 
 import sys
 P33 = (sys.hexversion >= 0x30300f0)
+P37 = (sys.hexversion >= 0x30700f0)
 PoolClosedError = ValueError if P33 else AssertionError
+PoolRunningError = ValueError if P37 else AssertionError
 
 def squared(x):
   return x**2
@@ -33,7 +35,7 @@ def check_basic(pool, state):
     # join needs to be called after close
     try:
         pool.join()
-    except AssertionError:
+    except PoolRunningError:
         pass
     else:
         raise AssertionError
@@ -92,7 +94,7 @@ def check_basic(pool, state):
 
     try:
         pool.join()
-    except AssertionError:
+    except PoolRunningError:
         pass
     else:
         raise AssertionError
