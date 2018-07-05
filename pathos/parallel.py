@@ -266,7 +266,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
                         break
                 # yield it.pop(0).get()  # wait for the first element?
                 # *subprocess*           # alternately, loop in a subprocess
-            raise StopIteration
+            return #raise StopIteration
         # submit all jobs, then collect results as they become available
         return imap_unordered(builtins.map(submit, *args))
     uimap.__doc__ = AbstractWorkerPool.uimap.__doc__
