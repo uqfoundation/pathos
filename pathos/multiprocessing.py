@@ -108,7 +108,7 @@ Mapper that leverages python's multiprocessing.
         # Create a new server if one isn't already initialized
         self._serve()
         return
-    __init__.__doc__ = AbstractWorkerPool.__init__.__doc__ + __init__.__doc__
+    if AbstractWorkerPool.__init__.__doc__: __init__.__doc__ = AbstractWorkerPool.__init__.__doc__ + __init__.__doc__
    #def __exit__(self, *args):
    #    self._clear()
    #    return
