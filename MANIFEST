@@ -42,7 +42,6 @@ pathos/secure/copier.py
 pathos/secure/tunnel.py
 pathos/xmlrpc/__init__.py
 pathos/xmlrpc/server.py
-scripts/__init__.py
 scripts/portpicker
 scripts/pathos_connect
 examples/README
