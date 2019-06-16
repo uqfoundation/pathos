@@ -20,7 +20,7 @@ add_me = adder(5)
 squ = lambda x:x**2
 
 
-if __name__ is '__main__':
+if __name__ == '__main__':
     from pathos.helpers import freeze_support
     freeze_support()
 
