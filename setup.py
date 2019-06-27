@@ -220,7 +220,7 @@ Optional requirements:
     - ``setuptools``, **version >= 0.6**
     - ``pyina``, **version >= 0.2.2**
     - ``rpyc``, **version >= 3.0.6**
-    - ``mystic``, **version >= 0.3.3**
+    - ``mystic``, **version >= 0.3.4**
 
 
 More Information
