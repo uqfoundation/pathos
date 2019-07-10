@@ -17,7 +17,7 @@ import re
 import pathos
 
 # standard pattern for 'ps axj': '... ddddd ddddd ddddd ...'
-_psaxj = re.compile("((\S+\s+)?\d+\s+\d+\s+\d+\s)")
+_psaxj = re.compile(r"((\S+\s+)?\d+\s+\d+\s+\d+\s)")
 
 
 def copy(source, destination=None, **kwds):
