@@ -18,26 +18,29 @@ if PY3 and not HAS_DUMPS:
     import io
     bytes_types = (bytes, bytearray)
 
-    def _dump(obj, file, protocol=None, *, fix_imports=True):
+    def _dump(obj, file, protocol=None, fix_imports=True):
         _Pickler(file, protocol, fix_imports=fix_imports).dump(obj)
 
-    def _dumps(obj, protocol=None, *, fix_imports=True):
+    def _dumps(obj, protocol=None, fix_imports=True):
         f = io.BytesIO()
         _Pickler(f, protocol, fix_imports=fix_imports).dump(obj)
         res = f.getvalue()
         assert isinstance(res, bytes_types)
         return res
 
-    def _load(file, *, fix_imports=True, encoding="ASCII", errors="strict"):
+    def _load(file, fix_imports=True, encoding="ASCII", errors="strict"):
         return _Unpickler(file, fix_imports=fix_imports,
                          encoding=encoding, errors=errors).load()
 
-    def _loads(s, *, fix_imports=True, encoding="ASCII", errors="strict"):
+    def _loads(s, fix_imports=True, encoding="ASCII", errors="strict"):
         if isinstance(s, str):
             raise TypeError("Can't load pickle from unicode string")
         file = io.BytesIO(s)
         return _Unpickler(file, fix_imports=fix_imports,
                           encoding=encoding, errors=errors).load()
+else:
+    _dumps = None
+    _loads = None
 
 dumps = pickle.dumps if not PY3 else getattr(pickle, '_dumps', _dumps)
 loads = pickle.loads if not PY3 else getattr(pickle, '_loads', _loads)
