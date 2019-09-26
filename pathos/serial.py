@@ -139,6 +139,7 @@ Mapper that leverages standard (i.e. serial) python maps.
     __get_nodes = __get_nodes__
     __set_nodes = __set_nodes__
     nodes = property(__get_nodes, __set_nodes)
+    __state__ = __STATE
     pass
 
 

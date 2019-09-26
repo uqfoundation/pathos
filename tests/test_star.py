@@ -188,8 +188,9 @@ def test_pp():
 
 
 if __name__ == '__main__':
-    from pathos.helpers import freeze_support
+    from pathos.helpers import freeze_support, shutdown
     freeze_support()
     test_mp()
     test_tp()
     test_pp()
+    shutdown()

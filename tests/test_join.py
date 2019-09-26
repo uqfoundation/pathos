@@ -282,8 +282,9 @@ def test_nodes():
 
 
 if __name__ == '__main__':
-    from pathos.helpers import freeze_support
+    from pathos.helpers import freeze_support, shutdown
     freeze_support()
     test_basic()
     test_rename()
     test_nodes()
+    shutdown()

@@ -207,6 +207,7 @@ Mapper that leverages python's threading.
     # interface
     nthreads = property(__get_nodes, __set_nodes)
     nodes = property(__get_nodes, __set_nodes)
+    __state__ = __STATE
     pass
 
 

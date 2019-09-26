@@ -21,6 +21,7 @@ def run_ppmap(obj):
     p = ParallelPool(2)
     x = [1,2,3]
     assert list(map(obj, x)) == p.map(obj, x)
+    p.clear()
 
 
 def test_pp():

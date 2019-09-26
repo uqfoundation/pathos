@@ -63,3 +63,5 @@ except ImportError:  # fall-back to package distributed with python
     from multiprocessing import freeze_support
 except ValueError: pass
 del HAS_FORK
+
+from pathos.pools import _clear as shutdown

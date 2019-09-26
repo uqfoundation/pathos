@@ -73,3 +73,5 @@ if __name__ == '__main__':
         print(pool.map(busybeaver, range(10)))
         print('Iteration time: %s' % (time.time() - start))
 
+    # cleanup
+    pool.clear()

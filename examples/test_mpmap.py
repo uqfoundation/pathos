@@ -12,7 +12,7 @@ def host(id):
 
 
 if __name__ == '__main__':
-    from pathos.helpers import freeze_support
+    from pathos.helpers import freeze_support, shutdown
     freeze_support()
 
     from pathos.pools import ProcessPool as Pool
@@ -30,5 +30,7 @@ if __name__ == '__main__':
     res5 = pool.map(host, range(5)) 
     print(pool)
     print('\n'.join(res5))
+
+    shutdown()
 
 # end of file

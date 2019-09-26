@@ -21,7 +21,7 @@ y = range(5)
 
 
 if __name__ == '__main__':
-    from pathos.helpers import freeze_support
+    from pathos.helpers import freeze_support, shutdown
     freeze_support()
 
     from pathos.pools import ProcessPool, ThreadPool
@@ -39,4 +39,6 @@ if __name__ == '__main__':
 
     print(amap(tmap, [sin,cos], [x,x]).get())
 
+    shutdown()
 
+# EOF

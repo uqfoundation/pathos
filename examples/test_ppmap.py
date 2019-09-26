@@ -29,4 +29,6 @@ print(pool)
 print('\n'.join(res5))
 print(stats())
 
+pool.clear()
+
 # end of file

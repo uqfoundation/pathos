@@ -45,6 +45,8 @@ def parcompute_example():
 
     r3 = ProcessPool(4).map(dc3.compute, inp_data)
     r4 = ThreadPool(4).map(dc4.compute, inp_data)
+    ProcessPool.__state__.clear()
+    ThreadPool.__state__.clear()
     assert(r4 == r3 == r2)
     assert(len(dc3.cache) == 0)
     assert(len(dc4.cache) == n_datapoints)

@@ -81,9 +81,10 @@ if __name__ == '__main__':
         print("CONFIG: items = %s" % items)
         print("")
 
-    from pathos.helpers import freeze_support
+    from pathos.helpers import freeze_support, shutdown
     freeze_support()
     test_serial()
     test_pp()
     test_processing()
     test_threading()
+    shutdown()

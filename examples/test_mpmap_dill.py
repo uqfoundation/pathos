@@ -90,4 +90,7 @@ if __name__ == '__main__':
     print('%s' % p2res)
     print('')
 
+    # shutdown the pool
+    pool.close()
+
 # end of file

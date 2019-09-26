@@ -36,4 +36,6 @@ if __name__ == '__main__':
     print('\n'.join(res9))
     print('')
 
+    tpool.clear()
+
 # end of file

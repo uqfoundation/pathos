@@ -16,7 +16,7 @@ Run with:
 """
 
 import numpy as np
-from pathos.helpers import freeze_support
+from pathos.helpers import freeze_support, shutdown
 from pathos.pools import ProcessPool
 from pathos.pools import ParallelPool
 from pathos.pools import ThreadPool
@@ -49,29 +49,28 @@ if __name__ == '__main__':
     y = list(map(sin_diff, x, xp))
     print("Output: %s\n" % np.asarray(y))
 
-
     if HAS_PYINA:
         # map sin_diff to the workers, then print to screen
         print("Running mpi4py on %d cores..." % nodes)
         y = MpiPool(nodes).map(sin_diff, x, xp)
         print("Output: %s\n" % np.asarray(y))
 
-
     # map sin_diff to the workers, then print to screen
     print("Running multiprocesing on %d processors..." % nodes)
     y = ProcessPool(nodes).map(sin_diff, x, xp)
     print("Output: %s\n" % np.asarray(y))
-
 
     # map sin_diff to the workers, then print to screen
     print("Running multiprocesing on %d threads..." % nodes)
     y = ThreadPool(nodes).map(sin_diff, x, xp)
     print("Output: %s\n" % np.asarray(y))
 
-
     # map sin_diff to the workers, then print to screen
     print("Running parallelpython on %d cpus..." % nodes)
     y = ParallelPool(nodes).map(sin_diff, x, xp)
     print("Output: %s\n" % np.asarray(y))
+
+    # ensure all pools shutdown
+    shutdown()
 
 # EOF

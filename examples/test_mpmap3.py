@@ -21,7 +21,7 @@ squ = lambda x:x**2
 
 
 if __name__ == '__main__':
-    from pathos.helpers import freeze_support
+    from pathos.helpers import freeze_support, shutdown
     freeze_support()
 
     from pathos.pools import ProcessPool as Pool
@@ -49,5 +49,8 @@ if __name__ == '__main__':
     print(tpool)
     print(tpool.map(squ, range(10)))
     print('')
+
+    # shutdown all cached pools
+    shutdown()
 
 # end of file

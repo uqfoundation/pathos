@@ -62,6 +62,7 @@ from . import threading
 
 # tools, utilities, etc
 from . import util
+from . import helpers
 
 # backward compatibility
 python = serial

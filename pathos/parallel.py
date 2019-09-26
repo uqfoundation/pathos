@@ -420,6 +420,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
     ncpus = property(__get_nodes, __set_nodes)
     nodes = property(__get_nodes, __set_nodes)
     servers = property(__get_servers, __set_servers)
+    __state__ = __STATE
     pass
 
 

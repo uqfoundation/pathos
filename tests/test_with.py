@@ -66,7 +66,8 @@ def test_with_mp():
 
 
 if __name__ == '__main__':
-    from pathos.helpers import freeze_support
+    from pathos.helpers import freeze_support, shutdown
     freeze_support()
     test_with_mp()
     test_with_pp()
+    shutdown()

@@ -210,6 +210,7 @@ Mapper that leverages python's multiprocessing.
     # interface
     ncpus = property(__get_nodes, __set_nodes)
     nodes = property(__get_nodes, __set_nodes)
+    __state__ = __STATE
     pass
 
 
