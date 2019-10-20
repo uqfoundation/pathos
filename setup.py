@@ -167,7 +167,7 @@ The latest released version of ``pathos`` is available from:
 ``pathos`` is distributed under a 3-clause BSD license.
 
     >>> import pathos
-    >>> print (pathos.license())
+    >>> pathos.license()
 
 
 Development Version
@@ -209,7 +209,7 @@ Requirements
 
 ``pathos`` requires:
 
-    - ``python``, **version >= 2.6** or **version >= 3.1**, or ``pypy``
+    - ``python``, **version >= 2.6** or **version >= 3.3**, or ``pypy``
     - ``dill``, **version >= 0.3.1**
     - ``pox``, **version >= 0.2.7**
     - ``ppft``, **version >= 1.6.6.1**
