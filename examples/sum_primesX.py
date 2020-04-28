@@ -13,7 +13,7 @@ Usage: python sum_primesX.py [tunnelport]
     if omitted no tunneling will be used.
 
 To establish a ssh-tunneled server, please see
-    $ tunneled_pathos_server.py --help
+    $ pathos_connect --help
 """
 
 import math
