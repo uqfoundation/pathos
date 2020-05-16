@@ -244,7 +244,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
             except pp.DestroyedServerError:
                 self._is_alive(None)
         # submit all jobs, then collect results as they become available
-        return (subproc() for subproc in builtins.map(submit, *args))
+        return (subproc() for subproc in list(builtins.map(submit, *args)))
     imap.__doc__ = AbstractWorkerPool.imap.__doc__
     def uimap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
@@ -291,7 +291,10 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         nodes = self.nodes
         if self.nodes in ['*','autodetect',None]:
             _pool = self._serve()
-            nodes = _pool.get_ncpus() #XXX: local workers only?
+            nodes = _pool.get_ncpus() #NOTE: local only
+            #nodes = _pool.get_active_nodes() #XXX: ppft version?
+            #nodes = min(j for (i,j) in nodes.items() if i != 'local')
+        if not nodes: nodes = 1
         # try to quickly find a small chunksize that gives good results
         maxsize = 2**62 #XXX: HOPEFULLY, this will never be reached...
         chunksize = 1
