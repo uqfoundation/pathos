@@ -77,9 +77,7 @@ at a very atomistic level, through raw access to ssh and scp.
 
 ``pathos`` is the core of a python framework for heterogeneous computing.
 ``pathos`` is in active development, so any user feedback, bug reports, comments,
-or suggestions are highly appreciated.  A list of known issues is maintained
-at http://trac.mystic.cacr.caltech.edu/project/pathos/query.html, with a public
-ticket list at https://github.com/uqfoundation/pathos/issues.
+or suggestions are highly appreciated.  A list of issues is located at https://github.com/uqfoundation/pathos/issues, with a legacy list maintained at https://uqfoundation.github.io/pathos-issues.html.
 
 
 Major Features
@@ -115,6 +113,7 @@ Development Version
 [![Documentation Status](https://readthedocs.org/projects/pathos/badge/?version=latest)](https://pathos.readthedocs.io/en/latest/?badge=latest)
 [![Travis Build Status](https://img.shields.io/travis/uqfoundation/pathos.svg?label=build&logo=travis&branch=master)](https://travis-ci.org/uqfoundation/pathos)
 [![codecov](https://codecov.io/gh/uqfoundation/pathos/branch/master/graph/badge.svg)](https://codecov.io/gh/uqfoundation/pathos)
+[![Downloads](https://pepy.tech/badge/pathos)](https://pepy.tech/project/pathos)
 -------------------
 You can get the latest development version with all the shiny new features at:
     https://github.com/uqfoundation
@@ -181,8 +180,8 @@ acknowledge use of ``pathos`` by citing the following in your publication::
 
     Michael McKerns and Michael Aivazis,
     "pathos: a framework for heterogeneous computing", 2010- ;
-    http://trac.mystic.cacr.caltech.edu/project/pathos
+    https://uqfoundation.github.io/pathos.html
 
-Please see http://trac.mystic.cacr.caltech.edu/project/pathos or
+Please see https://uqfoundation.github.io/pathos.html or
 http://arxiv.org/pdf/1202.1056 for further information.
 
