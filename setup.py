@@ -63,9 +63,9 @@ pathos: parallel graph management and execution in heterogeneous computing
 About the Pathos Framework
 ==========================
 
-``pathos`` is a framework for heterogenous computing. It provides a consistent
+``pathos`` is a framework for heterogeneous computing. It provides a consistent
 high-level interface for configuring and launching parallel computations
-across heterogenous resources. ``pathos`` provides configurable launchers for
+across heterogeneous resources. ``pathos`` provides configurable launchers for
 parallel and distributed computing, where each launcher contains the
 syntactic logic to configure and launch jobs in an execution environment.
 Examples of launchers that plug into ``pathos`` are: a queue-less MPI-based
@@ -82,7 +82,7 @@ code to leverage the selected parallel or distributed computing resource.
 This not only greatly reduces the time to convert a code to parallel, but it
 also enables a single code-base to be maintained instead of requiring
 parallel, serial, and distributed versions of a code. ``pathos`` maps can be
-nested, thus hierarchical heterogenous computing is possible by merely
+nested, thus hierarchical heterogeneous computing is possible by merely
 selecting the desired hierarchy of ``map`` and ``pipe`` (``apply``) objects.
 
 The ``pathos`` framework is composed of several interoperating packages:
@@ -93,7 +93,7 @@ The ``pathos`` framework is composed of several interoperating packages:
     - ``multiprocess``: better multiprocessing and multithreading in python
     - ``ppft``: distributed and parallel python
     - ``pyina``: MPI parallel ``map`` and cluster scheduling
-    - ``pathos``: graph management and execution in heterogenous computing
+    - ``pathos``: graph management and execution in heterogeneous computing
 
 
 About Pathos

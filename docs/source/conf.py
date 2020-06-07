@@ -213,7 +213,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'pathos', u'pathos Documentation',
-     author, 'pathos', 'Parallel graph management and execution in heterogenous computing.',
+     author, 'pathos', 'Parallel graph management and execution in heterogeneous computing.',
      'Miscellaneous'),
 ]
 
