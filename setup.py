@@ -217,7 +217,7 @@ Requirements
 ``pathos`` requires:
 
     - ``python``, **version == 2.7** or **version >= 3.5**, or ``pypy``
-    - ``dill``, **version >= 0.3.1**
+    - ``dill``, **version >= 0.3.2**
     - ``pox``, **version >= 0.2.8**
     - ``ppft``, **version >= 1.6.6.1**
     - ``multiprocess``, **version >= 0.70.9**
@@ -374,8 +374,8 @@ except Exception:
 
 # add dependencies
 ppft_version = '>=1.6.6.1'
-dill_version = '>=0.3.1'
-pox_version = '>=0.2.7'
+dill_version = '>=0.3.2'
+pox_version = '>=0.2.8'
 mp_version = '>=0.70.9' if version_info >= (2,6) else '>=0.52.0'
 pyina_version = '>=0.2.2'
 rpyc_version = '>=3.0.6'
