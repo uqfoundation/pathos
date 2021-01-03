@@ -12,8 +12,8 @@ import sys
 unsupported = None
 if sys.version_info < (2, 7):
     unsupported = 'Versions of Python before 2.7 are not supported'
-elif (3, 0) <= sys.version_info < (3, 5):
-    unsupported = 'Versions of Python before 3.5 are not supported'
+elif (3, 0) <= sys.version_info < (3, 6):
+    unsupported = 'Versions of Python before 3.6 are not supported'
 if unsupported:
     raise ValueError(unsupported)
 
@@ -216,7 +216,7 @@ Requirements
 
 ``pathos`` requires:
 
-    - ``python``, **version == 2.7** or **version >= 3.5**, or ``pypy``
+    - ``python``, **version == 2.7** or **version >= 3.6**, or ``pypy``
     - ``dill``, **version >= 0.3.3**
     - ``pox``, **version >= 0.2.9**
     - ``ppft``, **version >= 1.6.6.3**
@@ -346,7 +346,12 @@ setup(name="pathos",
                    'Intended Audience :: Science/Research',
                    'License :: OSI Approved :: BSD License',
                    'Programming Language :: Python :: 2',
+                   'Programming Language :: Python :: 2.7',
                    'Programming Language :: Python :: 3',
+                   'Programming Language :: Python :: 3.6',
+                   'Programming Language :: Python :: 3.7',
+                   'Programming Language :: Python :: 3.8',
+                   'Programming Language :: Python :: 3.9',
                    'Topic :: Scientific/Engineering',
                    'Topic :: Software Development'],
 
