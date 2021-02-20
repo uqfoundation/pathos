@@ -234,7 +234,7 @@ class MapResult(object):
 
     def _set(self, i, task): #XXX: unordered by how fill _value & imap in _set?
         task.wait()
-        success, result = task.successful(), (task.result,)
+        success, result = task.successful(), [task.result]
         if success:
             self._value[i*self._chunksize:(i+1)*self._chunksize] = result
             self._number_left -= 1
