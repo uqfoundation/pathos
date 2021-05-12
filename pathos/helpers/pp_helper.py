@@ -27,8 +27,8 @@ except ImportError:  # fall-back to package distributed with python
 except ValueError: pass
 del HAS_FORK
 
-from pp import _Task
-from pp import Server
+from ppft import _Task
+from ppft import Server
 import time
 import dill as pickle
 import threading

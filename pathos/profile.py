@@ -112,7 +112,7 @@ however are not required (as seen in the example above).
 In many cases, profiling in another thread is not necessary, and either of
 the following can be sufficient/better for timing and profiling::
 
-    $ python -c "import time; s=time.time(); import pathos; print time.time()-s"
+    $ python -c "import time; s=time.time(); import pathos; print (time.time()-s)"
     $ python -c "import cProfile; p=cProfile.Profile(); p.enable(); import pathos; p.print_stats('cumulative')"
 
 This module was inspired by: http://stackoverflow.com/a/32522579/4646678.

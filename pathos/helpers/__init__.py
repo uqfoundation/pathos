@@ -8,7 +8,7 @@
 
 from . import pp_helper
 from . import mp_helper
-import pp as parallelpython
+import ppft as parallelpython
 
 try:
     import multiprocess as mp
