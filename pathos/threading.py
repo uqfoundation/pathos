@@ -100,7 +100,9 @@ Mapper that leverages python's threading.
         self.__nodes = kwds.get('nthreads', cpu_count())
 
         # Create an identifier for the pool
-        self._id = 'threads'
+        self._id = kwds.get('id', None) #'threads'
+        if self._id is None:
+            self._id = self.__nodes
 
         # Create a new server if one isn't already initialized
         self._serve()

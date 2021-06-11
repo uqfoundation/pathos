@@ -175,7 +175,10 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
        #from _ppserver_config import ppservers as servers # config file
 
         # Create an identifier for the pool
-        self._id = 'server'
+        self._id = kwds.get('id', None) #'server'
+        if self._id is None:
+            _nodes = str(ncpus) if type(ncpus) is int else '*'
+            self._id = '@'.join([_nodes, '+'.join(sorted(servers))])
 
         #XXX: throws 'socket.error' when starting > 1 server with autodetect
         # Create a new server if one isn't already initialized

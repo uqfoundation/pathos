@@ -151,6 +151,7 @@ def check_basic(pool, state):
 
 
 def check_nodes(pool, state):
+    tag = 'fixed' if pool._id == 'fixed' else None
     new_pool = type(pool)
 
     nodes = cpu_count()
@@ -162,7 +163,7 @@ def check_nodes(pool, state):
     pool.close()
 
     # doesn't create a new pool... IS IT BETTER IF IT DOES?
-    pool = new_pool()
+    pool = new_pool(id=tag)
     try:
         pool.map(squared, range(2))
     except PoolClosedError:
@@ -174,7 +175,7 @@ def check_nodes(pool, state):
     def nnodes(pool):
         return getattr(pool, '_'+new_pool.__name__+'__nodes')
     old_nodes = nnodes(pool)
-    pool = new_pool(nodes=half)
+    pool = new_pool(nodes=half, id=tag)
     new_nodes = nnodes(pool)
     if isinstance(pool, ParallelPool):
         print('SKIPPING: new_pool check for ParallelPool')#FIXME
@@ -191,8 +192,13 @@ def check_nodes(pool, state):
     else:
         raise AssertionError
 
-    # creates a new pool (nodes are different)
-    pool = new_pool()
+    # return to old number of nodes
+    if tag is None:
+        pool.clear() # clear 'half' pool
+        pool = new_pool(id=tag)
+        pool.restart() # restart old pool
+    else: # creates a new pool (update nodes)
+        pool = new_pool(id=tag)
     if isinstance(pool, ParallelPool):
         print('SKIPPING: new_pool check for ParallelPool')#FIXME
     else:
@@ -200,7 +206,7 @@ def check_nodes(pool, state):
         assert res == [0, 1]
     pool.close()
     # doesn't create a new pool... IS IT BETTER IF IT DOES?
-    pool = new_pool()
+    pool = new_pool(id=tag)
     try:
         pool.map(squared, range(2))
     except PoolClosedError:
@@ -211,7 +217,7 @@ def check_nodes(pool, state):
     assert len(state) == 1
     pool.clear()
     assert len(state) == 0
-    pool = new_pool()
+    pool = new_pool(id=tag)
     res = pool.map(squared, range(2))
     assert res == [0, 1]
     assert len(state) == 1
@@ -276,6 +282,9 @@ def test_rename():
     check_rename(ParallelPool(), pstate)
 
 def test_nodes():
+    check_nodes(ThreadPool(id='fixed'), tstate)
+    check_nodes(ProcessPool(id='fixed'), mstate)
+    check_nodes(ParallelPool(id='fixed'), pstate)
     check_nodes(ThreadPool(), tstate)
     check_nodes(ProcessPool(), mstate)
     check_nodes(ParallelPool(), pstate)

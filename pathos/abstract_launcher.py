@@ -105,7 +105,7 @@ Other class members:
         """
         object.__init__(self)#, *args, **kwds)
         self.__init(*args, **kwds)
-        self._id = None
+        self._id = kwds.get('id', None)
         return
     def __enter__(self):
         return self
