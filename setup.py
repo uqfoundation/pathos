@@ -219,7 +219,7 @@ Requirements
     - ``python``, **version == 2.7** or **version >= 3.6**, or ``pypy``
     - ``dill``, **version >= 0.3.4**
     - ``pox``, **version >= 0.3.0**
-    - ``ppft``, **version >= 1.6.6.3**
+    - ``ppft``, **version >= 1.6.6.4**
     - ``multiprocess``, **version >= 0.70.11.1**
 
 Optional requirements:
@@ -378,7 +378,7 @@ except Exception:
 '''
 
 # add dependencies
-ppft_version = '>=1.6.6.3'
+ppft_version = '>=1.6.6.4'
 dill_version = '>=0.3.4'
 pox_version = '>=0.3.0'
 mp_version = '>=0.70.11.1' if version_info >= (2,6) else '>=0.52.0'
