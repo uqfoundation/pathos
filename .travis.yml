@@ -42,7 +42,7 @@ matrix:
     fast_finish: true
 
 cache:
-    pip: false
+    pip: true
 
 before_install:
     - set -e  # fail on any error
