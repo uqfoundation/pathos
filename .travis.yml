@@ -49,7 +49,7 @@ before_install:
     - if [[ $COVERAGE == "true" ]]; then pip install coverage; fi
 
 install:
-    - pip install .
+    - python setup.py build && python setup.py install
 
 script:
     - for test in tests/__init__.py; do echo $test ; if [[ $COVERAGE == "true" ]]; then coverage run -a $test > /dev/null; else python $test > /dev/null; fi ; done
