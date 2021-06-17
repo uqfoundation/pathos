@@ -111,7 +111,7 @@ The latest released version of ``pathos`` is available from:
 
 Development Version
 [![Documentation Status](https://readthedocs.org/projects/pathos/badge/?version=latest)](https://pathos.readthedocs.io/en/latest/?badge=latest)
-[![Travis Build Status](https://img.shields.io/travis/uqfoundation/pathos.svg?label=build&logo=travis&branch=master)](https://travis-ci.org/uqfoundation/pathos)
+[![Build Status](https://travis-ci.com/uqfoundation/pathos.svg?label=build&logo=travis&branch=master)](https://travis-ci.com/uqfoundation/pathos)
 [![codecov](https://codecov.io/gh/uqfoundation/pathos/branch/master/graph/badge.svg)](https://codecov.io/gh/uqfoundation/pathos)
 [![Downloads](https://pepy.tech/badge/pathos)](https://pepy.tech/project/pathos)
 -------------------
