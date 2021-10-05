@@ -102,6 +102,9 @@ To get up and running quickly, ``pathos`` also provides infrastructure to:
 
 
 Current Release
+[![Downloads](https://static.pepy.tech/personalized-badge/pathos?period=total&units=international_system&left_color=grey&right_color=blue&left_text=pypi%20downloads)](https://pepy.tech/project/pathos)
+[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/pathos?color=blue&label=conda%20downloads)](https://anaconda.org/conda-forge/pathos)
+[![Stack Overflow](https://img.shields.io/badge/stackoverflow-get%20help-black.svg)](https://stackoverflow.com/questions/tagged/pathos)
 ---------------
 The latest released version of ``pathos`` is available from:
     https://pypi.org/project/pathos
@@ -110,10 +113,10 @@ The latest released version of ``pathos`` is available from:
 
 
 Development Version
+[![Support](https://img.shields.io/badge/support-the%20UQ%20Foundation-purple.svg?style=flat&colorA=grey&colorB=purple)](http://www.uqfoundation.org/pages/donate.html)
 [![Documentation Status](https://readthedocs.org/projects/pathos/badge/?version=latest)](https://pathos.readthedocs.io/en/latest/?badge=latest)
 [![Build Status](https://travis-ci.com/uqfoundation/pathos.svg?label=build&logo=travis&branch=master)](https://travis-ci.com/uqfoundation/pathos)
 [![codecov](https://codecov.io/gh/uqfoundation/pathos/branch/master/graph/badge.svg)](https://codecov.io/gh/uqfoundation/pathos)
-[![Downloads](https://pepy.tech/badge/pathos)](https://pepy.tech/project/pathos)
 -------------------
 You can get the latest development version with all the shiny new features at:
     https://github.com/uqfoundation
