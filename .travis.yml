@@ -30,14 +30,17 @@ matrix:
         - python: 'pypy2.7-7.3.1' # most recent
           dist: xenial
           env:
+            - MULTIPROCESS="true"
 
         - python: 'pypy3.6-7.3.3' # most recent
           dist: bionic
           env:
+            - MULTIPROCESS="true"
 
         - python: 'pypy3.7-7.3.5' # most recent
           dist: bionic
           env:
+            - MULTIPROCESS="true"
 
     allow_failures:
         - python: '2.7'
@@ -51,6 +54,7 @@ cache:
 before_install:
     - set -e  # fail on any error
     - if [[ $COVERAGE == "true" ]]; then pip install coverage; fi
+    - if [[ $MULTIPROCESS == "true" ]]; then pip install multiprocess --no-binary multiprocess; fi
 
 install:
     - python setup.py build && python setup.py install
