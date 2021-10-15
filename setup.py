@@ -224,7 +224,7 @@ Requirements
 
 Optional requirements:
 
-    - ``setuptools``, **version >= 0.6**
+    - ``setuptools``, **version >= 40.6.0**
     - ``pyina``, **version >= 0.2.5**
     - ``rpyc``, **version >= 3.0.6**
     - ``mystic``, **version >= 0.3.8**
