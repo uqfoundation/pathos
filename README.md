@@ -115,7 +115,7 @@ The latest released version of ``pathos`` is available from:
 Development Version
 [![Support](https://img.shields.io/badge/support-the%20UQ%20Foundation-purple.svg?style=flat&colorA=grey&colorB=purple)](http://www.uqfoundation.org/pages/donate.html)
 [![Documentation Status](https://readthedocs.org/projects/pathos/badge/?version=latest)](https://pathos.readthedocs.io/en/latest/?badge=latest)
-[![Build Status](https://travis-ci.com/uqfoundation/pathos.svg?label=build&logo=travis&branch=master)](https://travis-ci.com/uqfoundation/pathos)
+[![Build Status](https://travis-ci.com/uqfoundation/pathos.svg?label=build&logo=travis&branch=master)](https://travis-ci.com/github/uqfoundation/pathos)
 [![codecov](https://codecov.io/gh/uqfoundation/pathos/branch/master/graph/badge.svg)](https://codecov.io/gh/uqfoundation/pathos)
 -------------------
 You can get the latest development version with all the shiny new features at:
