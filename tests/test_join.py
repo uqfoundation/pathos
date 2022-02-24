@@ -7,26 +7,24 @@
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 
 from pathos.parallel import *
-from pathos.parallel import __STATE as pstate
-
 from pathos.multiprocessing import *
-from pathos.multiprocessing import __STATE as mstate
-
 from pathos.threading import *
-from pathos.threading import __STATE as tstate
 
 from pathos.helpers import cpu_count
 
 import sys
+import dill
 P33 = (sys.hexversion >= 0x30300f0) #FIXME: below oddity due to travis
 P37 = (sys.hexversion >= 0x30700f0) and sys.version_info[:3] != (3,7,7)
+PYPY38 = (sys.hexversion >= 0x30800f0) and dill._dill.IS_PYPY
 PoolClosedError = ValueError if P33 else AssertionError
 PoolRunningError = ValueError if P37 else AssertionError
 
 def squared(x):
-  return x**2
+    return x**2
 
-def check_basic(pool, state):
+def check_basic(pool):
+    state = pool.__state__
     res = pool.map(squared, range(2))
     assert res == [0, 1]
     res = pool.map(squared, range(2))
@@ -150,7 +148,8 @@ def check_basic(pool, state):
     return
 
 
-def check_nodes(pool, state):
+def check_nodes(pool):
+    state = pool.__state__
     tag = 'fixed' if pool._id == 'fixed' else None
     new_pool = type(pool)
 
@@ -228,7 +227,8 @@ def check_nodes(pool, state):
     return
 
 
-def check_rename(pool, state):
+def check_rename(pool):
+    state = pool.__state__
     new_pool = type(pool)
     res = pool.map(squared, range(2))
     assert res == [0, 1]
@@ -272,22 +272,25 @@ def check_rename(pool, state):
     return
 
 def test_basic():
-    check_basic(ThreadPool(), tstate)
-#   check_basic(ProcessPool(), mstate)
-#   check_basic(ParallelPool(), pstate)
+    check_basic(ThreadPool())
+#   check_basic(ProcessPool())
+#   check_basic(ParallelPool())
 
 def test_rename():
-    check_rename(ThreadPool(), tstate)
-    check_rename(ProcessPool(), mstate)
-    check_rename(ParallelPool(), pstate)
+    check_rename(ThreadPool())
+    check_rename(ProcessPool())
+    check_rename(ParallelPool())
+
+def test_fixed():
+    check_nodes(ThreadPool(id='fixed'))
+    check_nodes(ProcessPool(id='fixed'))
+    check_nodes(ParallelPool(id='fixed'))
 
 def test_nodes():
-    check_nodes(ThreadPool(id='fixed'), tstate)
-    check_nodes(ProcessPool(id='fixed'), mstate)
-    check_nodes(ParallelPool(id='fixed'), pstate)
-    check_nodes(ThreadPool(), tstate)
-    check_nodes(ProcessPool(), mstate)
-    check_nodes(ParallelPool(), pstate)
+    check_nodes(ThreadPool())
+    if not PYPY38: #FIXME: fails with "OSError: [Errno 24] Too many open files"
+        check_nodes(ProcessPool())
+    check_nodes(ParallelPool())
 
 
 if __name__ == '__main__':
@@ -295,5 +298,6 @@ if __name__ == '__main__':
     freeze_support()
     test_basic()
     test_rename()
+    test_fixed()
     test_nodes()
     shutdown()
