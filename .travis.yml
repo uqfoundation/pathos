@@ -23,7 +23,7 @@ matrix:
 
         - python: '3.11-dev'
           env:
-            - DILL="true"
+            - DILL="master"
 
         - python: 'pypy2.7-7.3.1' # most recent
           dist: xenial
@@ -47,7 +47,7 @@ cache:
 before_install:
     - set -e  # fail on any error
     - if [[ $COVERAGE == "true" ]]; then pip install coverage; fi
-    - if [[ $DILL == "true" ]]; then pip install "https://github.com/uqfoundation/dill/archive/master.tar.gz"; fi
+    - if [[ $DILL == "master" ]]; then pip install "https://github.com/uqfoundation/dill/archive/master.tar.gz"; fi
     - if [[ $MULTIPROCESS == "true" ]]; then pip install multiprocess --no-binary multiprocess; fi
 
 install:
