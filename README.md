@@ -125,14 +125,14 @@ If you have a new contribution, please submit a pull request.
 
 
 Installation
-============
+------------
 ``pathos`` can be installed with ``pip``::
 
     $ pip install pathos
 
 
 Requirements
-============
+------------
 ``pathos`` requires:
 
 * ``python`` (or ``pypy``), **==2.7** or **>=3.7**
