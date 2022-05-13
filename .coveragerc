@@ -1,6 +1,10 @@
 [run]
 # source = pathos
-include = */pathos/*
+include =
+    */pathos/*
+    */pathos/helpers/*
+    */pathos/secure/*
+    */pathos/xmlrpc/*
 omit = 
     */tests/*
     */info.py
@@ -11,7 +15,23 @@ branch = true
 # data_file = $TRAVIS_BUILD_DIR/.coverage
 # debug = trace
 
+[paths]
+source =
+    pathos
+    pathos/helpers
+    pathos/secure
+    pathos/xmlrpc
+    */site-packages/pathos*/pathos
+    */site-packages/pathos*/pathos/helpers
+    */site-packages/pathos*/pathos/secure
+    */site-packages/pathos*/pathos/xmlrpc
+
 [report]
+include =
+    */pathos/*
+    */pathos/helpers/*
+    */pathos/secure/*
+    */pathos/xmlrpc/*
 exclude_lines =
     pragma: no cover
     raise NotImplementedError
