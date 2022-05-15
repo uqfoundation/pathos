@@ -21,10 +21,14 @@ source =
     pathos/helpers
     pathos/secure
     pathos/xmlrpc
-    */site-packages/pathos*/pathos
-    */site-packages/pathos*/pathos/helpers
-    */site-packages/pathos*/pathos/secure
-    */site-packages/pathos*/pathos/xmlrpc
+    */site-packages/pathos
+    */site-packages/pathos/helpers
+    */site-packages/pathos/secure
+    */site-packages/pathos/xmlrpc
+    */site-packages/pathos-*/pathos
+    */site-packages/pathos-*/pathos/helpers
+    */site-packages/pathos-*/pathos/secure
+    */site-packages/pathos-*/pathos/xmlrpc
 
 [report]
 include =
