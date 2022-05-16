@@ -124,6 +124,26 @@ You can get the latest development version with all the shiny new features at:
 If you have a new contribution, please submit a pull request.
 
 
+Installation
+------------
+``pathos`` can be installed with ``pip``::
+
+    $ pip install pathos
+
+
+Requirements
+------------
+``pathos`` requires:
+
+* ``python`` (or ``pypy``), **==2.7** or **>=3.7**
+* ``setuptools``, **>=42**
+* ``wheel``, **>=0.1**
+* ``pox``, **>=0.3.0**
+* ``dill``, **>=0.3.4**
+* ``ppft``, **>=1.6.6.4**
+* ``multiprocess``, **>=0.70.12.1**
+
+
 More Information
 ----------------
 Probably the best way to get started is to look at the documentation at

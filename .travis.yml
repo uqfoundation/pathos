@@ -10,13 +10,13 @@ matrix:
 
         - python: '3.7'
           env:
-            - COVERAGE="true"
 
         - python: '3.8'
           env:
 
         - python: '3.9'
           env:
+            - COVERAGE="true"
 
         - python: '3.10'
           env:
@@ -51,7 +51,7 @@ before_install:
     - if [[ $MULTIPROCESS == "true" ]]; then pip install multiprocess --no-binary multiprocess; fi
 
 install:
-    - python setup.py build && python setup.py install
+    - python -m pip install .
 
 script:
     - for test in tests/__init__.py; do echo $test ; if [[ $COVERAGE == "true" ]]; then coverage run -a $test > /dev/null; else python $test > /dev/null; fi ; done
@@ -59,3 +59,4 @@ script:
 
 after_success:
     - if [[ $COVERAGE == "true" ]]; then bash <(curl -s https://codecov.io/bash); else echo ''; fi
+    - if [[ $COVERAGE == "true" ]]; then coverage report; fi
