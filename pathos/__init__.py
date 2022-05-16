@@ -266,13 +266,9 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
 
-try:
-    # This is a hack to import a minimal package for the build process
-    __PATHOS_SETUP__
-except NameError:
-    # logger
-    def logger(level=None, handler=None, **kwds):
-        """generate a logger instance for pathos
+# logger
+def logger(level=None, handler=None, **kwds):
+    """generate a logger instance for pathos
 
     Args:
         level (int, default=None): the logging level.
@@ -281,42 +277,42 @@ except NameError:
     Returns:
         configured logger instance.
     """
-        import logging
-        name = kwds.get('name', 'pathos')
-        log = logging.getLogger(name)
-        if handler is not None:
-            log.handlers = []
-            log.addHandler(handler)
-        elif not len(log.handlers):
-            log.addHandler(logging.StreamHandler())
-        if level is not None:
-            log.setLevel(level)
-        return log
+    import logging
+    name = kwds.get('name', 'pathos')
+    log = logging.getLogger(name)
+    if handler is not None:
+        log.handlers = []
+        log.addHandler(handler)
+    elif not len(log.handlers):
+        log.addHandler(logging.StreamHandler())
+    if level is not None:
+        log.setLevel(level)
+    return log
 
-    # high-level interface
-    from . import core
-    from . import hosts
-    from . import server
-    from . import selector
-    from . import connection
-    from . import pools
+# high-level interface
+from . import core
+from . import hosts
+from . import server
+from . import selector
+from . import connection
+from . import pools
 
-    # worker pools
-    from . import serial
-    from . import parallel
-    from . import multiprocessing
-    from . import threading
+# worker pools
+from . import serial
+from . import parallel
+from . import multiprocessing
+from . import threading
 
-    # tools, utilities, etc
-    from . import util
-    from . import helpers
+# tools, utilities, etc
+from . import util
+from . import helpers
 
-    # backward compatibility
-    python = serial
-    pp = parallel
-    from pathos.secure import Pipe as SSH_Launcher
-    from pathos.secure import Copier as SCP_Launcher
-    from pathos.secure import Tunnel as SSH_Tunnel
+# backward compatibility
+python = serial
+pp = parallel
+from pathos.secure import Pipe as SSH_Launcher
+from pathos.secure import Copier as SCP_Launcher
+from pathos.secure import Tunnel as SSH_Tunnel
 
 
 def license():
