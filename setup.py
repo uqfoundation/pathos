@@ -120,7 +120,7 @@ class BinaryDistribution(Distribution):
 
 # define dependencies
 ppft_version = 'ppft>=1.6.6.4'
-dill_version = 'dill>=0.3.4'
+dill_version = 'dill>=0.3.5'
 pox_version = 'pox>=0.3.1'
 mp_version = 'multiprocess>=0.70.12.1'
 pyina_version = 'pyina>=0.2.5'
