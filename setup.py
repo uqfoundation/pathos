@@ -119,7 +119,7 @@ class BinaryDistribution(Distribution):
         return True
 
 # define dependencies
-ppft_version = 'ppft>=1.6.6.4'
+ppft_version = 'ppft>=1.7.6.5'
 dill_version = 'dill>=0.3.5'
 pox_version = 'pox>=0.3.1'
 mp_version = 'multiprocess>=0.70.12.1'
