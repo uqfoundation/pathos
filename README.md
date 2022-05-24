@@ -140,7 +140,7 @@ Requirements
 * ``pox``, **>=0.3.1**
 * ``dill``, **>=0.3.5.1**
 * ``ppft``, **>=1.7.6.5**
-* ``multiprocess``, **>=0.70.12.1**
+* ``multiprocess``, **>=0.70.13**
 
 
 More Information

@@ -8,7 +8,7 @@
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 
 # author, version, license, and long description
-__version__ = '0.2.9.dev0'
+__version__ = '0.2.9'
 __author__ = 'Mike McKerns'
 
 __doc__ = """
@@ -156,7 +156,7 @@ Requirements
     - ``pox``, **>=0.3.1**
     - ``dill``, **>=0.3.5.1**
     - ``ppft``, **>=1.7.6.5**
-    - ``multiprocess``, **>=0.70.12.1**
+    - ``multiprocess``, **>=0.70.13**
 
 
 More Information
