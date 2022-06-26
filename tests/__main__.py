@@ -5,17 +5,17 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 
-from __future__ import print_function
 import glob
 import os
+import sys
+import subprocess as sp
+python = sys.executable
 try:
     import pox
-    python = pox.which_python(version=True, fullpath=False) or 'python'
+    python = pox.which_python(version=True) or python
 except ImportError:
-    python = 'python'
-import subprocess as sp
-from sys import platform
-shell = platform[:3] == 'win'
+    pass
+shell = sys.platform[:3] == 'win'
 
 suite = os.path.dirname(__file__) or os.path.curdir
 tests = glob.glob(suite + os.path.sep + 'test_*.py')
@@ -28,4 +28,3 @@ if __name__ == '__main__':
         if not p:
             print('.', end='', flush=True)
     print('')
-
