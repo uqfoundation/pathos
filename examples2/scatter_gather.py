@@ -11,7 +11,6 @@ Run with:
 > $ mpirun -np 2 scatter_gather.py
 """
 
-from __future__ import print_function
 import numpy as np
 
 from mpi4py import MPI

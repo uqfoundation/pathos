@@ -13,11 +13,6 @@ inspired by: http://stackoverflow.com/a/32522579/4646678
 from pathos.helpers import mp
 import time
 import random
-try:
-    from itertools import imap as map
-except ImportError:
-    pass
-
 from pathos.profile import *
 
 

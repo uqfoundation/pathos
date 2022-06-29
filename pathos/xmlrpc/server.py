@@ -49,14 +49,9 @@ __all__ = ['XMLRPCServer','XMLRPCRequestHandler']
 
 import os
 import socket
-try:
-    import xmlrpc.client as client
-    from http.server import BaseHTTPRequestHandler
-    from xmlrpc.server import SimpleXMLRPCDispatcher
-except ImportError:
-    import xmlrpclib as client
-    from BaseHTTPServer import BaseHTTPRequestHandler
-    from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
+import xmlrpc.client as client
+from http.server import BaseHTTPRequestHandler
+from xmlrpc.server import SimpleXMLRPCDispatcher
 from pathos.server import Server #XXX: pythia-0.6, was pyre.ipc.Server
 from pathos.util import print_exc_info, spawn2, _str, _b
 from pathos import logger
@@ -83,12 +78,8 @@ class XMLRPCServer(Server, SimpleXMLRPCDispatcher):
     def _marshaled_dispatch(self, data, dispatch_method=None):
         """override SimpleXMLRPCDispatcher._marshaled_dispatch() fault string"""
 
-        try:
-            import xmlrpc.client as client
-            from xmlrpc.client import Fault
-        except ImportError:
-            import xmlrpclib as client
-            from xmlrpclib import Fault
+        import xmlrpc.client as client
+        from xmlrpc.client import Fault
 
         params, method = client.loads(data)
 

@@ -67,14 +67,8 @@ for building RNGs that are different across multiple threads or processes.
         return rng
     if seed == '*': # special case: random seeding for multiprocessing
         try:
-            try:
-                import multiprocessing as mp
-            except ImportError:
-                import processing as mp
-            try:
-                seed = mp.current_process().pid
-            except AttributeError:
-                seed = mp.currentProcess().getPid()
+            import multiprocessing as mp
+            seed = mp.current_process().pid
         except:
             seed = 0
         import time

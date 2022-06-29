@@ -27,10 +27,7 @@ def print_exc_info():
     """thread-safe return of string from print_exception call"""
 
     import traceback
-    try:
-        import StringIO as io
-    except ImportError:
-        import io
+    import io
     
     sio = io.StringIO()
     traceback.print_exc(file=sio) #thread-safe print_exception to string

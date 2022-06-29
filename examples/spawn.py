@@ -9,7 +9,6 @@
 demonstrate pathos's spawn2 function
 """
 
-from __future__ import print_function
 from pathos.util import spawn2, _b, _str
 
 

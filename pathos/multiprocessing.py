@@ -74,10 +74,6 @@ __STATE = _ProcessPool__STATE = {}
 from pathos.abstract_launcher import AbstractWorkerPool
 from pathos.helpers.mp_helper import starargs as star
 from pathos.helpers import cpu_count, freeze_support, ProcessPool as Pool
-try:
-    from itertools import izip as zip
-except ImportError:
-    pass
 
 # 'forward' compatibility
 _ProcessPool = Pool

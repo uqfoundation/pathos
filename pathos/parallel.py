@@ -89,16 +89,8 @@ __all__ = ['ParallelPool', 'stats']
 
 from pathos.helpers import parallelpython as pp
 from pathos.helpers import cpu_count
-try:
-    import builtins
-    PY3 = True
-    import sys
-    P33 = (hex(sys.hexversion) >= '0x30300f0')
-except ImportError:
-    from itertools import izip as zip
-    import __builtin__ as builtins
-    PY3 = False
-    P33 = False
+
+import builtins
 
 #FIXME: probably not good enough... should store each instance with a uid
 __STATE = _ParallelPool__STATE = {}
@@ -126,10 +118,7 @@ def stats(pool=None):
     "return a string containing stats response from the pp.Server"
     server = None if pool is None else __STATE.get(pool._id, tuple())
 
-    try:
-        import StringIO as io
-    except ImportError:
-        import io
+    import io
     import sys
     stdout = sys.stdout
     try:
@@ -388,10 +377,8 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
             assert pool._state != RUN
         elif negate: # throw error if alive (exiting=True)
             assert pool._state in (CLOSE, TERMINATE)
-        elif P33: # throw error if not alive (exiting=False)
-            raise ValueError("Pool not running")
         else:     # throw error if not alive (exiting=False)
-            assert pool._state == RUN
+            raise ValueError("Pool not running")
     def _equals(self, server):
         "check if the server is compatible"
         if not server:

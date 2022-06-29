@@ -53,18 +53,10 @@ __all__ = ['SerialPool']
 from pathos.abstract_launcher import AbstractWorkerPool
 __get_nodes__ = AbstractWorkerPool._AbstractWorkerPool__get_nodes
 __set_nodes__ = AbstractWorkerPool._AbstractWorkerPool__set_nodes
-try:
-    from builtins import map as _map
-    _apply = lambda f, args, kwds: f(*args, **kwds)
-    _imap = _map
-    PY3 = True
-    import sys
-    P33 = (hex(sys.hexversion) >= '0x30300f0')
-except ImportError:
-    from __builtin__ import map as _map, apply as _apply
-    from itertools import imap as _imap
-    PY3 = False
-    P33 = False
+
+from builtins import map as _map
+_apply = lambda f, args, kwds: f(*args, **kwds)
+_imap = _map
 
 #XXX: good for interface... or bad idea?
 __STATE = _SerialPool__STATE = {}
@@ -111,10 +103,8 @@ Mapper that leverages standard (i.e. serial) python maps.
             assert pool._state != RUN
         elif negate: # throw error if alive (exiting=True)
             assert pool._state in (CLOSE, TERMINATE)
-        elif P33: # throw error if not alive (exiting=False)
-            raise ValueError("Pool not running")
         else:     # throw error if not alive (exiting=False)
-            assert pool._state == RUN
+            raise ValueError("Pool not running")
     def close(self):
         "close the pool to any new jobs"
         self._exiting = True

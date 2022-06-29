@@ -52,8 +52,7 @@ Typical calls to pathos profiling will roughly follow this example::
     >>> pr.enable_profiling()
     >>> 
     >>> # profile the work (not the map internals) in the main process
-    >>> from itertools import imap
-    >>> for i in imap(work, range(-10,0)):
+    >>> for i in map(work, range(-10,0)):
     ...     print(i)
     ...
     >>> # profile the map in the main process, and work in the other process
@@ -154,9 +153,8 @@ Example:
     ...     return (i,x)
     ...
     >>> pr.enable_profiling()
-    >>> from itertools import imap
     >>> # profile the work (not the map internals); write to file for pstats
-    >>> for i in imap(work, range(-10,0)):
+    >>> for i in map(work, range(-10,0)):
     ...     print(i)
     ...
 

@@ -164,8 +164,8 @@ Other class members:
            #raise TypeError("'%s' is an invalid keyword for this function" % kwds.keys()[0])
         # a valid number of arguments are required
         try:
-            vars = (getattr(f,'__code__',None) or getattr(f,'func_code')).co_argcount
-            defs = len(getattr(f,'__defaults__',None) or getattr(f,'func_defaults'))
+            vars = f.__code__.co_argcount
+            defs = len(f.__defaults__)
             arglen = len(args)
             minlen = vars - defs
             if vars == minlen and arglen != vars: #XXX: argument vs arguments

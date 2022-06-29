@@ -141,7 +141,7 @@ Inputs:
     def response(self):
         '''Return the response from the launched process.
         Return None if no response was received yet from a background process.
-        ''' #XXX: if PY3, return bytes, decode to ascii, take encoding, or ??? 
+        ''' #XXX: return bytes, decode to ascii, take encoding, or ??? 
 
         if self._stdout is None:
             raise PipeException("'launch' is required after any reconfiguration")

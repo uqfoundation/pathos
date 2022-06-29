@@ -14,11 +14,9 @@ from pathos.helpers import cpu_count
 
 import sys
 import dill
-P33 = (sys.hexversion >= 0x30300f0)
-P37 = (sys.hexversion >= 0x30700f0)
 PYPY38 = (sys.hexversion >= 0x30800f0) and dill._dill.IS_PYPY
-PoolClosedError = ValueError if P33 else AssertionError
-PoolRunningError = ValueError if P37 else AssertionError
+PoolClosedError = ValueError
+PoolRunningError = ValueError
 
 def squared(x):
     return x**2

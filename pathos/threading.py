@@ -74,10 +74,6 @@ __STATE = _ThreadPool__STATE = {}
 from pathos.abstract_launcher import AbstractWorkerPool
 from pathos.helpers.mp_helper import starargs as star
 from pathos.helpers import cpu_count, ThreadPool as _ThreadPool
-try:
-    from itertools import izip as zip
-except ImportError:
-    pass
 
 class ThreadPool(AbstractWorkerPool):
     """

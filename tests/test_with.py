@@ -6,11 +6,6 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 
-try:
-    from itertools import izip as zip
-except ImportError:
-    pass
-
 PRIMES = [
     112272535095293,
     112582705942171,

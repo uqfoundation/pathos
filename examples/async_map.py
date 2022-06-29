@@ -6,7 +6,6 @@
 # License: 3-clause BSD.  The full license text is available at:
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 
-from __future__ import print_function
 import time
 import sys
 
@@ -40,8 +39,8 @@ def test_ready(pool, f, maxtries, delay):
     print("x1 = %s" % str(x[:10]))
     print("x2 = %s" % str(x[:10]))
     print("I'm sleepy...")
-    args = (getattr(f,'__code__',None) or getattr(f,'func_code')).co_argcount
-    kwds = getattr(f,'__defaults__',None) or getattr(f,'func_defaults')
+    args = f.__code__.co_argcount
+    kwds = f.__defaults__
     args = args - len(kwds) if kwds else args
     if args == 1:
         m = pool.amap(f, x)

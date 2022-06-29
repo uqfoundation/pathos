@@ -21,10 +21,7 @@ logger(level=20, name='pathos.selector') # logging.INFO
 if __name__ == '__main__':
     
     import os, time
-    try:
-        import xmlrpc.client as client
-    except ImportError:
-        import xmlrpclib as client
+    import xmlrpc.client as client
 
     s = XMLRPCServer('', 0)
     print('port=%d' % s.port)
