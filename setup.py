@@ -98,7 +98,7 @@ setup_kwds = dict(
     ],
     packages=['pathos','pathos.tests',\
               'pathos.helpers','pathos.secure','pathos.xmlrpc'],
-    package_dir={'pathos':'pathos', 'pathos.tests':'tests', \
+    package_dir={'pathos':'pathos', 'pathos.tests':'pathos/tests', \
                  'pathos.helpers':'pathos/helpers', \
                  'pathos.secure':'pathos/secure', \
                  'pathos.xmlrpc':'pathos/xmlrpc', \
