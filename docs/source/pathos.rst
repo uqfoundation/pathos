@@ -67,6 +67,18 @@ hosts module
     :imported-members:
 ..  :exclude-members:
 
+maps module
+-----------
+
+.. automodule:: pathos.maps
+    :members:
+    :undoc-members:
+    :private-members:
+    :special-members:
+    :show-inheritance:
+    :imported-members:
+..  :exclude-members:
+
 mp_map module
 -------------
 

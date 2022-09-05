@@ -178,6 +178,7 @@ Important classes and functions are found here:
 * ``pathos.selector.Selector``           [the selector base class]
 * ``pathos.server.Server``               [the server base class]
 * ``pathos.profile``                     [profiling in threads and processes]
+* ``pathos.maps``                        [standalone map instances]
 
 ``pathos`` also provides two convenience scripts that are used to establish
 secure distributed connections. These scripts are installed to a directory

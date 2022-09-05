@@ -54,6 +54,7 @@ from . import server
 from . import selector
 from . import connection
 from . import pools
+from . import maps
 
 # worker pools
 from . import serial

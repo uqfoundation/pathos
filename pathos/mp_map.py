@@ -15,8 +15,8 @@ Notes:
 from pathos.multiprocessing import ProcessPool, __STATE
 from pathos.threading import ThreadPool #XXX: thread __STATE not imported
 from pathos.helpers import cpu_count
-mp = ProcessPool()
-tp = ThreadPool()
+mp = ProcessPool() #FIXME: don't do this
+tp = ThreadPool() #FIXME: don't do this
 
 __all__ = ['mp_map']
 
