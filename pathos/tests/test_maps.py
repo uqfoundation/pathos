@@ -69,14 +69,16 @@ p = Amap(Pool)
 assert dill.copy(s)(squared, range(4)) == dill.copy(p)(squared, range(4)).get()
 del s, p
 
-from pathos.pools import _ProcessPool as _Pool
-s = Smap(Pool)
-p = Map(_Pool)
-r = s(p, [[squared, range(4)]]*4)
-del s, p
+import os
+if not os.environ.get('COVERAGE'): #XXX: travis-ci
+    from pathos.pools import _ProcessPool as _Pool
+    s = Smap(Pool)
+    p = Map(_Pool)
+    r = s(p, [[squared, range(4)]]*4)
+    del s, p
 
-s = Amap(Pool)
-p = Imap(_Pool)
-t = s(lambda x: list(p(squared, x)), [range(4)]*4)
-assert r == t.get()
-del s, p, r, t
+    s = Amap(Pool)
+    p = Imap(_Pool)
+    t = s(lambda x: list(p(squared, x)), [range(4)]*4)
+    assert r == t.get()
+    del s, p, r, t
