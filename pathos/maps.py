@@ -66,7 +66,7 @@ class Map(object):
     NOTE: initializes a new worker pool with each call
         """
         if self.pool is None: #XXX: args, kwds?
-            return list(map(func, *args, **kwds)) #XXX: iterator or list?
+            return list(map(func, *args)) #XXX: iterator or list?
         self._pool = pool = self.pool(*self.args, **self.kwds)
         result = pool.map(func, *args, **kwds)
         if self._close: self.close()
@@ -160,7 +160,7 @@ class Smap(Map):
         """
         if self.pool is None: #XXX: args, kwds?
             from itertools import starmap
-            return list(starmap(func, *args, **kwds)) #XXX: iterator or list?
+            return list(starmap(func, *args)) #XXX: iterator or list?
         self._pool = pool = self.pool(*self.args, **self.kwds)
         smap = getattr(pool, 'smap', getattr(pool, 'starmap', None))
         if smap is None:
@@ -224,7 +224,7 @@ class Imap(Map):
     NOTE: initializes a new worker pool with each call
         """
         if self.pool is None: #XXX: args, kwds?
-            return map(func, *args, **kwds)
+            return map(func, *args)
         self._pool = pool = self.pool(*self.args, **self.kwds)
         imap = getattr(pool, 'imap', None)
         if imap is None: #NOTE: should not happen
@@ -479,7 +479,7 @@ class Ismap(Map):
         """
         if self.pool is None: #XXX: args, kwds?
             from itertools import starmap
-            return starmap(func, *args, **kwds)
+            return starmap(func, *args)
         self._pool = pool = self.pool(*self.args, **self.kwds)
         ismap = getattr(pool, 'ismap', None)
         if ismap is None:
