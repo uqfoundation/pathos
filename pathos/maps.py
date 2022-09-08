@@ -74,6 +74,17 @@ class Map(object):
         if self._clear: self.clear()
         return result #NOTE: ValueError on non-running pool
 
+    # function interface
+    def __cls__(self):
+        return self
+    def __meth__(self):
+        return self.__call__.__func__
+    def __attr__(self):
+        return self.__call__.__get__
+    __self__ = property(__cls__)
+    __func__ = property(__meth__)
+    __get__ = property(__attr__)
+
     def close(self):
         "close the map to any new jobs"
         try:
