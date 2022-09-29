@@ -132,22 +132,22 @@ Mapper that leverages python's multiprocessing.
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         _pool = self._serve()
-        return _pool.map(star(f), zip(*args)) # chunksize
+        return _pool.map(star(f), zip(*args), chunksize=kwds.get('chunksize', 1))
     map.__doc__ = AbstractWorkerPool.map.__doc__
     def imap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
         _pool = self._serve()
-        return _pool.imap(star(f), zip(*args)) # chunksize
+        return _pool.imap(star(f), zip(*args), chunksize=kwds.get('chunksize', 1))
     imap.__doc__ = AbstractWorkerPool.imap.__doc__
     def uimap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
         _pool = self._serve()
-        return _pool.imap_unordered(star(f), zip(*args)) # chunksize
+        return _pool.imap_unordered(star(f), zip(*args), chunksize=kwds.get('chunksize', 1))
     uimap.__doc__ = AbstractWorkerPool.uimap.__doc__
     def amap(self, f, *args, **kwds): # register a callback ?
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         _pool = self._serve()
-        return _pool.map_async(star(f), zip(*args)) # chunksize
+        return _pool.map_async(star(f), zip(*args), chunksize=kwds.get('chunksize', 1))
     amap.__doc__ = AbstractWorkerPool.amap.__doc__
     ########################################################################
     # PIPES
