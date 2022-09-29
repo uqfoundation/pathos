@@ -96,27 +96,27 @@ Mapper that leverages python's multiprocessing.
             kwds['ncpus'] = kwds.pop('nodes')
         elif arglen:
             kwds['ncpus'] = args[0]
-        self.__nodes = kwds.get('ncpus', cpu_count())
+        self.__nodes = kwds.pop('ncpus', cpu_count())
 
         # Create an identifier for the pool
-        self._id = kwds.get('id', None) #'pool'
+        self._id = kwds.pop('id', None) #'pool'
         if self._id is None:
             self._id = self.__nodes
 
         # Create a new server if one isn't already initialized
-        self._serve()
+        self._serve(**kwds)
         return
     if AbstractWorkerPool.__init__.__doc__: __init__.__doc__ = AbstractWorkerPool.__init__.__doc__ + __init__.__doc__
    #def __exit__(self, *args):
    #    self._clear()
    #    return
-    def _serve(self, nodes=None): #XXX: should be STATE method; use id
+    def _serve(self, nodes=None, **kwds): #XXX: should be STATE method; use id
         """Create a new server if one isn't already initialized"""
         if nodes is None: nodes = self.__nodes
         _pool = __STATE.get(self._id, None)
         if not _pool or nodes != _pool.__nodes:
             self._clear()
-            _pool = Pool(nodes)
+            _pool = Pool(nodes, **kwds)
             _pool.__nodes = nodes
             __STATE[self._id] = _pool
         return _pool
