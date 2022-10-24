@@ -92,8 +92,8 @@ ppft_version = 'ppft>=1.7.6.6'
 dill_version = 'dill>=0.3.6'
 pox_version = 'pox>=0.3.2'
 mp_version = 'multiprocess>=0.70.14'
-pyina_version = 'pyina>=0.2.6'
-mystic_version = 'mystic>=0.3.9'
+pyina_version = 'pyina>=0.2.7'
+mystic_version = 'mystic>=0.4.0'
 # add dependencies
 depend = [ppft_version, dill_version, pox_version, mp_version]
 extras = {'examples': [mystic_version, pyina_version]}
