@@ -26,7 +26,7 @@ matrix:
             - MULTIPROCESS="true"
 
     allow_failures:
-        - python: '3.11-dev'
+        - python:
     fast_finish: true
 
 cache:
