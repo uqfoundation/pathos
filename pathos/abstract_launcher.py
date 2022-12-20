@@ -110,6 +110,7 @@ Other class members:
     def __enter__(self):
         return self
     def __exit__(self, *args):
+        #self.clear()
         return
     def __init(self, *args, **kwds):
         """default filter for __init__ inputs

@@ -72,12 +72,12 @@ Mapper that leverages standard (i.e. serial) python maps.
     def map(self, f, *args, **kwds):
        #AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         if self._exiting: self._is_alive()
-        return _map(f, *args)#, **kwds)
+        return _map(f, *args)#, **kwds) # chunksize
     map.__doc__ = AbstractWorkerPool.map.__doc__
     def imap(self, f, *args, **kwds):
        #AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
         if self._exiting: self._is_alive()
-        return _imap(f, *args)#, **kwds)
+        return _imap(f, *args)#, **kwds) # chunksize
     imap.__doc__ = AbstractWorkerPool.imap.__doc__
     ########################################################################
     # PIPES

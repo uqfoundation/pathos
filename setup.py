@@ -66,6 +66,7 @@ setup_kwds = dict(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Scientific/Engineering',
@@ -88,12 +89,12 @@ class BinaryDistribution(Distribution):
         return True
 
 # define dependencies
-ppft_version = 'ppft>=1.7.6.5'
-dill_version = 'dill>=0.3.5.1'
-pox_version = 'pox>=0.3.1'
-mp_version = 'multiprocess>=0.70.13'
-pyina_version = 'pyina>=0.2.6'
-mystic_version = 'mystic>=0.3.9'
+ppft_version = 'ppft>=1.7.6.6'
+dill_version = 'dill>=0.3.6'
+pox_version = 'pox>=0.3.2'
+mp_version = 'multiprocess>=0.70.14'
+pyina_version = 'pyina>=0.2.7'
+mystic_version = 'mystic>=0.4.0'
 # add dependencies
 depend = [ppft_version, dill_version, pox_version, mp_version]
 extras = {'examples': [mystic_version, pyina_version]}

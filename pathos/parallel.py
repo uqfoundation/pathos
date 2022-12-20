@@ -223,7 +223,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
     clear = _clear
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
-        return list(self.imap(f, *args))
+        return list(self.imap(f, *args)) # chunksize
     map.__doc__ = AbstractWorkerPool.map.__doc__
     def imap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
@@ -236,7 +236,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
             except pp.DestroyedServerError:
                 self._is_alive(None)
         # submit all jobs, then collect results as they become available
-        return (subproc() for subproc in list(builtins.map(submit, *args)))
+        return (subproc() for subproc in list(builtins.map(submit, *args))) # chunksize
     imap.__doc__ = AbstractWorkerPool.imap.__doc__
     def uimap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
@@ -260,7 +260,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
                 # *subprocess*           # alternately, loop in a subprocess
             return #raise StopIteration
         # submit all jobs, then collect results as they become available
-        return imap_unordered(builtins.map(submit, *args))
+        return imap_unordered(builtins.map(submit, *args)) # chunksize
     uimap.__doc__ = AbstractWorkerPool.uimap.__doc__
     def amap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
@@ -289,7 +289,7 @@ NOTE: if a tuple of servers is not provided, defaults to localhost only
         if not nodes: nodes = 1
         # try to quickly find a small chunksize that gives good results
         maxsize = 2**62 #XXX: HOPEFULLY, this will never be reached...
-        chunksize = 1
+        chunksize = 1 # chunksize
         while chunksize < maxsize:
             chunksize, extra = divmod(length, nodes * elem_size)
             if override: break # the user *wants* to override this loop
