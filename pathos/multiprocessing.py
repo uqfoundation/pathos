@@ -180,14 +180,15 @@ Mapper that leverages python's multiprocessing.
     def restart(self, force=False):
         "restart a closed pool"
         _pool = __STATE.get(self._id, None)
-        if _pool and self.__nodes == _pool.__nodes:
+        if _pool and self.__nodes == _pool.__nodes and self._kwds == _pool._kwds:
             RUN = 0
             if not force:
                 assert _pool._state != RUN
             # essentially, 'clear' and 'serve'
             self._clear()
-            _pool = Pool(self.__nodes)
+            _pool = Pool(self.__nodes, **self._kwds)
             _pool.__nodes = self.__nodes
+            _pool._kwds = self._kwds
             __STATE[self._id] = _pool
         return _pool
     def close(self):
