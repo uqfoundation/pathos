@@ -103,27 +103,30 @@ Mapper that leverages python's multiprocessing.
         if self._id is None:
             self._id = self.__nodes
 
+        self._kwds = kwds
+
         # Create a new server if one isn't already initialized
-        self._serve(**kwds)
+        self._serve()
         return
     if AbstractWorkerPool.__init__.__doc__: __init__.__doc__ = AbstractWorkerPool.__init__.__doc__ + __init__.__doc__
    #def __exit__(self, *args):
    #    self._clear()
    #    return
-    def _serve(self, nodes=None, **kwds): #XXX: should be STATE method; use id
+    def _serve(self, nodes=None): #XXX: should be STATE method; use id
         """Create a new server if one isn't already initialized"""
         if nodes is None: nodes = self.__nodes
         _pool = __STATE.get(self._id, None)
-        if not _pool or nodes != _pool.__nodes:
+        if not _pool or nodes != _pool.__nodes or self._kwds != _pool._kwds:
             self._clear()
-            _pool = Pool(nodes, **kwds)
+            _pool = Pool(nodes, **self._kwds)
             _pool.__nodes = nodes
+            _pool._kwds = self._kwds
             __STATE[self._id] = _pool
         return _pool
     def _clear(self): #XXX: should be STATE method; use id
         """Remove server with matching state"""
         _pool = __STATE.get(self._id, None)
-        if _pool and self.__nodes == _pool.__nodes:
+        if _pool and self.__nodes == _pool.__nodes and self._kwds == _pool._kwds:
             _pool.close()
             _pool.join()
             __STATE.pop(self._id, None)
