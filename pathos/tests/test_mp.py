@@ -37,6 +37,36 @@ def test_mp():
     assert result == _result
     assert end - start > 0.5
 
+def test_tp():
+    # instantiate and configure the worker pool
+    from pathos.pools import ThreadPool
+    pool = ThreadPool(nodes=4)
+
+    _result = list(map(pow, [1,2,3,4], [5,6,7,8]))
+
+    # do a blocking map on the chosen function
+    result = pool.map(pow, [1,2,3,4], [5,6,7,8])
+    assert result == _result
+
+    # do a non-blocking map, then extract the result from the iterator
+    result_iter = pool.imap(pow, [1,2,3,4], [5,6,7,8])
+    result = list(result_iter)
+    assert result == _result
+
+    # do an asynchronous map, then get the results
+    result_queue = pool.amap(pow, [1,2,3,4], [5,6,7,8])
+    result = result_queue.get()
+    assert result == _result
+
+    # test ThreadPool keyword argument propagation
+    pool.clear()
+    pool = ThreadPool(nodes=4, initializer=lambda: time.sleep(0.6))
+    start = time.monotonic()
+    result = pool.map(pow, [1,2,3,4], [5,6,7,8])
+    end = time.monotonic()
+    assert result == _result
+    assert end - start > 0.5
+
 
 def test_chunksize():
     # instantiate and configure the worker pool
@@ -125,5 +155,6 @@ if __name__ == '__main__':
     from pathos.helpers import freeze_support, shutdown
     freeze_support()
     test_mp()
+    test_tp()
     test_chunksize()
     shutdown()
