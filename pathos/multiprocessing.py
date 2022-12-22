@@ -96,12 +96,14 @@ Mapper that leverages python's multiprocessing.
             kwds['ncpus'] = kwds.pop('nodes')
         elif arglen:
             kwds['ncpus'] = args[0]
-        self.__nodes = kwds.get('ncpus', cpu_count())
+        self.__nodes = kwds.pop('ncpus', cpu_count())
 
         # Create an identifier for the pool
-        self._id = kwds.get('id', None) #'pool'
+        self._id = kwds.pop('id', None) #'pool'
         if self._id is None:
             self._id = self.__nodes
+
+        self._kwds = kwds
 
         # Create a new server if one isn't already initialized
         self._serve()
@@ -114,16 +116,17 @@ Mapper that leverages python's multiprocessing.
         """Create a new server if one isn't already initialized"""
         if nodes is None: nodes = self.__nodes
         _pool = __STATE.get(self._id, None)
-        if not _pool or nodes != _pool.__nodes:
+        if not _pool or nodes != _pool.__nodes or self._kwds != _pool._kwds:
             self._clear()
-            _pool = Pool(nodes)
+            _pool = Pool(nodes, **self._kwds)
             _pool.__nodes = nodes
+            _pool._kwds = self._kwds
             __STATE[self._id] = _pool
         return _pool
     def _clear(self): #XXX: should be STATE method; use id
         """Remove server with matching state"""
         _pool = __STATE.get(self._id, None)
-        if _pool and self.__nodes == _pool.__nodes:
+        if _pool and self.__nodes == _pool.__nodes and self._kwds == _pool._kwds:
             _pool.close()
             _pool.join()
             __STATE.pop(self._id, None)
@@ -177,14 +180,15 @@ Mapper that leverages python's multiprocessing.
     def restart(self, force=False):
         "restart a closed pool"
         _pool = __STATE.get(self._id, None)
-        if _pool and self.__nodes == _pool.__nodes:
+        if _pool and self.__nodes == _pool.__nodes and self._kwds == _pool._kwds:
             RUN = 0
             if not force:
                 assert _pool._state != RUN
             # essentially, 'clear' and 'serve'
             self._clear()
-            _pool = Pool(self.__nodes)
+            _pool = Pool(self.__nodes, **self._kwds)
             _pool.__nodes = self.__nodes
+            _pool._kwds = self._kwds
             __STATE[self._id] = _pool
         return _pool
     def close(self):
