@@ -193,7 +193,8 @@ Other class members:
 Returns a list of results of applying the function f to the items of
 the argument sequence(s). If more than one sequence is given, the
 function is called with an argument list consisting of the corresponding
-item of each sequence.
+item of each sequence. Some maps accept the `chunksize` keyword, which
+causes the sequence to be split into tasks of approximately the given size.
         """
        #self.__map(f, *args, **kwds)
         raise NotImplementedError
@@ -203,7 +204,8 @@ item of each sequence.
 Returns a list iterator of results of applying the function f to the items
 of the argument sequence(s). If more than one sequence is given, the
 function is called with an argument list consisting of the corresponding
-item of each sequence.
+item of each sequence. Some maps accept the `chunksize` keyword, which
+causes the sequence to be split into tasks of approximately the given size.
         """
        #self.__imap(f, *args, **kwds)
         raise NotImplementedError
@@ -214,6 +216,8 @@ Returns a list iterator of results of applying the function f to the items
 of the argument sequence(s). If more than one sequence is given, the
 function is called with an argument list consisting of the corresponding
 item of each sequence. The order of the resulting sequence is not guaranteed.
+Some maps accept the `chunksize` keyword, which causes the sequence to be
+split into tasks of approximately the given size.
         """
        #self.__imap(f, *args, **kwds)
         raise NotImplementedError
@@ -226,7 +230,9 @@ sequence is given, the function is called with an argument list consisting
 of the corresponding item of each sequence. To retrieve the results, call
 the get() method on the returned results object. The call to get() is
 blocking, until all results are retrieved. Use the ready() method on the
-result object to check if all results are ready.
+result object to check if all results are ready. Some maps accept the
+`chunksize` keyword, which causes the sequence to be split into tasks of
+approximately the given size.
         """
        #self.__map(f, *args, **kwds)
         raise NotImplementedError

@@ -83,7 +83,12 @@ class ProcessPool(AbstractWorkerPool):
 Mapper that leverages python's multiprocessing.
     """
     def __init__(self, *args, **kwds):
-        """\nNOTE: if number of nodes is not given, will autodetect processors
+        """\nNOTE: if number of nodes is not given, will autodetect processors.
+\nNOTE: additional keyword input is optional, with:
+    id          - identifier for the pool
+    initializer - function that takes no input, called when node is spawned
+    initargs    - tuple of args for initializers that have args
+    maxtasksperchild - int that limits the max number of tasks per node
         """
         hasnodes = 'nodes' in kwds; arglen = len(args)
         if 'ncpus' in kwds and (hasnodes or arglen):
@@ -96,6 +101,11 @@ Mapper that leverages python's multiprocessing.
             kwds['ncpus'] = kwds.pop('nodes')
         elif arglen:
             kwds['ncpus'] = args[0]
+        if 'processes' in kwds:
+            if 'ncpus' in kwds:
+                msg = "got multiple values for keyword argument 'processes'"
+                raise TypeError(msg)
+            kwds['ncpus'] = kwds.pop('processes')
         self.__nodes = kwds.pop('ncpus', cpu_count())
 
         # Create an identifier for the pool

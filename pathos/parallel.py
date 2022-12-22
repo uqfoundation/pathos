@@ -140,8 +140,11 @@ class ParallelPool(AbstractWorkerPool):
 Mapper that leverages parallelpython (i.e. pp) maps.
     """
     def __init__(self, *args, **kwds):
-        """\nNOTE: if number of nodes is not given, will autodetect processors
-NOTE: if a tuple of servers is not provided, defaults to localhost only
+        """\nNOTE: if number of nodes is not given, will autodetect processors.
+\nNOTE: if a tuple of servers is not provided, defaults to localhost only.
+\nNOTE: additional keyword input is optional, with:
+    id          - identifier for the pool
+    servers     - tuple of pp.Servers
         """
         hasnodes = 'nodes' in kwds; arglen = len(args)
         if 'ncpus' in kwds and (hasnodes or arglen):

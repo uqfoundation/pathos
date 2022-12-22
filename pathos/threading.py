@@ -80,7 +80,11 @@ class ThreadPool(AbstractWorkerPool):
 Mapper that leverages python's threading.
     """
     def __init__(self, *args, **kwds):
-        """\nNOTE: if number of nodes is not given, will autodetect processors
+        """\nNOTE: if number of nodes is not given, will autodetect processors.
+\nNOTE: additional keyword input is optional, with:
+    id          - identifier for the pool
+    initializer - function that takes no input, called when node is spawned
+    initargs    - tuple of args for initializers that have args
         """
         hasnodes = 'nodes' in kwds; arglen = len(args)
         if 'nthreads' in kwds and (hasnodes or arglen):
@@ -93,6 +97,11 @@ Mapper that leverages python's threading.
             kwds['nthreads'] = kwds.pop('nodes')
         elif arglen:
             kwds['nthreads'] = args[0]
+        if 'processes' in kwds:
+            if 'nthreads' in kwds:
+                msg = "got multiple values for keyword argument 'processes'"
+                raise TypeError(msg)
+            kwds['nthreads'] = kwds.pop('processes')
         self.__nodes = kwds.pop('nthreads', cpu_count())
 
         # Create an identifier for the pool
