@@ -146,20 +146,19 @@ Requirements
 More Information
 ----------------
 Probably the best way to get started is to look at the documentation at
-http://pathos.rtfd.io. Also see ``pathos.tests`` and ``pathos.examples``
-for a set of scripts that demonstrate the configuration and launching of
-communications with ssh and scp, and demonstrate the configuration and
-execution of jobs in a hierarchical parallel workflow. You can run the test
-suite with ``python -m pathos.tests``. Tunnels and other connections to
-remote servers can be established with the ``pathos_connect`` script (or with
-``python -m pathos``). See ``pathos_connect --help`` for more information.
-``pathos`` also provides a ``portpicker`` script to select an open port
-(also available with ``python -m pathos.portpicker``). The source code is 
-generally well documented, so further questions may be resolved by inspecting
-the code itself.  Please feel free to submit a ticket on github, or ask a
-question on stackoverflow (**@Mike McKerns**).
-If you would like to share how you use ``pathos`` in your work, please send
-an email (to **mmckerns at uqfoundation dot org**).
+http://pathos.rtfd.io. Also see ``pathos.tests`` and https://github.com/uqfoundation/pathos/tree/master/examples for a set of scripts that demonstrate the
+configuration and launching of communications with ssh and scp, and demonstrate
+the configuration and execution of jobs in a hierarchical parallel workflow.
+You can run the test suite with ``python -m pathos.tests``. Tunnels and other
+connections to remote servers can be established with the ``pathos_connect``
+script (or with ``python -m pathos``). See ``pathos_connect --help`` for more
+information.  ``pathos`` also provides a ``portpicker`` script to select an
+open port (also available with ``python -m pathos.portpicker``). The source
+code is generally well documented, so further questions may be resolved by
+inspecting the code itself.  Please feel free to submit a ticket on github,
+or ask a question on stackoverflow (**@Mike McKerns**). If you would like to
+share how you use ``pathos`` in your work, please send an email (to **mmckerns
+at uqfoundation dot org**).
 
 Important classes and functions are found here:
 
