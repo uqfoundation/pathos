@@ -4,9 +4,7 @@ pathos package documentation
 ============================
 
 .. automodule:: pathos
-    :members:
-    :undoc-members:
-    :show-inheritance:
+..  :exclude-members: +
 
 .. toctree::
     :maxdepth: 2

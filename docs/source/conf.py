@@ -58,16 +58,34 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'pathos'
+project = 'pathos'
 year = datetime.now().year
-copyright = u'%d, The Uncertainty Quantification Foundation' % year
-author = u'Mike McKerns'
+copyright = '%d, The Uncertainty Quantification Foundation' % year
+author = 'Mike McKerns'
 
 # extension config
 github_project_url = "https://github.com/uqfoundation/pathos"
 autoclass_content = 'both'
+autodoc_default_options = {
+    'members': True,
+    'undoc-members': True,
+    'private-members': True,
+    'special-members': True,
+    'show-inheritance': True,
+    'imported-members': True,
+    'exclude-members': (
+        '__dict__,'
+        '__slots__,'
+        '__weakref__,'
+        '__module__,'
+        '_abc_impl,'
+        '__init__,'
+        '__annotations__,'
+        '__dataclass_fields__,'
+    )
+}
 autodoc_typehints = 'description'
-napoleon_include_init_with_doc = True
+autodoc_typehints_format = 'short'
 napoleon_include_private_with_doc = False
 napoleon_include_special_with_doc = True
 napoleon_use_ivar = True
@@ -87,7 +105,7 @@ release = version
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -192,8 +210,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'pathos.tex', u'pathos Documentation',
-     u'Mike McKerns', 'manual'),
+    (master_doc, 'pathos.tex', 'pathos Documentation',
+     'Mike McKerns', 'manual'),
 ]
 
 
@@ -202,7 +220,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'pathos', u'pathos Documentation',
+    (master_doc, 'pathos', 'pathos Documentation',
      [author], 1)
 ]
 
@@ -213,7 +231,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'pathos', u'pathos Documentation',
+    (master_doc, 'pathos', 'pathos Documentation',
      author, 'pathos', 'Parallel graph management and execution in heterogeneous computing.',
      'Miscellaneous'),
 ]

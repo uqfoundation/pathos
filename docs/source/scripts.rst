@@ -5,10 +5,10 @@ pathos_connect script
 ---------------------
 
 .. automodule:: _pathos_connect
-    :members:
+..  :exclude-members: +
 
 portpicker script
 -----------------
 
 .. automodule:: _portpicker
-    :members:
+..  :exclude-members: +
