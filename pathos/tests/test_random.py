@@ -6,6 +6,12 @@
 #  - https://github.com/uqfoundation/pathos/blob/master/LICENSE
 
 from pathos.pools import *
+try:
+    import numpy
+    HASNUMPY = True
+except ImportError:
+    HASNUMPY = False
+
 
 def random(x):
     from pathos.helpers import mp_helper as mp
@@ -27,8 +33,9 @@ def wrong2(x):
 def check_random(pool):
     res = pool.map(random, range(2))
     assert res[0] != res[1]
-    res = pool.map(rand, range(2))
-    assert res[0] != res[1]
+    if HASNUMPY:
+        res = pool.map(rand, range(2))
+        assert res[0] != res[1]
     pool.close()
     pool.join()
     pool.clear()
@@ -38,8 +45,9 @@ def check_random(pool):
 def check_wrong(pool):
     res = pool.map(wrong1, range(2))
     assert res[0] == res[1]
-    res = pool.map(wrong2, range(2))
-    assert res[0] == res[1]
+    if HASNUMPY:
+        res = pool.map(wrong2, range(2))
+        assert res[0] == res[1]
     pool.close()
     pool.join()
     pool.clear()
