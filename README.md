@@ -28,11 +28,11 @@ selecting the desired hierarchy of ``map`` and ``pipe`` (``apply``) objects.
 
 The ``pathos`` framework is composed of several interoperating packages:
 
-* ``dill``: a utility to serialize all of python
+* ``dill``: serialize all of Python
 * ``pox``: utilities for filesystem exploration and automated builds
 * ``klepto``: persistent caching to memory, disk, or database
-* ``multiprocess``: better multiprocessing and multithreading in python
-* ``ppft``: distributed and parallel python
+* ``multiprocess``: better multiprocessing and multithreading in Python
+* ``ppft``: distributed and parallel Python
 * ``pyina``: MPI parallel ``map`` and cluster scheduling
 * ``pathos``: graph management and execution in heterogeneous computing
 
@@ -62,7 +62,7 @@ the ability for the user to directly select the resources.
 
 The high-level ``pool.map`` interface, yields a ``map`` implementation that
 hides the RPC internals from the user. With ``pool.map``, the user can launch
-their code in parallel, and as a distributed service, using standard python
+their code in parallel, and as a distributed service, using standard Python
 and without writing a line of server or parallel batch code.
 
 RPC servers and communication in general is known to be insecure.  However,
@@ -75,7 +75,7 @@ that utilize node-to-node communication between several national lab clusters
 and a user's laptop.  ``pathos`` allows the user to configure and launch
 at a very atomistic level, through raw access to ssh and scp. 
 
-``pathos`` is the core of a python framework for heterogeneous computing.
+``pathos`` is the core of a Python framework for heterogeneous computing.
 ``pathos`` is in active development, so any user feedback, bug reports, comments,
 or suggestions are highly appreciated.  A list of issues is located at https://github.com/uqfoundation/pathos/issues, with a legacy list maintained at https://uqfoundation.github.io/project/pathos/query.
 
@@ -85,7 +85,7 @@ Major Features
 ``pathos`` provides a configurable distributed parallel ``map`` interface
 to launching RPC service calls, with:
 
-* a ``map`` interface that meets and extends the python ``map`` standard
+* a ``map`` interface that meets and extends the Python ``map`` standard
 * the ability to submit service requests to a selection of servers
 * the ability to tunnel server communications with ssh
 
@@ -166,7 +166,7 @@ Important classes and functions are found here:
 * ``pathos.pools``                       [all of the pathos worker pools]
 * ``pathos.core``                        [the high-level command interface] 
 * ``pathos.hosts``                       [the hostname registry interface] 
-* ``pathos.serial.SerialPool``           [the serial python worker pool]
+* ``pathos.serial.SerialPool``           [the serial Python worker pool]
 * ``pathos.parallel.ParallelPool``       [the parallelpython worker pool]
 * ``pathos.multiprocessing.ProcessPool`` [the multiprocessing worker pool]
 * ``pathos.threading.ThreadPool``        [the multithreading worker pool]
