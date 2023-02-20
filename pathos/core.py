@@ -26,7 +26,7 @@ def copy(source, destination=None, **kwds):
 Execute a copy, and return the copier. Use 'kill' to kill the copier, and 
 'pid' to get the process id for the copier.
 
-Inputs:
+Args:
     source      -- path string of source 'file'
     destination -- path string for destination target
   '''
@@ -55,7 +55,7 @@ Execute a process, and return the launcher. Use 'response' to retrieve the
 response from the executed command. Use 'kill' to kill the launcher, and 'pid'
 to get the process id for the launcher.
 
-Inputs:
+Args:
     command -- command string to be executed
     host    -- hostname of execution target  [default = None (i.e. run locally)]
     bg      -- run as background process?  [default = True]
@@ -84,7 +84,7 @@ Inputs:
 def kill(pid, host=None, **kwds):
   '''kill a process (possibly) on a remote host
 
-Inputs:
+Args:
     pid   -- process id
     host  -- hostname where process is running [default = None (i.e. locally)]
   '''
@@ -121,7 +121,7 @@ registered... but there's no guarantee.
 
 If target is None, then get the process id of the __main__  python instance.
 
-Inputs:
+Args:
     target -- string name of target process
     host   -- hostname where process is running
     all    -- get all resulting lines from query?  [default = False]
@@ -170,7 +170,7 @@ def getppid(pid=None, host=None, group=False): # find parent of pid
 
 If pid is None, the pid of the __main__  python instance will be used.
 
-Inputs:
+Args:
     pid    -- process id
     host   -- hostname where process is running
     group  -- get parent group id (pgid) instead of direct parent id?
@@ -207,7 +207,7 @@ def getchild(pid=None, host=None, group=False): # find all children of pid
 
 If pid is None, the pid of the __main__  python instance will be used.
 
-Inputs:
+Args:
     pid    -- parent process id
     host   -- hostname where process is running
     group  -- get process ids for the parent group id (pgid) instead?
@@ -245,7 +245,7 @@ Inputs:
 def randomport(host=None):
   '''select a open port on a (possibly) remote host
 
-Inputs:
+Args:
     host -- hostname on which to select a open port
   '''
   from pathos.portpicker import randomport
@@ -271,7 +271,7 @@ Inputs:
 def connect(host, port=None, through=None):
   '''establish a secure tunnel connection to a remote host at the given port
 
-Inputs:
+Args:
     host     -- hostname to which a tunnel should be established
     port     -- port number (on host) to connect the tunnel to
     through  -- 'tunnel-through' hostname  [default = None]
@@ -286,7 +286,7 @@ Inputs:
 def serve(server, host=None, port=None, profile='.bash_profile'):
   '''begin serving RPC requests
 
-Inputs:
+Args:
     server: name of RPC server  (i.e. 'ppserver')
     host: hostname on which a server should be launched
     port: port number (on host) that server will accept request at

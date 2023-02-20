@@ -13,12 +13,10 @@ class Map(object):
     def __init__(self, pool=None, *args, **kwds):
         """map instance with internal lazy pool instantiation
 
-    Input:
+    Args:
         pool: pool object (i.e. pathos.pools.ProcessPool)
-
-    Additional Input:
-        args: positional arguments for pool initialization
-        kwds: keyword arguments for pool initialization
+        *args: positional arguments for pool initialization
+        **kwds: keyword arguments for pool initialization
         close: if True, close the pool to any new jobs [Default: False] 
         join: if True, reclaim the pool's closed workers [Default: False]
         clear: if True, delete the pool singleton [Default: False]
@@ -38,8 +36,8 @@ class Map(object):
         map instance cannot run new jobs until "clear" is called,
         while a new multiprocess pool will be created each time the
         map is executed. This leads to pathos.pools generally being
-        called with either `clear=True` or `clear=False`, and pools
-        from multprocess either using `close=True` or `join=True` or
+        called with either ``clear=True`` or ``clear=False``, and pools
+        from multprocess either using ``close=True`` or ``join=True`` or
         both. Some hierarchical parallel workflows are not allowed,
         and will result in an error being thrown; however, changing
         close, join, or clear can often remove the error.
@@ -55,13 +53,13 @@ class Map(object):
     def __call__(self, func, *args, **kwds):
         """instantiate a pool and execute the pool's map
 
-    Input:
+    Args:
         func: function object to map
-        args: positional arguments for map
-        kwds: keyword arguments for map
+        *args: positional arguments for map
+        **kwds: keyword arguments for map
 
     Returns:
-        results from execution of map(func, *args, **kwds)
+        results from execution of ``map(func, *args, **kwds)``
 
     NOTE: initializes a new worker pool with each call
         """
@@ -123,12 +121,10 @@ class Smap(Map):
     def __init__(self, pool=None, *args, **kwds):
         """starmap instance with internal lazy pool instantiation
 
-    Input:
+    Args:
         pool: pool object (i.e. pathos.pools.ProcessPool)
-
-    Additional Input:
-        args: positional arguments for pool initialization
-        kwds: keyword arguments for pool initialization
+        *args: positional arguments for pool initialization
+        **kwds: keyword arguments for pool initialization
         close: if True, close the pool to any new jobs [Default: False] 
         join: if True, reclaim the pool's closed workers [Default: False]
         clear: if True, delete the pool singleton [Default: False]
@@ -148,8 +144,8 @@ class Smap(Map):
         map instance cannot run new jobs until "clear" is called,
         while a new multiprocess pool will be created each time the
         map is executed. This leads to pathos.pools generally being
-        called with either `clear=True` or `clear=False`, and pools
-        from multprocess either using `close=True` or `join=True` or
+        called with either ``clear=True`` or ``clear=False``, and pools
+        from multprocess either using ``close=True`` or ``join=True`` or
         both. Some hierarchical parallel workflows are not allowed,
         and will result in an error being thrown; however, changing
         close, join, or clear can often remove the error.
@@ -159,13 +155,13 @@ class Smap(Map):
     def __call__(self, func, *args, **kwds):
         """instantiate a pool and execute the pool's starmap
 
-    Input:
+    Args:
         func: function object to map
-        args: positional arguments for starmap
-        kwds: keyword arguments for starmap
+        *args: positional arguments for starmap
+        **kwds: keyword arguments for starmap
 
     Returns:
-        results from execution of starmap(func, *args, **kwds)
+        results from execution of ``starmap(func, *args, **kwds)``
 
     NOTE: initializes a new worker pool with each call
         """
@@ -189,17 +185,16 @@ class Imap(Map):
     def __init__(self, pool=None, *args, **kwds):
         """map iterator with internal lazy pool instantiation
 
-    Input:
+    Args:
         pool: pool object (i.e. pathos.pools.ProcessPool)
-
-    Additional Input:
-        args: positional arguments for pool initialization
-        kwds: keyword arguments for pool initialization
+        *args: positional arguments for pool initialization
+        **kwds: keyword arguments for pool initialization
         close: if True, close the pool to any new jobs [Default: False] 
         join: if True, reclaim the pool's closed workers [Default: False]
         clear: if True, delete the pool singleton [Default: False]
 
-    NOTE: if a pool object is not provided, a builtins.map will be used.
+    NOTE: if a pool object is not provided, a builtins.map will be
+        used.
     NOTE: pools from both multiprocess and pathos.pools can be used,
         however the behavior is slightly different. Pools from both
         pathos and multiprocess have close and join methods, to close
@@ -213,8 +208,8 @@ class Imap(Map):
         map instance cannot run new jobs until "clear" is called,
         while a new multiprocess pool will be created each time the
         map is executed. This leads to pathos.pools generally being
-        called with either `clear=True` or `clear=False`, and pools
-        from multprocess either using `close=True` or `join=True` or
+        called with either ``clear=True`` or ``clear=False``, and pools
+        from multprocess either using ``close=True`` or ``join=True`` or
         both. Some hierarchical parallel workflows are not allowed,
         and will result in an error being thrown; however, changing
         close, join, or clear can often remove the error.
@@ -224,13 +219,13 @@ class Imap(Map):
     def __call__(self, func, *args, **kwds):
         """instantiate a pool and execute the pool's map iterator
 
-    Input:
+    Args:
         func: function object to map
-        args: positional arguments for map iterator
-        kwds: keyword arguments for map iterator
+        *args: positional arguments for map iterator
+        **kwds: keyword arguments for map iterator
 
     Returns:
-        results from execution of map(func, *args, **kwds) iterator
+        results from execution of ``map(func, *args, **kwds)`` iterator
 
     NOTE: initializes a new worker pool with each call
         """
@@ -252,17 +247,16 @@ class Amap(Map):
     def __init__(self, pool=None, *args, **kwds):
         """async map instance with internal lazy pool instantiation
 
-    Input:
+    Args:
         pool: pool object (i.e. pathos.pools.ProcessPool)
-
-    Additional Input:
-        args: positional arguments for pool initialization
-        kwds: keyword arguments for pool initialization
+        *args: positional arguments for pool initialization
+        **kwds: keyword arguments for pool initialization
         close: if True, close the pool to any new jobs [Default: False] 
         join: if True, reclaim the pool's closed workers [Default: False]
         clear: if True, delete the pool singleton [Default: False]
 
-    NOTE: if a pool object is not provided, an error is thown.
+    NOTE: if a pool object is not provided, NotImplemented is returned
+        upon use.
     NOTE: pools from both multiprocess and pathos.pools can be used,
         however the behavior is slightly different. Pools from both
         pathos and multiprocess have close and join methods, to close
@@ -276,8 +270,8 @@ class Amap(Map):
         map instance cannot run new jobs until "clear" is called,
         while a new multiprocess pool will be created each time the
         map is executed. This leads to pathos.pools generally being
-        called with either `clear=True` or `clear=False`, and pools
-        from multprocess either using `close=True` or `join=True` or
+        called with either ``clear=True`` or ``clear=False``, and pools
+        from multprocess either using ``close=True`` or ``join=True`` or
         both. Some hierarchical parallel workflows are not allowed,
         and will result in an error being thrown; however, changing
         close, join, or clear can often remove the error.
@@ -287,13 +281,13 @@ class Amap(Map):
     def __call__(self, func, *args, **kwds):
         """instantiate a pool and execute the pool's async map
 
-    Input:
+    Args:
         func: function object to map
-        args: positional arguments for async map
-        kwds: keyword arguments for async map
+        *args: positional arguments for async map
+        **kwds: keyword arguments for async map
 
     Returns:
-        results from execution of async map(func, *args, **kwds)
+        results from execution of async ``map(func, *args, **kwds)``
 
     NOTE: initializes a new worker pool with each call
         """
@@ -315,17 +309,16 @@ class Asmap(Map):
     def __init__(self, pool=None, *args, **kwds):
         """async starmap instance with internal lazy pool instantiation
 
-    Input:
+    Args:
         pool: pool object (i.e. pathos.pools.ProcessPool)
-
-    Additional Input:
-        args: positional arguments for pool initialization
-        kwds: keyword arguments for pool initialization
+        *args: positional arguments for pool initialization
+        **kwds: keyword arguments for pool initialization
         close: if True, close the pool to any new jobs [Default: False] 
         join: if True, reclaim the pool's closed workers [Default: False]
         clear: if True, delete the pool singleton [Default: False]
 
-    NOTE: if a pool object is not provided, an error is thown.
+    NOTE: if a pool object is not provided, NotImplemented is returned
+        upon use.
     NOTE: pools from both multiprocess and pathos.pools can be used,
         however the behavior is slightly different. Pools from both
         pathos and multiprocess have close and join methods, to close
@@ -339,8 +332,8 @@ class Asmap(Map):
         map instance cannot run new jobs until "clear" is called,
         while a new multiprocess pool will be created each time the
         map is executed. This leads to pathos.pools generally being
-        called with either `clear=True` or `clear=False`, and pools
-        from multprocess either using `close=True` or `join=True` or
+        called with either ``clear=True`` or ``clear=False``, and pools
+        from multprocess either using ``close=True`` or ``join=True`` or
         both. Some hierarchical parallel workflows are not allowed,
         and will result in an error being thrown; however, changing
         close, join, or clear can often remove the error.
@@ -350,13 +343,13 @@ class Asmap(Map):
     def __call__(self, func, *args, **kwds):
         """instantiate a pool and execute the pool's async starmap
 
-    Input:
+    Args:
         func: function object to map
-        args: positional arguments for async starmap
-        kwds: keyword arguments for async starmap
+        *args: positional arguments for async starmap
+        **kwds: keyword arguments for async starmap
 
     Returns:
-        results from execution of async starmap(func, *args, **kwds)
+        results from execution of async ``starmap(func, *args, **kwds)``
 
     NOTE: initializes a new worker pool with each call
         """
@@ -379,17 +372,16 @@ class Uimap(Map):
     def __init__(self, pool=None, *args, **kwds):
         """unordered map iterator with internal lazy pool instantiation
 
-    Input:
+    Args:
         pool: pool object (i.e. pathos.pools.ProcessPool)
-
-    Additional Input:
-        args: positional arguments for pool initialization
-        kwds: keyword arguments for pool initialization
+        *args: positional arguments for pool initialization
+        **kwds: keyword arguments for pool initialization
         close: if True, close the pool to any new jobs [Default: False] 
         join: if True, reclaim the pool's closed workers [Default: False]
         clear: if True, delete the pool singleton [Default: False]
 
-    NOTE: if a pool object is not provided, an error is thown.
+    NOTE: if a pool object is not provided, NotImplemented is returned
+        upon use.
     NOTE: pools from both multiprocess and pathos.pools can be used,
         however the behavior is slightly different. Pools from both
         pathos and multiprocess have close and join methods, to close
@@ -403,8 +395,8 @@ class Uimap(Map):
         map instance cannot run new jobs until "clear" is called,
         while a new multiprocess pool will be created each time the
         map is executed. This leads to pathos.pools generally being
-        called with either `clear=True` or `clear=False`, and pools
-        from multprocess either using `close=True` or `join=True` or
+        called with either ``clear=True`` or ``clear=False``, and pools
+        from multprocess either using ``close=True`` or ``join=True`` or
         both. Some hierarchical parallel workflows are not allowed,
         and will result in an error being thrown; however, changing
         close, join, or clear can often remove the error.
@@ -414,13 +406,13 @@ class Uimap(Map):
     def __call__(self, func, *args, **kwds):
         """instantiate a pool and execute the pool's unordered map iterator
 
-    Input:
+    Args:
         func: function object to map
-        args: positional arguments for unordered map iterator
-        kwds: keyword arguments for unordered map iterator
+        *args: positional arguments for unordered map iterator
+        **kwds: keyword arguments for unordered map iterator
 
     Returns:
-        results from execution of unordered map(func, *args, **kwds) iterator
+        results from execution of unordered ``map(func, *args, **kwds)`` iterator
 
     NOTE: initializes a new worker pool with each call
         """
@@ -442,12 +434,10 @@ class Ismap(Map):
     def __init__(self, pool=None, *args, **kwds):
         """starmap iterator with internal lazy pool instantiation
 
-    Input:
+    Args:
         pool: pool object (i.e. pathos.pools.ProcessPool)
-
-    Additional Input:
-        args: positional arguments for pool initialization
-        kwds: keyword arguments for pool initialization
+        *args: positional arguments for pool initialization
+        **kwds: keyword arguments for pool initialization
         close: if True, close the pool to any new jobs [Default: False] 
         join: if True, reclaim the pool's closed workers [Default: False]
         clear: if True, delete the pool singleton [Default: False]
@@ -467,8 +457,8 @@ class Ismap(Map):
         map instance cannot run new jobs until "clear" is called,
         while a new multiprocess pool will be created each time the
         map is executed. This leads to pathos.pools generally being
-        called with either `clear=True` or `clear=False`, and pools
-        from multprocess either using `close=True` or `join=True` or
+        called with either ``clear=True`` or ``clear=False``, and pools
+        from multprocess either using ``close=True`` or ``join=True`` or
         both. Some hierarchical parallel workflows are not allowed,
         and will result in an error being thrown; however, changing
         close, join, or clear can often remove the error.
@@ -478,13 +468,13 @@ class Ismap(Map):
     def __call__(self, func, *args, **kwds):
         """instantiate a pool and execute the pool's starmap iterator
 
-    Input:
+    Args:
         func: function object to map
-        args: positional arguments for starmap iterator
-        kwds: keyword arguments for starmap iterator
+        *args: positional arguments for starmap iterator
+        **kwds: keyword arguments for starmap iterator
 
     Returns:
-        results from execution of starmap(func, *args, **kwds) iterator
+        results from execution of ``starmap(func, *args, **kwds)`` iterator
 
     NOTE: initializes a new worker pool with each call
         """

@@ -17,8 +17,8 @@ _profiles = { }
 For example, to register two 'known' host profiles:
 
   _profiles = { \
-     'foobar.danse.us':'.profile',
-     'computer.cacr.caltech.edu':'.cshrc',
+     'foobar.danse.us':'.profile', \
+     'computer.cacr.caltech.edu':'.cshrc', \
   }
 """
 

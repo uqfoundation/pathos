@@ -26,7 +26,7 @@ Usage:
 The first call will return a random number from the available range,
 and each subsequent call will return the next number in the range.
 
-Inputs:
+Args:
     min -- minimum port number  [default = 0]
     max -- maximum port number  [default = 65536]
         '''
@@ -56,7 +56,7 @@ Inputs:
 def randomport(min=1024, max=65536):
     '''select a random port number
 
-Inputs:
+Args:
     min -- minimum port number  [default = 1024]
     max -- maximum port number  [default = 65536]
     '''
