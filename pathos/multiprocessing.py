@@ -74,6 +74,9 @@ __STATE = _ProcessPool__STATE = {}
 from pathos.abstract_launcher import AbstractWorkerPool
 from pathos.helpers.mp_helper import starargs as star
 from pathos.helpers import cpu_count, freeze_support, ProcessPool as Pool
+import warnings
+import sys
+OLD312a7 = (sys.hexversion < 0x30c00a7)
 
 # 'forward' compatibility
 _ProcessPool = Pool
@@ -145,34 +148,52 @@ Mapper that leverages python's multiprocessing.
     def map(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         _pool = self._serve()
-        return _pool.map(star(f), zip(*args), **kwds)
+        with warnings.catch_warnings():
+            if not OLD312a7:
+                warnings.filterwarnings('ignore', category=DeprecationWarning)
+            return _pool.map(star(f), zip(*args), **kwds)
     map.__doc__ = AbstractWorkerPool.map.__doc__
     def imap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
         _pool = self._serve()
-        return _pool.imap(star(f), zip(*args), **kwds)
+        with warnings.catch_warnings():
+            if not OLD312a7:
+                warnings.filterwarnings('ignore', category=DeprecationWarning)
+            return _pool.imap(star(f), zip(*args), **kwds)
     imap.__doc__ = AbstractWorkerPool.imap.__doc__
     def uimap(self, f, *args, **kwds):
         AbstractWorkerPool._AbstractWorkerPool__imap(self, f, *args, **kwds)
         _pool = self._serve()
-        return _pool.imap_unordered(star(f), zip(*args), **kwds)
+        with warnings.catch_warnings():
+            if not OLD312a7:
+                warnings.filterwarnings('ignore', category=DeprecationWarning)
+            return _pool.imap_unordered(star(f), zip(*args), **kwds)
     uimap.__doc__ = AbstractWorkerPool.uimap.__doc__
     def amap(self, f, *args, **kwds): # register a callback ?
         AbstractWorkerPool._AbstractWorkerPool__map(self, f, *args, **kwds)
         _pool = self._serve()
-        return _pool.map_async(star(f), zip(*args), **kwds)
+        with warnings.catch_warnings():
+            if not OLD312a7:
+                warnings.filterwarnings('ignore', category=DeprecationWarning)
+            return _pool.map_async(star(f), zip(*args), **kwds)
     amap.__doc__ = AbstractWorkerPool.amap.__doc__
     ########################################################################
     # PIPES
     def pipe(self, f, *args, **kwds):
        #AbstractWorkerPool._AbstractWorkerPool__pipe(self, f, *args, **kwds)
         _pool = self._serve()
-        return _pool.apply(f, args, kwds)
+        with warnings.catch_warnings():
+            if not OLD312a7:
+                warnings.filterwarnings('ignore', category=DeprecationWarning)
+            return _pool.apply(f, args, kwds)
     pipe.__doc__ = AbstractWorkerPool.pipe.__doc__
     def apipe(self, f, *args, **kwds): # register a callback ?
        #AbstractWorkerPool._AbstractWorkerPool__apipe(self, f, *args, **kwds)
         _pool = self._serve()
-        return _pool.apply_async(f, args, kwds)
+        with warnings.catch_warnings():
+            if not OLD312a7:
+                warnings.filterwarnings('ignore', category=DeprecationWarning)
+            return _pool.apply_async(f, args, kwds)
     apipe.__doc__ = AbstractWorkerPool.apipe.__doc__
     ########################################################################
     def __repr__(self):
