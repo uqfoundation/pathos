@@ -22,14 +22,14 @@ core module
 helpers module
 --------------
 
-.. automodule:: pathos.helpers
-..  :exclude-members: +
-
 .. toctree::
+    :titlesonly:
     :maxdepth: 2
-    :caption: Contents:
 
     helpers
+
+.. automodule:: pathos.helpers
+..  :exclude-members: +
 
 hosts module
 ------------
@@ -100,14 +100,14 @@ python module
 secure module
 -------------
 
-.. automodule:: pathos.secure 
-..  :exclude-members: +
-
 .. toctree::
+    :titlesonly:
     :maxdepth: 2
-    :caption: Contents:
 
     secure
+
+.. automodule:: pathos.secure 
+..  :exclude-members: +
 
 selector module
 ---------------
@@ -142,12 +142,12 @@ util module
 xmlrpc module
 -------------
 
-.. automodule:: pathos.xmlrpc 
-..  :exclude-members: +
-
 .. toctree::
+    :titlesonly:
     :maxdepth: 2
-    :caption: Contents:
 
     xmlrpc
+
+.. automodule:: pathos.xmlrpc 
+..  :exclude-members: +
 

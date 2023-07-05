@@ -3,15 +3,16 @@
 pathos package documentation
 ============================
 
-.. automodule:: pathos
-..  :exclude-members: +
-
 .. toctree::
+    :hidden:
     :maxdepth: 2
-    :caption: Contents:
 
+    self
     pathos
     scripts
+
+.. automodule:: pathos
+..  :exclude-members: +
 
 Indices and tables
 ==================
