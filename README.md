@@ -137,10 +137,10 @@ Requirements
 
 * ``python`` (or ``pypy``), **>=3.8**
 * ``setuptools``, **>=42**
-* ``pox``, **>=0.3.3**
-* ``dill``, **>=0.3.7**
-* ``ppft``, **>=1.7.6.7**
-* ``multiprocess``, **>=0.70.15**
+* ``pox``, **>=0.3.4**
+* ``dill``, **>=0.3.8**
+* ``ppft``, **>=1.7.6.8**
+* ``multiprocess``, **>=0.70.16**
 
 
 More Information
