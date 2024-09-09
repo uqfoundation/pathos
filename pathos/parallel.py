@@ -169,7 +169,8 @@ Mapper that leverages parallelpython (i.e. pp) maps.
         # Create an identifier for the pool
         self._id = kwds.get('id', None) #'server'
         if self._id is None:
-            _nodes = str(ncpus) if type(ncpus) is int else '*'
+            from numbers import Integral
+            _nodes = str(ncpus) if isinstance(ncpus, Integral) else '*'
             self._id = '@'.join([_nodes, '+'.join(sorted(servers))])
 
         #XXX: throws 'socket.error' when starting > 1 server with autodetect

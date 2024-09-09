@@ -179,8 +179,8 @@ NOTE: If gen is a bool or string, then sort=gen and pid is not used.
         self.prefix = prefix
         self.suffix= suffix
         #XXX: tricky: if gen is bool/str then print, else dump with gen=id_gen
-        if type(gen) in (bool, str):
-            self.sort = -1 if type(gen) is bool else gen
+        if (type(gen) is str) or (repr(gen) in ('True','False')):
+            self.sort = -1 if (repr(gen) in ('True','False')) else gen
             self.pid = str
         else:
             self.sort = -1
@@ -333,7 +333,7 @@ NOTE: pipe provided should come from pool built with nodes=1. Other
       'tottime'    - internal time
         """
         pipe = config.pop('pipe', None)
-        if type(sort) not in (bool, type(None)):
+        if (sort is not None) and (repr(sort) not in ('True','False')):
             config.update(dict(gen=sort))
         self.config = dict(gen=False) if not bool(config) else config
         from pathos.pools import SerialPool
