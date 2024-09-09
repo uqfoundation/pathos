@@ -126,6 +126,7 @@ Args:
     host   -- hostname where process is running
     all    -- get all resulting lines from query?  [default = False]
   '''
+  from numbers import Integral
   if target is None:
     if all:
       target = ''
@@ -133,7 +134,7 @@ Args:
       raise OSError('[Error 3] No such process')
     else:
       return os.getpid()
-  elif isinstance(target, int): #NOTE: passing pid useful for all=True
+  elif isinstance(target, Integral): #NOTE: passing pid useful for all=True
     target = "%5d " % target    #NOTE: assumes max pid is 99999
  #command = "ps -A | grep '%s'" % target # 'other users' only
   command = "ps ax | grep '%s'" % target # 'all users'
