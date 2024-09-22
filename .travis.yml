@@ -22,6 +22,8 @@ matrix:
         - python: '3.13-dev'
           env:
             - DILL="master"
+            - PPFT="master"
+            - MULTIPROCESS="master"
 
         - python: 'pypy3.8-7.3.9' # at 7.3.11
           env:
@@ -47,6 +49,8 @@ before_install:
     - set -e  # fail on any error
     - if [[ $COVERAGE == "true" ]]; then pip install coverage; fi
     - if [[ $DILL == "master" ]]; then pip install "https://github.com/uqfoundation/dill/archive/master.tar.gz"; fi
+    - if [[ $PPFT == "master" ]]; then pip install "https://github.com/uqfoundation/ppft/archive/master.tar.gz"; fi
+    - if [[ $MULTIPROCESS == "master" ]]; then pip install "https://github.com/uqfoundation/multiprocess/archive/master.tar.gz"; fi
     - if [[ $MULTIPROCESS == "true" ]]; then pip install multiprocess --no-binary multiprocess; fi
 
 install:
