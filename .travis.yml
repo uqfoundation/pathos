@@ -29,17 +29,16 @@ matrix:
           env:
             - MULTIPROCESS="true"
 
-        - python: 'pypy3.9-7.3.9' # at 7.3.15
+        - python: 'pypy3.9-7.3.9' # at 7.3.16
           env:
             - MULTIPROCESS="true"
 
-        - python: 'pypy3.10-7.3.15'
+        - python: 'pypy3.10-7.3.17'
           env:
             - MULTIPROCESS="true"
 
     allow_failures:
-        - python: '3.13-dev'
-        - python: 'pypy3.10-7.3.15' # CI missing
+        - python: 'pypy3.10-7.3.17' # CI missing
     fast_finish: true
 
 cache:
