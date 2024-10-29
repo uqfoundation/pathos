@@ -129,9 +129,3 @@ except ImportError:
     #print("    %s (optional)" % mystic_version)
     #print("    %s (optional)" % pyina_version)
     print("***********************************************************\n")
-
-
-if __name__=='__main__':
-    pass
-
-# end of file
