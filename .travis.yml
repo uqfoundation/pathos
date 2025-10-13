@@ -25,7 +25,13 @@ matrix:
             - PPFT="master"
             - MULTIPROCESS="master"
 
-        - python: 'pypy3.9-7.3.9' # at 7.3.16
+        - python: '3.15-dev'
+          env:
+            - DILL="master"
+            - PPFT="master"
+            - MULTIPROCESS="master"
+
+        - python: 'pypy3.9-7.3.15' # at 7.3.16
           env:
             - MULTIPROCESS="true"
 
@@ -33,14 +39,13 @@ matrix:
           env:
             - MULTIPROCESS="true"
 
-        - python: 'pypy3.11-7.3.19'
+        - python: 'pypy3.11-7.3.20'
           env:
             - MULTIPROCESS="true"
 
     allow_failures:
-        - python: '3.14-dev' # CI missing
-        - python: 'pypy3.10-7.3.19' # CI missing
-        - python: 'pypy3.11-7.3.19' # CI missing
+        - python: '3.15-dev' # prerelease; CI missing
+        - python: 'pypy3.11-7.3.20' # CI missing
     fast_finish: true
 
 cache:
