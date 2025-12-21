@@ -8,7 +8,11 @@
 from pathos.pools import *
 try:
     import numpy
-    HASNUMPY = True
+    import sys
+    if numpy.__version__ < '2.4.0' and sys.hexversion == 0x30f00a3:
+        HASNUMPY = False #NOTE: numpy Segfaults for the above combination
+    else:
+        HASNUMPY = True
 except ImportError:
     HASNUMPY = False
 
