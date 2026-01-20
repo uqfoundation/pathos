@@ -90,10 +90,10 @@ class BinaryDistribution(Distribution):
         return True
 
 # define dependencies
-ppft_version = 'ppft>=1.7.7'
-dill_version = 'dill>=0.4.0'
-pox_version = 'pox>=0.3.6'
-mp_version = 'multiprocess>=0.70.18'
+ppft_version = 'ppft>=1.7.8'
+dill_version = 'dill>=0.4.1'
+pox_version = 'pox>=0.3.7'
+mp_version = 'multiprocess>=0.70.19'
 pyina_version = 'pyina>=0.3.1'
 mystic_version = 'mystic>=0.4.4'
 # add dependencies
