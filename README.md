@@ -135,7 +135,7 @@ Requirements
 ------------
 ``pathos`` requires:
 
-* ``python`` (or ``pypy``), **>=3.9**
+* ``python`` (or ``pypy``), **>=3.10**
 * ``setuptools``, **>=42**
 * ``pox``, **>=0.3.7**
 * ``dill``, **>=0.4.1**
