@@ -175,7 +175,7 @@ Other class members:
               raise TypeError("%s() takes at most %s arguments (%s given)" % (f.__name__(), str(vars), str(arglen)))
             elif arglen < (vars - defs):
               raise TypeError("%s() takes at least %s arguments (%s given)" % (f.__name__(), str(vars - defs), str(arglen)))
-        except:
+        except Exception:
             pass
         return
     def _serve(self, *args, **kwds):
