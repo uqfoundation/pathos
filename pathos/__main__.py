@@ -75,7 +75,7 @@ if __name__ == '__main__':
     sys.exit(0)
   try:
     myinp = sys.argv[1]
-  except: myinp = None
+  except IndexError: myinp = None
   if myinp:
     rhost = myinp #XXX: should test rhost validity here... (how ?)
   else: pass # use default
@@ -84,7 +84,7 @@ if __name__ == '__main__':
   # get server to run from user
   try:
     myinp = sys.argv[2]
-  except: myinp = None
+  except IndexError: myinp = None
   if myinp:
     server = myinp #XXX: should test validity here... (filename)
   else: pass # use default
@@ -101,7 +101,7 @@ if __name__ == '__main__':
   # get remote port to run server on from user
   try:
     myinp = sys.argv[3]
-  except: myinp = None
+  except IndexError: myinp = None
   if myinp:
     if tunnel: # tunnel doesn't take more inputs
       msg = "port '%s' not valid for 'tunnel'" % myinp
@@ -117,7 +117,7 @@ if __name__ == '__main__':
   # get remote profile (this should go away soon)
   try:
     myinp = sys.argv[4]
-  except: myinp = None
+  except IndexError: myinp = None
   if myinp:
     rprof = myinp #XXX: should test validity here... (filename)
     profiles = {rhost:rprof}

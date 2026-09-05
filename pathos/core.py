@@ -262,7 +262,7 @@ Args:
   launcher.launch()
   try:
     rport = int(launcher.response())
-  except:
+  except Exception:
     from pathos.secure import TunnelException
     raise TunnelException("failure to pick remote port")
   # return remote port number

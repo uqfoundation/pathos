@@ -124,7 +124,7 @@ Inputs:
                 p = Popen(self.message, shell=True,
                           stdin=self.stdin, stdout=PIPE,
                           stderr=STDOUT, close_fds=True)
-            except:
+            except Exception:
                 raise PipeException('failure to pipe: %s' % self.message)
             self._pid = p.pid #get fileobject pid
             self._stdout = p.stdout #save fileobject
@@ -132,7 +132,7 @@ Inputs:
             try:
                 p = Popen(self.message, shell=True,
                           stdin=self.stdin, stdout=PIPE)
-            except:
+            except Exception:
                 raise PipeException('failure to pipe: %s' % self.message)
             self._stdout = p.stdout
             self._pid = 0 #XXX: MMM --> or -1 ?
