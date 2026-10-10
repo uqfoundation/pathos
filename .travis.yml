@@ -20,9 +20,6 @@ matrix:
 
         - python: '3.14'
           env:
-            - DILL="master"
-            - PPFT="master"
-            - MULTIPROCESS="master"
 
         - python: '3.15t-dev'
           env:
