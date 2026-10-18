@@ -19,19 +19,29 @@ except ImportError:
 
 def random(x):
     from pathos.helpers import mp_helper as mp
-    return mp.random_state('random').random()+x
+    result = mp.random_state('random').random()
+    return result + x
 
 def rand(x):
     from pathos.helpers import mp_helper as mp
-    return mp.random_state('numpy.random').rand()+x
+    import warnings
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=RuntimeWarning)
+        result = mp.random_state('numpy.random').rand()
+    return result + x
 
 def wrong1(x):
     import random
-    return random.random()+x
+    result = random.random()
+    return result + x
 
 def wrong2(x):
     import numpy
-    return numpy.random.rand()+x
+    import warnings
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=RuntimeWarning)
+    result = numpy.random.rand()
+    return result + x
 
 
 def check_random(pool):
