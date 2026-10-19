@@ -19,7 +19,6 @@ from ppft import _Task
 from ppft import Server
 import time
 import dill as pickle
-import threading
 
 #FIXME: this is a sloppy kludge... inheritance or not, this is not clean
 class ApplyResult(_Task): #XXX: better if not derived from _Task?
@@ -64,13 +63,19 @@ enables a pp._Task to mimic the multiprocessing.pool.ApplyResult interface
     def wait(self, timeout=None): #XXX: None is blocking
         """Waits for the task""" 
         if not self.finished:
-            cond = threading.Condition(self._task.lock) #XXX: or need Rlock???
-            cond.acquire()
-            try:
-                if not self._task.finished:
-                    cond.wait(timeout) #FIXME: ignores timeout, and blocks
-            finally:
-                cond.release()
+            deadline = None if timeout is None else time.monotonic() + max(0, timeout)
+            if deadline is None:
+                acquired = self._task.lock.acquire()
+            else:
+                acquired = self._task.lock.acquire(
+                    timeout=max(0, deadline - time.monotonic()))
+            if acquired:
+                self._task.lock.release()
+                # ppft sets finished after releasing the completion lock.
+                while not self.finished:
+                    if deadline is not None and time.monotonic() >= deadline:
+                        break
+                    time.sleep(0)
         return
 
     def get(self, timeout=None):
@@ -192,12 +197,10 @@ class MapResult(object):
     def wait(self, timeout=None):
         "Wait for the tasks"
         if not self.ready():
+            deadline = None if timeout is None else time.monotonic() + max(0, timeout)
             for task in self.__tasks:
-                task.wait(timeout)
-                #XXX: better one-time timeout or n-time ?
-                if timeout is None:
-                    continue
-                timeout = 0
+                remaining = None if deadline is None else max(0, deadline - time.monotonic())
+                task.wait(remaining)
        #return self.ready() #XXX: better if return T/F ?
            #if self.ready():
            #    self.__unpickle() #XXX: better if callback...?
