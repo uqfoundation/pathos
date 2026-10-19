@@ -278,11 +278,11 @@ Mapper that leverages parallelpython (i.e. pp) maps.
                 self._is_alive(None)
         override = True if 'size' in kwds else False
         elem_size = kwds.pop('size', 2)
-        length = min(len(task) for task in args)
         args = zip(*args)  #XXX: zip iterator ok? or should be list?
         # submit all jobs, to be collected later with 'get()'
         tasks = [submit(*task) for task in args]
         tasks = [ApplyResult(task) for task in tasks]
+        length = len(tasks)
         # build a correctly sized results object
         nodes = self.nodes
         if self.nodes in ['*','autodetect',None]:
