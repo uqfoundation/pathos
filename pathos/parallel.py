@@ -197,13 +197,13 @@ Mapper that leverages parallelpython (i.e. pp) maps.
         # if no server, create one
         _pool = __STATE.get(self._id, None)
         if not _pool:
-            _pool = pp.Server(ppservers=servers)
+            _pool = pp.Server(ncpus=nodes, ppservers=servers)
         # convert to form returned by pp.Server, then compare
         _auto = [('*',)] if _pool.auto_ppservers else []
         _servers = sorted(_pool.ppservers + _auto)
         _servers = tuple(':'.join((str(i) for i in tup)) for tup in _servers)
         if servers != _servers: #XXX: assume servers specifies ports if desired
-            _pool = pp.Server(ppservers=servers)
+            _pool = pp.Server(ncpus=nodes, ppservers=servers)
         # convert to form returned by pp.Server, then compare
         _nodes = cpu_count() if nodes=='autodetect' else nodes
         if _nodes != _pool.get_ncpus():
