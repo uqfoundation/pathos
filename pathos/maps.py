@@ -66,10 +66,12 @@ class Map(object):
         if self.pool is None: #XXX: args, kwds?
             return list(map(func, *args)) #XXX: iterator or list?
         self._pool = pool = self.pool(*self.args, **self.kwds)
-        result = pool.map(func, *args, **kwds)
-        if self._close: self.close()
-        if self._join: self.join()
-        if self._clear: self.clear()
+        try:
+            result = pool.map(func, *args, **kwds)
+        finally:
+            if self._close: self.close()
+            if self._join: self.join()
+            if self._clear: self.clear()
         return result #NOTE: ValueError on non-running pool
 
     # function interface
@@ -170,13 +172,15 @@ class Smap(Map):
             return list(starmap(func, *args)) #XXX: iterator or list?
         self._pool = pool = self.pool(*self.args, **self.kwds)
         smap = getattr(pool, 'smap', getattr(pool, 'starmap', None))
-        if smap is None:
-            result = pool.map(lambda x: func(*x), *args, **kwds)
-        else:
-            result = smap(func, *args, **kwds)
-        if self._close: self.close()
-        if self._join: self.join()
-        if self._clear: self.clear()
+        try:
+            if smap is None:
+                result = pool.map(lambda x: func(*x), *args, **kwds)
+            else:
+                result = smap(func, *args, **kwds)
+        finally:
+            if self._close: self.close()
+            if self._join: self.join()
+            if self._clear: self.clear()
         return result
 
 

@@ -82,3 +82,33 @@ if not os.environ.get('COVERAGE'): #XXX: travis-ci
     t = s(lambda x: list(p(squared, x)), [range(4)]*4)
     assert r == t.get()
     del s, p, r, t
+
+
+def test_clear_after_map_error():
+    from pathos.pools import ThreadPool
+
+    def fail(*args):
+        raise ValueError('map failed')
+
+    for mapper_type in (Map, Smap):
+        pool_id = 'failed-' + mapper_type.__name__
+        mapper = mapper_type(ThreadPool, nodes=1, id=pool_id, clear=True)
+        try:
+            try:
+                mapper(fail, [(1, 2)] if mapper_type is Smap else [1])
+            except ValueError as error:
+                assert str(error) == 'map failed'
+            else:
+                raise AssertionError('map did not raise')
+
+            assert pool_id not in ThreadPool.__state__
+            inputs = [(1, 2)] if mapper_type is Smap else [1]
+            expected = [3] if mapper_type is Smap else [1]
+            assert mapper(added, inputs) == expected
+            assert pool_id not in ThreadPool.__state__
+        finally:
+            mapper.clear()
+
+
+if __name__ == '__main__':
+    test_clear_after_map_error()
